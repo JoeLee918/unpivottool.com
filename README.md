@@ -158,6 +158,33 @@ This project is open source and available under the MIT License.
 
 ---
 
-**Transform your data today - it's that simple!** 🚀
+## 📝 Recent Updates
+
+### Version 2.0 - Major Enhancement (2025-01-27)
+
+🚀 **Major Update: Fixed 9 Critical Issues**
+
+**Enhanced Data Processing:**
+- ✅ **Excel Line Break Fix**: Completely revamped Excel clipboard parsing using PapaParse for reliable multi-line cell handling
+- ✅ **Keyboard Support**: Added Delete/Backspace key support for intuitive table editing experience
+
+**Improved User Interface:**
+- ✅ **Fixed Table Layout**: Table container now has consistent 300px height, preventing layout shifts
+- ✅ **Step 3 Editor**: Added Full Table Editor for results, allowing post-conversion data editing
+- ✅ **Navigation Fix**: Fixed breadcrumb Home link and added complete "How it Works" section
+
+**SEO & Language Optimization:**
+- ✅ **American English**: Updated all "Transform" references to "Convert" based on SEO analysis
+- ✅ **Better UX**: More intuitive language throughout the interface
+
+**Documentation:**
+- ✅ **Analysis Report**: Updated comprehensive problem analysis document  
+- ✅ **Learning Guide**: Created detailed technical learning documentation
+
+This update significantly improves data reliability, user experience, and overall tool functionality.
+
+---
+
+**Convert your data today - it's that simple!** 🚀
 
 *Built with ❤️ for data professionals worldwide* 
