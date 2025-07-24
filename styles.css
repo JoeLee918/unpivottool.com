@@ -84,10 +84,11 @@ body {
     padding: var(--spacing-md) 0;
 }
 
-.nav-brand h1 {
+.brand-logo {
     font-size: 1.5rem;
     font-weight: 600;
     color: var(--color-primary);
+    cursor: pointer;
 }
 
 .nav-links {
@@ -110,7 +111,7 @@ body {
 .breadcrumb {
     background-color: var(--color-bg-secondary);
     border-bottom: 1px solid var(--color-border);
-    padding: var(--spacing-sm) 0;
+    padding: var(--spacing-xs) 0;    /* 进一步减少padding，从0.5rem到0.25rem */
 }
 
 .breadcrumb ul {
@@ -143,27 +144,27 @@ body {
 
 /* 主内容区 */
 .main {
-    padding: var(--spacing-xl) 0;
+    padding: var(--spacing-md) 0;       /* 进一步减少上下padding，从2rem到1rem */
     min-height: calc(100vh - 200px);
 }
 
 /* Hero 区域 */
 .hero {
     text-align: center;
-    margin-bottom: var(--spacing-2xl);
+    margin-bottom: var(--spacing-md);    /* 进一步减少底部间距，从1.5rem到1rem */
 }
 
 .hero h1 {
     font-size: 2.5rem;
     font-weight: 700;
-    margin-bottom: var(--spacing-md);
+    margin-bottom: var(--spacing-xs);     /* 进一步减少标题底部间距，从0.5rem到0.25rem */
     color: var(--color-text-primary);
 }
 
 .hero-subtitle {
     font-size: 1.125rem;
     color: var(--color-text-secondary);
-    margin-bottom: var(--spacing-lg);
+    margin-bottom: var(--spacing-sm);     /* 进一步减少副标题底部间距，从1rem到0.5rem */
 }
 
 .hero-features {
@@ -181,8 +182,8 @@ body {
     background-color: var(--color-bg-primary);
     border: 1px solid var(--color-border);
     border-radius: var(--radius-lg);
-    padding: var(--spacing-xl);
-    margin-bottom: var(--spacing-xl);
+    padding: var(--spacing-md);              /* 进一步减少内边距，从1.5rem到1rem */
+    margin-bottom: var(--spacing-md);        /* 进一步减少底部间距，从1.5rem到1rem */
     box-shadow: var(--shadow-sm);
 }
 
@@ -304,9 +305,11 @@ body {
     border: 1px solid var(--color-border);
     padding: var(--spacing-sm);
     min-width: 80px;
+    min-height: 36px;           /* 确保所有单元格最小高度一致 */
     position: relative;
     background-color: var(--color-bg-primary);
     transition: background-color 0.1s ease;
+    vertical-align: top;        /* 确保内容对齐 */
 }
 
 .excel-grid td:hover {
@@ -992,5 +995,272 @@ body {
     
     .selector-option label {
         font-size: 0.875rem;
+    }
+}
+
+/* FAQ Section Styles */
+.faq-section {
+    padding: var(--spacing-xl) 0;
+    background: var(--color-background);
+}
+
+.section-header {
+    text-align: center;
+    margin-bottom: var(--spacing-xl);
+}
+
+.section-header h2 {
+    color: var(--color-text);
+    margin-bottom: var(--spacing-sm);
+}
+
+.section-header p {
+    color: var(--color-text-secondary);
+    font-size: 1.1rem;
+}
+
+.faq-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-lg);
+    margin-bottom: var(--spacing-lg);
+}
+
+.faq-column {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+.faq-item {
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    background: white;
+    transition: box-shadow 0.3s ease;
+}
+
+.faq-item:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.faq-question {
+    padding: var(--spacing-lg);
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: white;
+    transition: background-color 0.3s ease;
+}
+
+.faq-question:hover {
+    background: var(--color-background);
+}
+
+.faq-question h3 {
+    margin: 0;
+    color: var(--color-text);
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.faq-toggle {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--color-primary);
+    transition: transform 0.3s ease;
+}
+
+.faq-item.active .faq-toggle {
+    transform: rotate(45deg);
+}
+
+.faq-answer {
+    padding: 0 var(--spacing-lg);
+    max-height: 0;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    background: white;
+}
+
+.faq-item.active .faq-answer {
+    padding: 0 var(--spacing-lg) var(--spacing-lg);
+    max-height: 200px;
+}
+
+.faq-answer p {
+    margin: 0;
+    color: var(--color-text-secondary);
+    line-height: 1.6;
+}
+
+.faq-footer {
+    text-align: center;
+    margin-top: var(--spacing-lg);
+}
+
+.faq-footer a {
+    color: var(--color-primary);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.faq-footer a:hover {
+    text-decoration: underline;
+}
+
+/* Blog Section Styles */
+.blog-section {
+    padding: var(--spacing-xl) 0;
+    background: white;
+}
+
+.blog-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--spacing-lg);
+    margin-bottom: var(--spacing-lg);
+}
+
+.blog-card {
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    background: white;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+}
+
+.blog-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.blog-image {
+    height: 200px;
+    background: var(--color-background);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.blog-placeholder {
+    font-size: 3rem;
+    opacity: 0.6;
+}
+
+.blog-content {
+    padding: var(--spacing-lg);
+}
+
+.blog-category {
+    background: var(--color-primary);
+    color: white;
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--border-radius-sm);
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    display: inline-block;
+    margin-bottom: var(--spacing-sm);
+}
+
+.blog-card h3 {
+    margin: 0 0 var(--spacing-sm) 0;
+    color: var(--color-text);
+    font-size: 1.25rem;
+    font-weight: 600;
+    line-height: 1.4;
+}
+
+.blog-card p {
+    margin: 0 0 var(--spacing-md) 0;
+    color: var(--color-text-secondary);
+    line-height: 1.6;
+}
+
+.blog-meta {
+    display: flex;
+    gap: var(--spacing-sm);
+    font-size: 0.875rem;
+    color: var(--color-text-secondary);
+}
+
+.blog-meta span:not(:last-child)::after {
+    content: '•';
+    margin-left: var(--spacing-sm);
+}
+
+.blog-footer {
+    text-align: center;
+}
+
+/* Smooth scrolling for navigation */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Results table selection fix */
+.results-table table {
+    user-select: text;
+    -webkit-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+}
+
+.results-table td {
+    cursor: text;
+    user-select: text;
+    -webkit-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+}
+
+/* 选中单元格的样式 */
+.results-table .cell-selected {
+    background-color: var(--color-bg-hover) !important;
+    border: 2px solid var(--color-primary) !important;
+    color: var(--color-text-primary) !important;
+}
+
+.results-table table:focus {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+}
+
+/* Responsive Design for FAQ and Blog */
+@media (max-width: 768px) {
+    .faq-grid {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-md);
+    }
+    
+    .blog-grid {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-md);
+    }
+    
+    .faq-question {
+        padding: var(--spacing-md);
+    }
+    
+    .faq-question h3 {
+        font-size: 1rem;
+    }
+    
+    .blog-content {
+        padding: var(--spacing-md);
+    }
+}
+
+@media (max-width: 640px) {
+    .blog-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .blog-image {
+        height: 150px;
     }
 } 

@@ -112,6 +112,7 @@ class UnpivotTool {
             const td = document.createElement('td');
             td.contentEditable = true;
             td.textContent = '';
+            td.style.minHeight = '36px';   // 确保与模板行高度一致
             newRow.appendChild(td);
         }
         
@@ -1030,4 +1031,124 @@ class UnpivotTool {
 // 页面加载完成后初始化应用
 document.addEventListener('DOMContentLoaded', () => {
     new UnpivotTool();
-}); 
+});
+
+// FAQ切换功能
+function toggleFAQ(element) {
+    const faqItem = element.closest('.faq-item');
+    const isActive = faqItem.classList.contains('active');
+    
+    // 关闭所有其他FAQ项目
+    document.querySelectorAll('.faq-item.active').forEach(item => {
+        if (item !== faqItem) {
+            item.classList.remove('active');
+        }
+    });
+    
+    // 切换当前FAQ项目
+    if (isActive) {
+        faqItem.classList.remove('active');
+    } else {
+        faqItem.classList.add('active');
+    }
+}
+
+// 平滑滚动导航功能
+document.addEventListener('DOMContentLoaded', function() {
+    // 处理导航链接的平滑滚动
+    const navLinks = document.querySelectorAll('.nav-links a[href^="#"]');
+    
+    navLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            const targetId = this.getAttribute('href');
+            const targetSection = document.querySelector(targetId);
+            
+            if (targetSection) {
+                const headerHeight = document.querySelector('.header').offsetHeight;
+                const targetPosition = targetSection.offsetTop - headerHeight - 20;
+                
+                window.scrollTo({
+                    top: targetPosition,
+                    behavior: 'smooth'
+                });
+            }
+        });
+    });
+});
+
+// 增强结果表格的选择功能
+function enhanceResultsTable() {
+    const resultsTable = document.querySelector('#results-table table');
+    if (!resultsTable) return;
+    
+    // 添加表格选择增强
+    resultsTable.addEventListener('mousedown', function(e) {
+        e.stopPropagation();
+    });
+    
+    // 为每个单元格添加选择功能
+    const cells = resultsTable.querySelectorAll('td, th');
+    cells.forEach(cell => {
+        cell.addEventListener('click', function(e) {
+            e.stopPropagation();
+            
+            // 清除之前的选择
+            const previousSelected = resultsTable.querySelector('.cell-selected');
+            if (previousSelected) {
+                previousSelected.classList.remove('cell-selected');
+            }
+            
+            // 选中当前单元格
+            this.classList.add('cell-selected');
+            
+            // 选择单元格内容
+            const range = document.createRange();
+            range.selectNodeContents(this);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+        });
+        
+        // 添加双击选择整行功能
+        cell.addEventListener('dblclick', function(e) {
+            e.stopPropagation();
+            
+            const row = this.closest('tr');
+            const range = document.createRange();
+            range.selectNodeContents(row);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+        });
+    });
+    
+    // 添加Ctrl+A全选表格功能
+    resultsTable.addEventListener('keydown', function(e) {
+        if ((e.ctrlKey || e.metaKey) && e.key === 'a') {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            const range = document.createRange();
+            range.selectNodeContents(this);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+        }
+    });
+    
+    // 使表格可聚焦以接收键盘事件
+    resultsTable.setAttribute('tabindex', '0');
+}
+
+// 监听结果显示完成事件，然后增强表格
+const originalDisplayResults = UnpivotTool.prototype.displayResults;
+UnpivotTool.prototype.displayResults = function() {
+    originalDisplayResults.call(this);
+    
+    // 延迟执行以确保DOM已更新
+    setTimeout(() => {
+        enhanceResultsTable();
+    }, 100);
+}; 
