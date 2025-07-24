@@ -1,180 +1,161 @@
-# AstroPaper 📄
+# UnpivotTool - Online Table Converter
 
-![AstroPaper](public/astropaper-og.jpg)
-[![Figma](https://img.shields.io/badge/Figma-F24E1E?style=for-the-badge&logo=figma&logoColor=white)](https://www.figma.com/community/file/1356898632249991861)
-![Typescript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)
-![GitHub](https://img.shields.io/github/license/satnaing/astro-paper?color=%232F3741&style=for-the-badge)
-[![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-%23FE5196?logo=conventionalcommits&logoColor=white&style=for-the-badge)](https://conventionalcommits.org)
-[![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg?style=for-the-badge)](http://commitizen.github.io/cz-cli/)
+> 🚀 **Version 2.0** - Enhanced with improved user experience and advanced features
 
-AstroPaper is a minimal, responsive, accessible and SEO-friendly Astro blog theme. This theme is designed and crafted based on [my personal blog](https://satnaing.dev/blog).
+Convert wide tables to long format (unpivot) instantly in your browser. No signup required, completely free to use.
 
-Read [the blog posts](https://astro-paper.pages.dev/posts/) or check [the README Documentation Section](#-documentation) for more info.
+## ✨ New Features (v2.0)
 
-## 🔥 Features
+### 🔧 Data Management Controls
+- **Clear All Data**: One-click to clear all table data
+- **Reset to Sample**: Restore default example data
+- **Add Row/Column**: Dynamic table expansion
+- **Enhanced Delete**: Better data management workflow
 
-- [x] type-safe markdown
-- [x] super fast performance
-- [x] accessible (Keyboard/VoiceOver)
-- [x] responsive (mobile ~ desktops)
-- [x] SEO-friendly
-- [x] light & dark mode
-- [x] fuzzy search
-- [x] draft posts & pagination
-- [x] sitemap & rss feed
-- [x] followed best practices
-- [x] highly customizable
-- [x] dynamic OG image generation for blog posts [#15](https://github.com/satnaing/astro-paper/pull/15) ([Blog Post](https://astro-paper.pages.dev/posts/dynamic-og-image-generation-in-astropaper-blog-posts/))
+### 📊 Improved Table Display
+- **Enhanced Modal Editor**: Better performance for large datasets
+- **Keyboard Navigation**: Arrow keys and Tab support in modal editor
+- **Virtual Scrolling**: Optimized for tables with thousands of cells
+- **Focus Management**: Better visual feedback for cell selection
 
-_Note: I've tested screen-reader accessibility of AstroPaper using **VoiceOver** on Mac and **TalkBack** on Android. I couldn't test all other screen-readers out there. However, accessibility enhancements in AstroPaper should be working fine on others as well._
+### 📋 Advanced Paste Handling
+- **Excel Format Support**: Maintains table headers when pasting from Excel
+- **Multi-format Detection**: Handles tab-separated, comma-separated, and mixed data
+- **Special Character Handling**: Properly processes quotes, line breaks, and whitespace
+- **Paste Feedback**: Success notifications for paste operations
 
-## ✅ Lighthouse Score
+### 🎯 Smart Column Configuration
+- **Adaptive Interface**: Automatically switches between normal and popup selectors
+- **Popup Selectors**: For tables with long headers or many columns (>8 columns or >15 characters)
+- **Bulk Selection**: Select All/Deselect All options
+- **Header Truncation**: Long column names are truncated with tooltips
+- **Dynamic Layout**: Prevents interface stretching with long headers
 
-<p align="center">
-  <a href="https://pagespeed.web.dev/report?url=https%3A%2F%2Fastro-paper.pages.dev%2F&form_factor=desktop">
-    <img width="710" alt="AstroPaper Lighthouse Score" src="AstroPaper-lighthouse-score.svg">
-  <a>
-</p>
+## 🛠 How It Works
 
-## 🚀 Project Structure
+### Step 1: Input Your Data
+Choose your preferred method:
+- **📋 Paste Method** (Recommended): Copy from Excel/Google Sheets and paste directly
+- **📁 File Upload**: Upload .xlsx, .xls, or .csv files
+- **✏️ Manual Entry**: Type directly in the editable table
 
-Inside of AstroPaper, you'll see the following folders and files:
+### Step 2: Configure Columns
+The tool automatically detects your data structure:
+- **ID Columns**: Select columns to keep unchanged (e.g., Name, ID)
+- **Value Columns**: Select columns to unpivot (e.g., Jan, Feb, Mar)
+- **Custom Names**: Set names for the new Variable and Value columns
 
-```bash
-/
-├── public/
-│   ├── assets/
-|   ├── pagefind/ # auto-generated when build
-│   └── favicon.svg
-│   └── astropaper-og.jpg
-│   └── favicon.svg
-│   └── toggle-theme.js
-├── src/
-│   ├── assets/
-│   │   └── icons/
-│   │   └── images/
-│   ├── components/
-│   ├── data/
-│   │   └── blog/
-│   │       └── some-blog-posts.md
-│   ├── layouts/
-│   └── pages/
-│   └── styles/
-│   └── utils/
-│   └── config.ts
-│   └── constants.ts
-│   └── content.config.ts
-└── astro.config.ts
-```
+### Step 3: Download Results
+Get your converted data:
+- **📋 Copy to Clipboard**: Paste into Excel/Google Sheets
+- **📊 Download Excel**: Get a .xlsx file
+- **📄 Download CSV**: Get a comma-separated file
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+## 🚀 Features
 
-Any static assets, like images, can be placed in the `public/` directory.
+### Core Functionality
+- ✅ **No Registration Required** - Start using immediately
+- ✅ **100% Browser-Based** - No server uploads, your data stays private
+- ✅ **Multiple Input Methods** - Paste, upload, or type manually
+- ✅ **Smart Column Detection** - Automatically suggests ID vs Value columns
+- ✅ **Real-time Preview** - See results before downloading
+- ✅ **Multiple Export Formats** - Excel, CSV, and clipboard
 
-All blog posts are stored in `src/data/blog` directory.
+### Advanced Features
+- 🔧 **Data Management Tools** - Clear, reset, add rows/columns
+- 📱 **Mobile Responsive** - Works on phones and tablets
+- ⌨️ **Keyboard Navigation** - Full keyboard support in modal editor
+- 🎯 **Smart UI Adaptation** - Interface adapts to data complexity
+- 🚀 **Performance Optimized** - Handles large datasets efficiently
+- 🔄 **Enhanced Paste** - Robust Excel/CSV data processing
 
-## 📖 Documentation
+## 📋 Supported File Formats
 
-Documentation can be read in two formats\_ _markdown_ & _blog post_.
+### Input Formats
+- **Excel Files**: .xlsx, .xls
+- **CSV Files**: .csv (comma or tab separated)
+- **Direct Paste**: From Excel, Google Sheets, or any spreadsheet
 
-- Configuration - [markdown](src/data/blog/how-to-configure-astropaper-theme.md) | [blog post](https://astro-paper.pages.dev/posts/how-to-configure-astropaper-theme/)
-- Add Posts - [markdown](src/data/blog/adding-new-post.md) | [blog post](https://astro-paper.pages.dev/posts/adding-new-posts-in-astropaper-theme/)
-- Customize Color Schemes - [markdown](src/data/blog/customizing-astropaper-theme-color-schemes.md) | [blog post](https://astro-paper.pages.dev/posts/customizing-astropaper-theme-color-schemes/)
-- Predefined Color Schemes - [markdown](src/data/blog/predefined-color-schemes.md) | [blog post](https://astro-paper.pages.dev/posts/predefined-color-schemes/)
+### Output Formats
+- **Excel**: .xlsx with proper formatting
+- **CSV**: Standard comma-separated values
+- **Clipboard**: Tab-separated for direct pasting
 
-## 💻 Tech Stack
+## 🔧 Technical Specifications
 
-**Main Framework** - [Astro](https://astro.build/)  
-**Type Checking** - [TypeScript](https://www.typescriptlang.org/)  
-**Styling** - [TailwindCSS](https://tailwindcss.com/)  
-**UI/UX** - [Figma Design File](https://www.figma.com/community/file/1356898632249991861)  
-**Static Search** - [FuseJS](https://pagefind.app/)  
-**Icons** - [Tablers](https://tabler-icons.io/)  
-**Code Formatting** - [Prettier](https://prettier.io/)  
-**Deployment** - [Cloudflare Pages](https://pages.cloudflare.com/)  
-**Illustration in About Page** - [https://freesvgillustration.com](https://freesvgillustration.com/)  
-**Linting** - [ESLint](https://eslint.org)
+### Browser Requirements
+- **Modern Browsers**: Chrome 80+, Firefox 75+, Safari 13+, Edge 80+
+- **JavaScript**: Must be enabled
+- **File Size Limit**: 5MB for uploaded files
+- **Table Size**: Optimized for up to 20,000 cells
 
-## 👨🏻‍💻 Running Locally
+### Performance Optimizations
+- **Client-side Processing**: No server delays
+- **Virtual Scrolling**: Smooth handling of large tables
+- **Memory Efficient**: Optimized data structures
+- **Fast Rendering**: Minimal DOM manipulation
 
-You can start using this project locally by running the following command in your desired directory:
+## 🆕 Version History
 
-```bash
-# pnpm
-pnpm create astro@latest --template satnaing/astro-paper
+### Version 2.0 (2025-01-27)
+#### 🔧 Major Improvements
+- **Enhanced Data Management**: Added clear, reset, and dynamic row/column controls
+- **Improved Paste Handling**: Better Excel compatibility and format detection
+- **Smart Column Configuration**: Adaptive UI that prevents layout issues with long headers
+- **Optimized Table Display**: Enhanced modal editor with keyboard navigation
+- **Better User Feedback**: Success/error notifications for all operations
 
-# npm
-npm create astro@latest -- --template satnaing/astro-paper
+#### 🐛 Bug Fixes
+- Fixed Excel paste losing table headers
+- Resolved layout stretching with long column names
+- Improved performance with large datasets
+- Enhanced mobile responsiveness
 
-# yarn
-yarn create astro --template satnaing/astro-paper
+#### 🎨 UI/UX Enhancements
+- Popup selectors for complex column configurations
+- Keyboard navigation in modal editor
+- Improved visual feedback and animations
+- Better button and control placement
 
-# bun
-bun create astro@latest -- --template satnaing/astro-paper
-```
+### Version 1.0 (2025-01-20)
+- Initial release with basic unpivot functionality
+- File upload and paste support
+- Excel and CSV export capabilities
 
-Then start the project by running the following commands:
+## 🔗 Use Cases
 
-```bash
-# install dependencies if you haven't done so in the previous step.
-pnpm install
+### Business Analytics
+- **Sales Reports**: Convert monthly sales by product to time-series format
+- **Survey Data**: Transform survey responses for statistical analysis
+- **Financial Data**: Restructure budget data for trend analysis
 
-# start running the project
-pnpm run dev
-```
+### Academic Research
+- **Experimental Data**: Convert wide-format results to long format for analysis
+- **Survey Research**: Prepare questionnaire data for statistical software
+- **Longitudinal Studies**: Transform repeated measures data
 
-As an alternative approach, if you have Docker installed, you can use Docker to run this project locally. Here's how:
+### Data Science
+- **Data Preprocessing**: Prepare data for machine learning models
+- **Visualization**: Convert data for charting libraries that expect long format
+- **Database Import**: Transform spreadsheet data for database insertion
 
-```bash
-# Build the Docker image
-docker build -t astropaper .
+## 🛡️ Privacy & Security
 
-# Run the Docker container
-docker run -p 4321:80 astropaper
-```
+- **No Data Storage**: All processing happens in your browser
+- **No Server Uploads**: Files are processed locally on your device
+- **HTTPS Secured**: All connections are encrypted
+- **Open Source**: Code is transparent and auditable
 
-## Google Site Verification (optional)
+## 📞 Support
 
-You can easily add your [Google Site Verification HTML tag](https://support.google.com/webmasters/answer/9008080#meta_tag_verification&zippy=%2Chtml-tag) in AstroPaper using an environment variable. This step is optional. If you don't add the following environment variable, the google-site-verification tag won't appear in the HTML `<head>` section.
+- **Issues**: Report bugs or request features
+- **Email**: support@unpivottool.com
+- **Documentation**: Comprehensive guides and examples
 
-```bash
-# in your environment variable file (.env)
-PUBLIC_GOOGLE_SITE_VERIFICATION=your-google-site-verification-value
-```
+## 📝 License
 
-> See [this discussion](https://github.com/satnaing/astro-paper/discussions/334#discussioncomment-10139247) for adding AstroPaper to the Google Search Console.
-
-## 🧞 Commands
-
-All commands are run from the root of the project, from a terminal:
-
-> **_Note!_** For `Docker` commands we must have it [installed](https://docs.docker.com/engine/install/) in your machine.
-
-| Command                              | Action                                                                                                                           |
-| :----------------------------------- | :------------------------------------------------------------------------------------------------------------------------------- |
-| `pnpm install`                       | Installs dependencies                                                                                                            |
-| `pnpm run dev`                       | Starts local dev server at `localhost:4321`                                                                                      |
-| `pnpm run build`                     | Build your production site to `./dist/`                                                                                          |
-| `pnpm run preview`                   | Preview your build locally, before deploying                                                                                     |
-| `pnpm run format:check`              | Check code format with Prettier                                                                                                  |
-| `pnpm run format`                    | Format codes with Prettier                                                                                                       |
-| `pnpm run sync`                      | Generates TypeScript types for all Astro modules. [Learn more](https://docs.astro.build/en/reference/cli-reference/#astro-sync). |
-| `pnpm run lint`                      | Lint with ESLint                                                                                                                 |
-| `docker compose up -d`               | Run AstroPaper on docker, You can access with the same hostname and port informed on `dev` command.                              |
-| `docker compose run app npm install` | You can run any command above into the docker container.                                                                         |
-| `docker build -t astropaper .`       | Build Docker image for AstroPaper.                                                                                               |
-| `docker run -p 4321:80 astropaper`   | Run AstroPaper on Docker. The website will be accessible at `http://localhost:4321`.                                             |
-
-> **_Warning!_** Windows PowerShell users may need to install the [concurrently package](https://www.npmjs.com/package/concurrently) if they want to [run diagnostics](https://docs.astro.build/en/reference/cli-reference/#astro-check) during development (`astro check --watch & astro dev`). For more info, see [this issue](https://github.com/satnaing/astro-paper/issues/113).
-
-## ✨ Feedback & Suggestions
-
-If you have any suggestions/feedback, you can contact me via [my email](mailto:contact@satnaing.dev). Alternatively, feel free to open an issue if you find bugs or want to request new features.
-
-## 📜 License
-
-Licensed under the MIT License, Copyright © 2025
+This project is open source and available under the MIT License.
 
 ---
 
-Made with 🤍 by [Sat Naing](https://satnaing.dev) 👨🏻‍💻 and [contributors](https://github.com/satnaing/astro-paper/graphs/contributors).
+*Built with ❤️ for data analysts, researchers, and anyone working with spreadsheet data.* 

@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="canonical" href="https://unpivottool.com/">
+    
+    <!-- SEO Meta Tags -->
+    <title>Unpivot Tool - Convert Wide Tables to Long Format Online Free</title>
+    <meta name="title" content="Unpivot Tool - Convert Wide Tables to Long Format Online Free">
+    <meta name="description" content="Free online unpivot tool. Convert Excel tables from wide to long format instantly. No signup required. Upload, convert, download - it's that simple.">
+    <meta name="author" content="UnpivotTool">
+    <meta name="keywords" content="unpivot, table converter, wide to long, excel unpivot, online tool, data transformation">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Unpivot Tool - Convert Wide Tables to Long Format Online Free">
+    <meta property="og:description" content="Free online unpivot tool. Convert Excel tables from wide to long format instantly. No signup required.">
+    <meta property="og:url" content="https://unpivottool.com/">
+    <meta property="og:image" content="https://unpivottool.com/og-image.jpg">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://unpivottool.com/">
+    <meta property="twitter:title" content="Unpivot Tool - Convert Wide Tables to Long Format Online Free">
+    <meta property="twitter:description" content="Free online unpivot tool. Convert Excel tables from wide to long format instantly.">
+    <meta property="twitter:image" content="https://unpivottool.com/og-image.jpg">
+    
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "Unpivot Tool",
+      "description": "Free online tool to convert wide tables to long format",
+      "url": "https://unpivottool.com/",
+      "applicationCategory": "BusinessApplication",
+      "operatingSystem": "Web Browser",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "featureList": ["Excel file support", "CSV file support", "Copy to clipboard", "Download results", "No signup required"]
+    }
+    </script>
+    
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <nav class="nav">
+                <div class="nav-brand">
+                    <h1>📊 UnpivotTool</h1>
+                </div>
+                <div class="nav-links">
+                    <a href="#how-it-works">How it Works</a>
+                    <a href="#examples">Examples</a>
+                    <a href="#faq">FAQ</a>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb" aria-label="breadcrumb">
+        <div class="container">
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li aria-current="page">Convert Table</li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main">
+        <div class="container">
+            <!-- Hero Section -->
+            <section class="hero">
+                <h1>Transform Your Tables in 3 Easy Steps</h1>
+                <p class="hero-subtitle">Convert wide Excel tables to long format instantly - it's that simple</p>
+                <div class="hero-features">
+                    <span>✅ No Sign-Up Required</span>
+                    <span>✅ No Downloads Needed</span>
+                    <span>✅ Completely Free</span>
+                </div>
+            </section>
+
+            <!-- Data Input Section -->
+            <section class="input-section">
+                <h2>Step 1: Input your table data</h2>
+                
+                <!-- Method Selection -->
+                <div class="method-tabs">
+                    <button class="tab-btn active" data-method="paste">📋 Paste Data</button>
+                    <button class="tab-btn" data-method="upload">📁 Upload File</button>
+                </div>
+
+                <!-- Paste Method -->
+                <div class="input-method active" data-method="paste">
+                    <div class="paste-area">
+                        <p class="input-instruction">Paste your table here or edit directly:</p>
+                        <div class="table-container">
+                            <table id="data-grid" class="excel-grid" contenteditable="true">
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Jan</td>
+                                    <td>Feb</td>
+                                    <td>Mar</td>
+                                    <td>Apr</td>
+                                </tr>
+                                <tr>
+                                    <td>John</td>
+                                    <td>100</td>
+                                    <td>150</td>
+                                    <td>200</td>
+                                    <td>250</td>
+                                </tr>
+                                <tr>
+                                    <td>Jane</td>
+                                    <td>120</td>
+                                    <td>180</td>
+                                    <td>220</td>
+                                    <td>280</td>
+                                </tr>
+                                <tr>
+                                    <td>Bob</td>
+                                    <td>90</td>
+                                    <td>140</td>
+                                    <td>190</td>
+                                    <td>240</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <button id="expand-editor" class="btn btn-secondary">📝 Expand Full Editor</button>
+                    </div>
+                </div>
+
+                <!-- Upload Method -->
+                <div class="input-method" data-method="upload">
+                    <div class="upload-area">
+                        <div class="upload-zone" id="upload-zone">
+                            <div class="upload-content">
+                                <div class="upload-icon">📁</div>
+                                <p>Drag & drop your file here or click to browse</p>
+                                <p class="upload-formats">Supports: .xlsx, .xls, .csv</p>
+                            </div>
+                            <input type="file" id="file-input" accept=".xlsx,.xls,.csv" hidden>
+                        </div>
+                        
+                        <div class="file-requirements">
+                            <h4>📋 File Requirements:</h4>
+                            <ul>
+                                <li>✅ Data should start at cell A1</li>
+                                <li>✅ Include one header row</li>
+                                <li>✅ Avoid merged cells and multiple sheets</li>
+                                <li>✅ File size limit: 5MB</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Configuration Section -->
+            <section class="config-section">
+                <h2>Step 2: Choose your columns</h2>
+                <div class="config-panel">
+                    <div class="column-config">
+                        <div class="config-group">
+                            <h3>🔑 Keep These Columns (ID Columns)</h3>
+                            <div id="id-columns" class="checkbox-group">
+                                <!-- Dynamically populated -->
+                            </div>
+                        </div>
+                        <div class="config-group">
+                            <h3>📊 Transform These Columns (Value Columns)</h3>
+                            <div id="value-columns" class="checkbox-group">
+                                <!-- Dynamically populated -->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="config-names">
+                        <div class="name-input">
+                            <label for="variable-name">Variable Column Name:</label>
+                            <input type="text" id="variable-name" value="Variable" placeholder="e.g., Month, Category">
+                        </div>
+                        <div class="name-input">
+                            <label for="value-name">Value Column Name:</label>
+                            <input type="text" id="value-name" value="Value" placeholder="e.g., Amount, Count">
+                        </div>
+                    </div>
+                </div>
+                <button id="convert-btn" class="btn btn-primary">🔄 Transform My Data</button>
+            </section>
+
+            <!-- Results Section -->
+            <section class="results-section" id="results-section" style="display: none;">
+                <h2>Step 3: Get your results</h2>
+                <div class="results-header">
+                    <div class="results-info">
+                        <span id="results-count">0 rows converted</span>
+                    </div>
+                    <div class="results-actions">
+                        <button id="copy-all" class="btn btn-secondary">📋 Copy to Clipboard</button>
+                        <button id="download-excel" class="btn btn-success">📊 Download as Excel</button>
+                        <button id="download-csv" class="btn btn-outline">📄 Download as CSV</button>
+                    </div>
+                </div>
+                <div class="results-preview">
+                    <div id="results-table" class="results-table">
+                        <!-- Results will be populated here -->
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Expandable Modal Editor -->
+    <div id="modal-editor" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Full Table Editor</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="large-grid-container" class="large-grid-container">
+                    <!-- Large editable grid will be populated here -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="save-changes" class="btn btn-primary">Save Changes</button>
+                <button class="btn btn-secondary modal-close">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>UnpivotTool</h4>
+                    <p>Free online table converter</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="#how-it-works">How it Works</a></li>
+                        <li><a href="#examples">Examples</a></li>
+                        <li><a href="#faq">FAQ</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Support</h4>
+                    <ul>
+                        <li><a href="mailto:support@unpivottool.com">Contact</a></li>
+                        <li><a href="/privacy">Privacy Policy</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 UnpivotTool. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- CDN Dependencies -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html> 
