@@ -46,6 +46,7 @@ class UnpivotTool {
         document.getElementById('convert-btn').addEventListener('click', this.performUnpivot.bind(this));
 
         // 结果操作
+        document.getElementById('edit-results').addEventListener('click', this.openResultsEditor.bind(this));
         document.getElementById('copy-all').addEventListener('click', this.copyResults.bind(this));
         document.getElementById('download-excel').addEventListener('click', this.downloadExcel.bind(this));
         document.getElementById('download-csv').addEventListener('click', this.downloadCSV.bind(this));
@@ -344,45 +345,29 @@ class UnpivotTool {
 
     // Parse TSV format while preserving intra-cell line breaks
     parseTSVWithCellLineBreaks(data) {
-        const lines = data.split('\n');
-        const rows = [];
-        let currentRow = [];
-        let expectedColumns = 0;
-        
-        for (let i = 0; i < lines.length; i++) {
-            const line = lines[i];
-            const cells = line.split('\t');
+        try {
+            // 使用PapaParse处理TSV格式，它能正确处理引号和换行符
+            const result = Papa.parse(data, {
+                delimiter: '\t',          // 制表符分隔
+                newline: '\n',           // 换行符
+                quoteChar: '"',          // 引号字符
+                skipEmptyLines: false,   // 不跳过空行，因为空行可能是单元格内的换行
+                header: false            // 不将第一行作为header
+            });
             
-            if (i === 0) {
-                // First line determines column count
-                expectedColumns = cells.length;
-                currentRow = cells.map(cell => this.cleanCell(cell));
-                rows.push(currentRow);
-            } else {
-                if (cells.length === expectedColumns) {
-                    // Complete row - start new row
-                    if (currentRow.length > 0 && currentRow !== rows[rows.length - 1]) {
-                        rows.push(currentRow);
-                    }
-                    currentRow = cells.map(cell => this.cleanCell(cell));
-                    rows.push(currentRow);
-                } else if (cells.length === 1 && currentRow.length > 0) {
-                    // Likely a line break within the last cell of previous row
-                    const lastRowIndex = rows.length - 1;
-                    const lastCellIndex = rows[lastRowIndex].length - 1;
-                    if (lastCellIndex >= 0) {
-                        // Append this line to the last cell with a line break
-                        rows[lastRowIndex][lastCellIndex] += '\n' + this.cleanCell(cells[0]);
-                    }
-                } else {
-                    // Irregular format - treat as new row anyway
-                    currentRow = cells.map(cell => this.cleanCell(cell));
-                    rows.push(currentRow);
-                }
+            if (result.errors.length === 0) {
+                return result.data
+                    .map(row => row.map(cell => this.cleanCell(cell)))
+                    .filter(row => row.some(cell => cell !== ''));
             }
+        } catch (error) {
+            console.warn('TSV parsing with PapaParse failed:', error);
         }
         
-        return rows.filter(row => row.some(cell => cell !== ''));
+        // Fallback到简单的tab分割方法
+        return data.split('\n')
+            .map(line => line.split('\t').map(cell => this.cleanCell(cell)))
+            .filter(row => row.some(cell => cell !== ''));
     }
 
     // Parse CSV format with proper handling of quoted fields
@@ -645,6 +630,39 @@ class UnpivotTool {
         this.addKeyboardNavigation(container);
     }
 
+    // 打开结果数据编辑器
+    openResultsEditor() {
+        if (!this.resultData || this.resultData.length === 0) {
+            this.showAlert('No results to edit. Please convert data first.', 'warning');
+            return;
+        }
+
+        const modal = document.getElementById('modal-editor');
+        const container = document.getElementById('large-grid-container');
+        
+        // 更新模态框标题
+        modal.querySelector('.modal-header h3').textContent = 'Edit Results Data';
+        
+        // 将结果数据转换为表格格式
+        const headers = Object.keys(this.resultData[0]);
+        const tableData = [headers];
+        
+        this.resultData.forEach(row => {
+            const rowData = headers.map(header => row[header] || '');
+            tableData.push(rowData);
+        });
+        
+        // 创建可编辑的结果表格
+        container.innerHTML = this.createGridFromData(tableData);
+        modal.style.display = 'flex';
+        
+        // 添加键盘导航支持
+        this.addKeyboardNavigation(container);
+        
+        // 标记这是结果编辑模式
+        modal.setAttribute('data-editing-mode', 'results');
+    }
+
     // 添加键盘导航支持
     addKeyboardNavigation(container) {
         const table = container.querySelector('table');
@@ -682,6 +700,24 @@ class UnpivotTool {
                     e.preventDefault();
                     nextCell = target.nextElementSibling;
                     break;
+                case 'Delete':
+                case 'Backspace':
+                    e.preventDefault();
+                    // 检查是否全选了表格内容
+                    const selection = window.getSelection();
+                    if (selection.toString().length > 0) {
+                        // 有选中内容，清空选中的部分
+                        const range = selection.getRangeAt(0);
+                        range.deleteContents();
+                    } else {
+                        // 没有选中内容，清空当前单元格
+                        target.textContent = '';
+                    }
+                    // 触发数据更新
+                    setTimeout(() => {
+                        this.handleTableEdit();
+                    }, 10);
+                    break;
             }
 
             if (nextCell) {
@@ -696,6 +732,22 @@ class UnpivotTool {
         
         // 如果有现有数据，使用现有数据，否则创建20x10的空表格
         const data = this.currentData.length > 0 ? this.currentData : this.createEmptyGrid(20, 10);
+        
+        data.forEach((row, rowIndex) => {
+            html += '<tr>';
+            row.forEach((cell, colIndex) => {
+                html += `<td tabindex="0">${cell || ''}</td>`;
+            });
+            html += '</tr>';
+        });
+        
+        html += '</table>';
+        return html;
+    }
+
+    // 从数据创建编辑表格
+    createGridFromData(data) {
+        let html = '<table class="excel-grid" id="large-grid" contenteditable="true">';
         
         data.forEach((row, rowIndex) => {
             html += '<tr>';
@@ -724,8 +776,10 @@ class UnpivotTool {
 
     // 保存模态框更改
     saveModalChanges() {
+        const modal = document.getElementById('modal-editor');
         const largeGrid = document.getElementById('large-grid');
         const rows = largeGrid.querySelectorAll('tr');
+        const editingMode = modal.getAttribute('data-editing-mode');
         
         const newData = [];
         rows.forEach(row => {
@@ -739,17 +793,47 @@ class UnpivotTool {
             }
         });
 
-        // 更新主表格
-        this.loadDataToGrid(newData);
-        this.extractTableData();
-        this.updateColumnConfig();
-        this.closeModal();
+        if (editingMode === 'results') {
+            // 编辑结果数据模式
+            if (newData.length === 0) {
+                this.showAlert('Cannot save empty results data.', 'error');
+                return;
+            }
+            
+            // 将表格数据转换回对象数组格式
+            const headers = newData[0];
+            const dataRows = newData.slice(1);
+            
+            this.resultData = dataRows.map(row => {
+                const obj = {};
+                headers.forEach((header, index) => {
+                    obj[header] = row[index] || '';
+                });
+                return obj;
+            });
+            
+            // 重新显示结果
+            this.displayResults();
+            this.showAlert('Results have been updated!', 'success');
+        } else {
+            // 默认编辑输入数据模式
+            this.loadDataToGrid(newData);
+            this.extractTableData();
+            this.updateColumnConfig();
             this.showAlert('Your changes have been saved!', 'success');
+        }
+        
+        this.closeModal();
     }
 
     // 关闭模态框
     closeModal() {
-        document.getElementById('modal-editor').style.display = 'none';
+        const modal = document.getElementById('modal-editor');
+        modal.style.display = 'none';
+        
+        // 重置模态框状态
+        modal.querySelector('.modal-header h3').textContent = 'Full Table Editor';
+        modal.removeAttribute('data-editing-mode');
     }
 
     // 执行Unpivot转换
@@ -769,7 +853,7 @@ class UnpivotTool {
         }
 
         if (valueColumns.length === 0) {
-            this.showAlert('Please choose at least one column to transform.', 'error');
+            this.showAlert('Please choose at least one column to convert.', 'error');
             return;
         }
 

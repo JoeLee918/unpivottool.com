@@ -69,7 +69,7 @@
     <nav class="breadcrumb" aria-label="breadcrumb">
         <div class="container">
             <ul>
-                <li><a href="/">Home</a></li>
+                <li><a href="#" onclick="location.reload(); return false;">Home</a></li>
                 <li aria-current="page">Convert Table</li>
             </ul>
         </div>
@@ -80,12 +80,34 @@
         <div class="container">
             <!-- Hero Section -->
             <section class="hero">
-                <h1>Transform Your Tables in 3 Easy Steps</h1>
+                <h1>Convert Your Tables in 3 Easy Steps</h1>
                 <p class="hero-subtitle">Convert wide Excel tables to long format instantly - it's that simple</p>
                 <div class="hero-features">
                     <span>✅ No Sign-Up Required</span>
                     <span>✅ No Downloads Needed</span>
                     <span>✅ Completely Free</span>
+                </div>
+            </section>
+
+            <!-- How it Works Section -->
+            <section id="how-it-works" class="how-it-works">
+                <h2>How it Works</h2>
+                <div class="steps-grid">
+                    <div class="step-card">
+                        <div class="step-number">1</div>
+                        <h3>Input Your Data</h3>
+                        <p>Paste your wide table data or upload an Excel/CSV file. Our tool supports data with multiple columns that need to be converted to long format.</p>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">2</div>
+                        <h3>Choose Columns</h3>
+                        <p>Select which columns to keep as identifiers and which ones to convert. You can also customize variable and value column names.</p>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">3</div>
+                        <h3>Get Results</h3>
+                        <p>Download your converted data as Excel or CSV, or copy it directly to your clipboard. Edit the results if needed using our built-in editor.</p>
+                    </div>
                 </div>
             </section>
 
@@ -176,7 +198,7 @@
                             </div>
                         </div>
                         <div class="config-group">
-                            <h3>📊 Transform These Columns (Value Columns)</h3>
+                            <h3>📊 Convert These Columns (Value Columns)</h3>
                             <div id="value-columns" class="checkbox-group">
                                 <!-- Dynamically populated -->
                             </div>
@@ -193,7 +215,7 @@
                         </div>
                     </div>
                 </div>
-                <button id="convert-btn" class="btn btn-primary">🔄 Transform My Data</button>
+                                        <button id="convert-btn" class="btn btn-primary">🔄 Convert My Data</button>
             </section>
 
             <!-- Results Section -->
@@ -204,6 +226,7 @@
                         <span id="results-count">0 rows converted</span>
                     </div>
                     <div class="results-actions">
+                        <button id="edit-results" class="btn btn-secondary">📝 Full Table Editor</button>
                         <button id="copy-all" class="btn btn-secondary">📋 Copy to Clipboard</button>
                         <button id="download-excel" class="btn btn-success">📊 Download as Excel</button>
                         <button id="download-csv" class="btn btn-outline">📄 Download as CSV</button>
