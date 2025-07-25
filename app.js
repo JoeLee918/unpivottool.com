@@ -341,7 +341,7 @@ class UnpivotTool {
                 
                 // 判断是否为全选：选中文本几乎等于表格全部文本
                 if (selectedText.trim().length >= gridText.trim().length * 0.9) {
-                    // 全选情况：只清空所有单元格的文本内容，保持DOM结构
+                    // 🔑 全选情况：特殊处理，避免调用extractTableData
                     const cells = grid.querySelectorAll('td');
                     cells.forEach(cell => {
                         // 只清空文本内容，保持单元格DOM结构
@@ -355,20 +355,32 @@ class UnpivotTool {
                     if (firstCell) {
                         firstCell.focus();
                     }
+                    
+                    // 🚨 关键修复：全选删除时不调用extractTableData
+                    // 直接清空当前数据，但保持基本结构
+                    this.currentData = [];
+                    this.columns = [];
+                    
+                    // 清空列配置界面，避免显示错误信息
+                    const idColumnsEl = document.getElementById('id-columns');
+                    const valueColumnsEl = document.getElementById('value-columns');
+                    if (idColumnsEl) idColumnsEl.innerHTML = '';
+                    if (valueColumnsEl) valueColumnsEl.innerHTML = '';
+                    
                 } else {
-                    // 部分选中，删除选中内容
+                    // 部分选中，删除选中内容，正常处理
                     const range = selection.getRangeAt(0);
                     range.deleteContents();
+                    
+                    // 部分删除时才调用数据更新
+                    setTimeout(() => {
+                        this.extractTableData();
+                        this.updateColumnConfig();
+                    }, 10);
                 }
                 
                 // 清除选择
                 selection.removeAllRanges();
-                
-                // 触发数据更新
-                setTimeout(() => {
-                    this.extractTableData();
-                    this.updateColumnConfig();
-                }, 10);
             }
         }
     }
