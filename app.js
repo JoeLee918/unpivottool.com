@@ -53,7 +53,19 @@ class UnpivotTool {
             preprocessBtn.addEventListener('click', (e) => {
                 console.log('🖱️ Header Merge按钮被点击');
                 e.preventDefault();
+                e.stopPropagation();
                 this.openMergeModal();
+            });
+            
+            // 🔧 额外检查：确保按钮不被其他事件干扰
+            preprocessBtn.style.pointerEvents = 'auto';
+            preprocessBtn.disabled = false;
+            
+            console.log('🎯 按钮状态检查:', {
+                disabled: preprocessBtn.disabled,
+                display: getComputedStyle(preprocessBtn).display,
+                visibility: getComputedStyle(preprocessBtn).visibility,
+                pointerEvents: getComputedStyle(preprocessBtn).pointerEvents
             });
         } else {
             console.error('❌ 未找到preprocess-btn按钮');
@@ -328,13 +340,29 @@ class UnpivotTool {
         // 获取粘贴数据
         const paste = e.clipboardData.getData('text');
         
+        console.log('📋 粘贴事件触发，数据长度:', paste ? paste.length : 0);
+        
         if (paste) {
-            // 增强的解析逻辑，处理Excel特殊格式
-            const rows = this.parseExcelClipboard(paste);
-            this.loadDataToGrid(rows);
-            this.extractTableData();
-            this.updateColumnConfig();
-            this.showAlert('Data imported successfully!', 'success');
+            try {
+                console.log('🔄 开始解析粘贴数据...');
+                // 增强的解析逻辑，处理Excel特殊格式
+                const rows = this.parseExcelClipboard(paste);
+                console.log('✅ 数据解析完成，行数:', rows.length);
+                console.log('📊 解析结果预览:', rows.slice(0, 3));
+                
+                this.loadDataToGrid(rows);
+                this.extractTableData();
+                this.updateColumnConfig();
+                this.showAlert('Data imported successfully!', 'success');
+                
+                // 🔧 更新全局window.unpivotTool的currentData
+                if (window.unpivotTool) {
+                    window.unpivotTool.currentData = this.currentData;
+                }
+            } catch (error) {
+                console.error('❌ 粘贴数据处理失败:', error);
+                this.showAlert('Failed to process pasted data. Please try again.', 'error');
+            }
         }
     }
 
@@ -352,8 +380,16 @@ class UnpivotTool {
                 // 有选中内容
                 const gridText = grid.textContent || grid.innerText;
                 
-                // 判断是否为全选：选中文本几乎等于表格全部文本
-                if (selectedText.trim().length >= gridText.trim().length * 0.9) {
+                console.log('🔍 删除检测:', {
+                    selectedLength: selectedText.trim().length,
+                    gridLength: gridText.trim().length,
+                    ratio: selectedText.trim().length / gridText.trim().length
+                });
+                
+                // 🔑 优化全选判断：检查选中内容是否包含表格的主要数据
+                const isFullSelection = this.isFullTableSelection(selectedText, grid);
+                
+                if (isFullSelection) {
                     // 🔑 全选情况：特殊处理，确保表格结构完整
                     console.log('🗑️ 检测到全选删除，开始处理...');
                     
@@ -417,6 +453,45 @@ class UnpivotTool {
                 selection.removeAllRanges();
             }
         }
+    }
+
+    // 🔧 更准确的全选判断函数
+    isFullTableSelection(selectedText, grid) {
+        // 获取表格的纯数据内容（去除空白和格式）
+        const cells = grid.querySelectorAll('td');
+        const cellTexts = Array.from(cells).map(cell => cell.textContent.trim()).filter(text => text !== '');
+        const totalCellText = cellTexts.join('');
+        
+        // 清理选中文本（去除制表符、换行符等格式字符）
+        const cleanSelectedText = selectedText.replace(/[\t\n\r\s]+/g, '');
+        const cleanTotalText = totalCellText.replace(/[\t\n\r\s]+/g, '');
+        
+        console.log('🧮 全选判断数据:', {
+            cellCount: cells.length,
+            cellTexts: cellTexts,
+            cleanSelectedLength: cleanSelectedText.length,
+            cleanTotalLength: cleanTotalText.length,
+            similarity: cleanSelectedText.length / cleanTotalText.length
+        });
+        
+        // 如果选中内容包含了80%以上的表格文本内容，视为全选
+        const isFullSelection = cleanSelectedText.length >= cleanTotalText.length * 0.8;
+        
+        // 或者：检查选中内容是否包含表格中的大部分单元格文本
+        const containedCells = cellTexts.filter(cellText => 
+            cleanSelectedText.includes(cellText.replace(/[\t\n\r\s]+/g, ''))
+        ).length;
+        const isContainsMostCells = containedCells >= cellTexts.length * 0.8;
+        
+        console.log('🎯 全选判断结果:', {
+            byLength: isFullSelection,
+            byCells: isContainsMostCells,
+            containedCells: containedCells,
+            totalCells: cellTexts.length,
+            finalResult: isFullSelection || isContainsMostCells
+        });
+        
+        return isFullSelection || isContainsMostCells;
     }
 
     // Enhanced Excel clipboard parser that properly handles cell line breaks
@@ -1187,10 +1262,24 @@ class UnpivotTool {
         const modal = document.getElementById('merge-modal');
         if (!modal) {
             console.error('❌ 未找到merge-modal元素');
+            this.showAlert('Header merge function is not available. Please refresh the page.', 'error');
             return;
         }
         console.log('✅ 找到merge-modal元素，正在显示');
+        
+        // 🔧 确保模态框能够正确显示
         modal.style.display = 'flex';
+        modal.style.visibility = 'visible';
+        modal.style.opacity = '1';
+        modal.style.zIndex = '1000';
+        
+        // 🔧 添加焦点管理
+        setTimeout(() => {
+            const firstInput = modal.querySelector('input');
+            if (firstInput) {
+                firstInput.focus();
+            }
+        }, 100);
         
         // 设置默认状态：行合并选中，列合并不选中
         const rowCheckbox = document.getElementById('merge-rows-checkbox');
@@ -1573,9 +1662,27 @@ UnpivotTool.prototype.displayResults = function() {
 // 全局引用到UnpivotTool实例
 let unpivotToolInstance = null;
 
-// 更新实例化代码以保存引用
+// 更新实例化代码以保存引用并暴露到全局对象
 document.addEventListener('DOMContentLoaded', () => {
     unpivotToolInstance = new UnpivotTool();
+    
+    // 🔧 将关键方法暴露到window.unpivotTool供调试使用
+    window.unpivotTool = {
+        instance: unpivotToolInstance,
+        get currentData() {
+            return unpivotToolInstance.currentData;
+        },
+        set currentData(value) {
+            unpivotToolInstance.currentData = value;
+        },
+        handleMergedCells: unpivotToolInstance.handleMergedCells.bind(unpivotToolInstance),
+        parseExcelClipboard: unpivotToolInstance.parseExcelClipboard.bind(unpivotToolInstance),
+        parseTSVWithCellLineBreaks: unpivotToolInstance.parseTSVWithCellLineBreaks.bind(unpivotToolInstance),
+        parseSimpleFormat: unpivotToolInstance.parseSimpleFormat.bind(unpivotToolInstance)
+    };
+    
+    console.log('✅ UnpivotTool已初始化并暴露到window.unpivotTool');
+    console.log('🔧 可用方法:', Object.keys(window.unpivotTool));
 });
 
 // 关闭合并模态框
