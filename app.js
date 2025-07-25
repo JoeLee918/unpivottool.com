@@ -3,16 +3,19 @@
 
 class UnpivotTool {
     constructor() {
+        console.log('🚀 UnpivotTool 类开始初始化');
         this.currentData = [];
         this.columns = [];
         this.resultData = [];
         
         this.initializeEventListeners();
         this.loadDefaultData();
+        console.log('✅ UnpivotTool 类初始化完成');
     }
 
     // 初始化事件监听器
     initializeEventListeners() {
+        console.log('🔧 开始初始化事件监听器');
         // 选项卡切换
         const tabBtns = document.querySelectorAll('.tab-btn');
         tabBtns.forEach(btn => {
@@ -44,7 +47,17 @@ class UnpivotTool {
         document.getElementById('save-changes').addEventListener('click', this.saveModalChanges.bind(this));
 
         // 数据预处理按钮
-        document.getElementById('preprocess-btn').addEventListener('click', this.openMergeModal.bind(this));
+        const preprocessBtn = document.getElementById('preprocess-btn');
+        if (preprocessBtn) {
+            console.log('✅ 找到preprocess-btn按钮，正在绑定事件监听器');
+            preprocessBtn.addEventListener('click', (e) => {
+                console.log('🖱️ Header Merge按钮被点击');
+                e.preventDefault();
+                this.openMergeModal();
+            });
+        } else {
+            console.error('❌ 未找到preprocess-btn按钮');
+        }
 
         // 转换按钮
         document.getElementById('convert-btn').addEventListener('click', this.performUnpivot.bind(this));
@@ -1170,7 +1183,13 @@ class UnpivotTool {
 
     // 打开合并设置模态框
     openMergeModal() {
+        console.log('🚀 openMergeModal 方法被调用');
         const modal = document.getElementById('merge-modal');
+        if (!modal) {
+            console.error('❌ 未找到merge-modal元素');
+            return;
+        }
+        console.log('✅ 找到merge-modal元素，正在显示');
         modal.style.display = 'flex';
         
         // 设置默认状态：行合并选中，列合并不选中
