@@ -333,48 +333,22 @@ class UnpivotTool {
             
             const selection = window.getSelection();
             const selectedText = selection.toString();
+            const grid = document.getElementById('data-grid');
             
             if (selectedText.length > 0) {
                 // 有选中内容
-                const range = selection.getRangeAt(0);
-                
-                // 检查是否选中了整个表格内容（使用更严格的判断）
-                const grid = document.getElementById('data-grid');
                 const gridText = grid.textContent || grid.innerText;
                 
                 // 判断是否为全选：选中文本几乎等于表格全部文本
                 if (selectedText.trim().length >= gridText.trim().length * 0.9) {
-                    // 全选情况：重建表格为默认的4行5列结构
-                    grid.innerHTML = `
-                        <tr>
-                            <td contenteditable="true"></td>
-                            <td contenteditable="true"></td>
-                            <td contenteditable="true"></td>
-                            <td contenteditable="true"></td>
-                            <td contenteditable="true"></td>
-                        </tr>
-                        <tr>
-                            <td contenteditable="true"></td>
-                            <td contenteditable="true"></td>
-                            <td contenteditable="true"></td>
-                            <td contenteditable="true"></td>
-                            <td contenteditable="true"></td>
-                        </tr>
-                        <tr>
-                            <td contenteditable="true"></td>
-                            <td contenteditable="true"></td>
-                            <td contenteditable="true"></td>
-                            <td contenteditable="true"></td>
-                            <td contenteditable="true"></td>
-                        </tr>
-                        <tr>
-                            <td contenteditable="true"></td>
-                            <td contenteditable="true"></td>
-                            <td contenteditable="true"></td>
-                            <td contenteditable="true"></td>
-                            <td contenteditable="true"></td>
-                        </tr>
-                    `;
+                    // 全选情况：只清空所有单元格的文本内容，保持DOM结构
+                    const cells = grid.querySelectorAll('td');
+                    cells.forEach(cell => {
+                        // 只清空文本内容，保持单元格DOM结构
+                        cell.textContent = '';
+                        // 确保单元格仍然可编辑
+                        cell.setAttribute('contenteditable', 'true');
+                    });
                     
                     // 将焦点设置到第一个单元格
                     const firstCell = grid.querySelector('td');
@@ -383,6 +357,7 @@ class UnpivotTool {
                     }
                 } else {
                     // 部分选中，删除选中内容
+                    const range = selection.getRangeAt(0);
                     range.deleteContents();
                 }
                 
