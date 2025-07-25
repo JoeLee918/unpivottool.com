@@ -3,19 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     <link rel="canonical" href="https://unpivottool.com/">
     
     <!-- SEO Meta Tags -->
-    <title>Unpivot Tool - Data Flattening & Matrix Format Converter Online Free</title>
-    <meta name="title" content="Unpivot Tool - Data Flattening & Matrix Format Converter Online Free">
+    <title>Unpivot Tool: Convert Excel Tables Easily Online</title>
+    <meta name="title" content="Unpivot Tool: Convert Excel Tables Easily Online">
     <meta name="description" content="Free online unpivot tool for data flattening. Convert wide tables to long format, transform columns to rows without losing granularity. No signup required.">
     <meta name="author" content="UnpivotTool">
-    <meta name="keywords" content="unpivot, data flattening, matrix format, table converter, wide to long, excel unpivot, column to row transformation, consolidating columns">
+    <meta name="keywords" content="unpivot tool, data flattening, online matrix converter, Excel table conversion, free data transformation, pivot data guide, automated data conversion, Power Query tutorial">
     
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
-    <meta property="og:title" content="Unpivot Tool - Data Flattening & Matrix Format Converter Online Free">
+    <meta property="og:title" content="Unpivot Tool: Convert Excel Tables Easily Online">
     <meta property="og:description" content="Free online unpivot tool for data flattening. Convert wide tables to long format instantly. No signup required.">
     <meta property="og:url" content="https://unpivottool.com/">
     <meta property="og:image" content="https://unpivottool.com/og-image.jpg">
@@ -23,7 +24,7 @@
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://unpivottool.com/">
-    <meta property="twitter:title" content="Unpivot Tool - Data Flattening & Matrix Format Converter Online Free">
+    <meta property="twitter:title" content="Unpivot Tool: Convert Excel Tables Easily Online">
     <meta property="twitter:description" content="Free online unpivot tool for data flattening. Convert wide tables to long format instantly.">
     <meta property="twitter:image" content="https://unpivottool.com/og-image.jpg">
     
@@ -79,7 +80,7 @@
         <div class="container">
             <!-- Hero Section -->
             <section class="hero">
-                <h1>Unpivot Your Tables in 3 Easy Steps</h1>
+                <h1>Unpivot Tool: Convert Excel Tables Easily Online</h1>
                 <p class="hero-subtitle">Data flattening made simple - convert wide Excel tables to long format and transform columns to rows instantly</p>
                 <div class="hero-features">
                     <span>✅ No Sign-Up Required</span>
@@ -193,6 +194,7 @@
                     </div>
                 </div>
                                         <button id="convert-btn" class="btn btn-primary">🔄 Convert My Data</button>
+                                        <button id="preprocess-btn" class="btn btn-secondary">⚙️ Header Merge</button>
             </section>
 
             <!-- Results Section -->
@@ -374,6 +376,7 @@
         </div>
     </section>
   
+
     <!-- Footer -->
     <footer class="footer">
         <div class="container">
@@ -403,6 +406,78 @@
             </div>
         </div>
     </footer>
+
+    <!-- Header Merge Modal -->
+    <div id="merge-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>📋 Header Merge Options</h3>
+                <button class="modal-close" onclick="closeMergeModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="merge-option">
+                    <label class="merge-checkbox-label">
+                        <input type="checkbox" id="merge-rows-checkbox" checked>
+                        <span class="checkmark"></span>
+                        Merge Top 2 Rows (for hierarchical headers)
+                    </label>
+                    <div class="connector-group" id="row-connector-group" style="display: block;">
+                        <label class="connector-label">Connector:</label>
+                        <div class="radio-group">
+                            <label class="radio-label">
+                                <input type="radio" name="row-connector" value=" " checked>
+                                Space
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="row-connector" value="-">
+                                Hyphen
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="row-connector" value="_">
+                                Underscore
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="merge-option">
+                    <label class="merge-checkbox-label">
+                        <input type="checkbox" id="merge-cols-checkbox">
+                        <span class="checkmark"></span>
+                        Merge Left 2 Columns (for category identifiers)
+                    </label>
+                    <div class="connector-group" id="col-connector-group" style="display: none;">
+                        <label class="connector-label">Connector:</label>
+                        <div class="radio-group">
+                            <label class="radio-label">
+                                <input type="radio" name="col-connector" value=" " checked>
+                                Space
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="col-connector" value="-">
+                                Hyphen
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="col-connector" value="_">
+                                Underscore
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="preview-section">
+                    <h4>Preview Effect:</h4>
+                    <div id="merge-preview" class="merge-preview-table">
+                        <!-- Dynamic preview content -->
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="applyMergeSettings()">✅ Apply Settings</button>
+                <button class="btn btn-secondary" onclick="skipMergeSettings()">⏭️ Skip Preprocessing</button>
+            </div>
+        </div>
+    </div>
 
     <!-- CDN Dependencies -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>

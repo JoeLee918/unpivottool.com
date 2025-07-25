@@ -32,6 +32,7 @@ class UnpivotTool {
         const dataGrid = document.getElementById('data-grid');
         dataGrid.addEventListener('input', this.handleTableEdit.bind(this));
         dataGrid.addEventListener('paste', this.handlePaste.bind(this));
+        dataGrid.addEventListener('keydown', this.handleTableKeydown.bind(this));
 
         // 扩展编辑器
         document.getElementById('expand-editor').addEventListener('click', this.openExpandedEditor.bind(this));
@@ -41,6 +42,9 @@ class UnpivotTool {
             btn.addEventListener('click', this.closeModal.bind(this));
         });
         document.getElementById('save-changes').addEventListener('click', this.saveModalChanges.bind(this));
+
+        // 数据预处理按钮
+        document.getElementById('preprocess-btn').addEventListener('click', this.openMergeModal.bind(this));
 
         // 转换按钮
         document.getElementById('convert-btn').addEventListener('click', this.performUnpivot.bind(this));
@@ -321,6 +325,79 @@ class UnpivotTool {
         }
     }
 
+    // 处理Step1表格的键盘事件
+    handleTableKeydown(e) {
+        // 只处理Delete和Backspace键
+        if (e.key === 'Delete' || e.key === 'Backspace') {
+            e.preventDefault();
+            
+            const selection = window.getSelection();
+            const selectedText = selection.toString();
+            
+            if (selectedText.length > 0) {
+                // 有选中内容
+                const range = selection.getRangeAt(0);
+                
+                // 检查是否选中了整个表格内容（使用更严格的判断）
+                const grid = document.getElementById('data-grid');
+                const gridText = grid.textContent || grid.innerText;
+                
+                // 判断是否为全选：选中文本几乎等于表格全部文本
+                if (selectedText.trim().length >= gridText.trim().length * 0.9) {
+                    // 全选情况：重建表格为默认的4行5列结构
+                    grid.innerHTML = `
+                        <tr>
+                            <td contenteditable="true"></td>
+                            <td contenteditable="true"></td>
+                            <td contenteditable="true"></td>
+                            <td contenteditable="true"></td>
+                            <td contenteditable="true"></td>
+                        </tr>
+                        <tr>
+                            <td contenteditable="true"></td>
+                            <td contenteditable="true"></td>
+                            <td contenteditable="true"></td>
+                            <td contenteditable="true"></td>
+                            <td contenteditable="true"></td>
+                        </tr>
+                        <tr>
+                            <td contenteditable="true"></td>
+                            <td contenteditable="true"></td>
+                            <td contenteditable="true"></td>
+                            <td contenteditable="true"></td>
+                            <td contenteditable="true"></td>
+                        </tr>
+                        <tr>
+                            <td contenteditable="true"></td>
+                            <td contenteditable="true"></td>
+                            <td contenteditable="true"></td>
+                            <td contenteditable="true"></td>
+                            <td contenteditable="true"></td>
+                        </tr>
+                    `;
+                    
+                    // 将焦点设置到第一个单元格
+                    const firstCell = grid.querySelector('td');
+                    if (firstCell) {
+                        firstCell.focus();
+                    }
+                } else {
+                    // 部分选中，删除选中内容
+                    range.deleteContents();
+                }
+                
+                // 清除选择
+                selection.removeAllRanges();
+                
+                // 触发数据更新
+                setTimeout(() => {
+                    this.extractTableData();
+                    this.updateColumnConfig();
+                }, 10);
+            }
+        }
+    }
+
     // Enhanced Excel clipboard parser that properly handles cell line breaks
     parseExcelClipboard(pasteData) {
         // Normalize line endings
@@ -344,7 +421,7 @@ class UnpivotTool {
         }
     }
 
-    // Parse TSV format while preserving intra-cell line breaks
+    // Parse TSV format while preserving intra-cell line breaks and handling merged cells
     parseTSVWithCellLineBreaks(data) {
         try {
             // 使用PapaParse处理TSV格式，它能正确处理引号和换行符
@@ -357,21 +434,57 @@ class UnpivotTool {
             });
             
             if (result.errors.length === 0) {
-                return result.data
+                const parsedData = result.data
                     .map(row => row.map(cell => this.cleanCell(cell)))
                     .filter(row => row.some(cell => cell !== ''));
+                
+                // 处理合并单元格：如果当前单元格为空，使用上一行相同位置的值
+                return this.handleMergedCells(parsedData);
             }
         } catch (error) {
             console.warn('TSV parsing with PapaParse failed:', error);
         }
         
         // Fallback到简单的tab分割方法
-        return data.split('\n')
+        const simpleData = data.split('\n')
             .map(line => line.split('\t').map(cell => this.cleanCell(cell)))
             .filter(row => row.some(cell => cell !== ''));
+            
+        return this.handleMergedCells(simpleData);
     }
 
-    // Parse CSV format with proper handling of quoted fields
+    // 处理合并单元格：空单元格继承上一行或左边相同的值
+    handleMergedCells(data) {
+        if (data.length === 0) return data;
+        
+        // 第一步：处理行方向的合并单元格（从左到右填充）
+        for (let rowIndex = 0; rowIndex < data.length; rowIndex++) {
+            const currentRow = data[rowIndex];
+            for (let colIndex = 1; colIndex < currentRow.length; colIndex++) {
+                // 如果当前单元格为空且左边单元格有内容，则继承左边的值
+                if (currentRow[colIndex] === '' && currentRow[colIndex - 1] !== '') {
+                    currentRow[colIndex] = currentRow[colIndex - 1];
+                }
+            }
+        }
+        
+        // 第二步：处理列方向的合并单元格（从上到下填充）
+        for (let rowIndex = 1; rowIndex < data.length; rowIndex++) {
+            const currentRow = data[rowIndex];
+            const previousRow = data[rowIndex - 1];
+            
+            for (let colIndex = 0; colIndex < currentRow.length; colIndex++) {
+                // 如果当前单元格为空且上一行对应位置有内容，则继承上一行的值
+                if (currentRow[colIndex] === '' && previousRow && previousRow[colIndex] !== '') {
+                    currentRow[colIndex] = previousRow[colIndex];
+                }
+            }
+        }
+        
+        return data;
+    }
+
+    // Parse CSV format with proper handling of quoted fields and merged cells
     parseCSVWithCellLineBreaks(data) {
         try {
             // Use PapaParse for proper CSV handling
@@ -383,9 +496,10 @@ class UnpivotTool {
             });
             
             if (result.errors.length === 0) {
-                return result.data.map(row => 
+                const parsedData = result.data.map(row => 
                     row.map(cell => this.cleanCell(cell))
                 );
+                return this.handleMergedCells(parsedData);
             }
         } catch (error) {
             console.warn('CSV parsing failed, falling back to simple split:', error);
@@ -1026,12 +1140,269 @@ class UnpivotTool {
             alert.remove();
         }, 3000);
     }
+
+    // ===== 数据预处理功能 =====
+
+    // 打开合并设置模态框
+    openMergeModal() {
+        const modal = document.getElementById('merge-modal');
+        modal.style.display = 'flex';
+        
+        // 设置默认状态：行合并选中，列合并不选中
+        const rowCheckbox = document.getElementById('merge-rows-checkbox');
+        const colCheckbox = document.getElementById('merge-cols-checkbox');
+        const rowConnectorGroup = document.getElementById('row-connector-group');
+        const colConnectorGroup = document.getElementById('col-connector-group');
+        
+        rowCheckbox.checked = true;  // 默认选中行合并
+        colCheckbox.checked = false; // 默认不选中列合并
+        
+        rowConnectorGroup.style.display = 'block';  // 显示行连接符选项
+        colConnectorGroup.style.display = 'none';   // 隐藏列连接符选项
+        
+        // 初始化预览
+        this.updateMergePreview();
+        
+        // 绑定事件监听器
+        this.bindMergeEvents();
+    }
+
+    // 绑定合并相关事件
+    bindMergeEvents() {
+        const rowCheckbox = document.getElementById('merge-rows-checkbox');
+        const colCheckbox = document.getElementById('merge-cols-checkbox');
+        const rowConnectors = document.querySelectorAll('input[name="row-connector"]');
+        const colConnectors = document.querySelectorAll('input[name="col-connector"]');
+
+        // 行合并复选框变化
+        rowCheckbox.addEventListener('change', (e) => {
+            const connectorGroup = document.getElementById('row-connector-group');
+            connectorGroup.style.display = e.target.checked ? 'block' : 'none';
+            this.updateMergePreview();
+        });
+
+        // 列合并复选框变化
+        colCheckbox.addEventListener('change', (e) => {
+            const connectorGroup = document.getElementById('col-connector-group');
+            connectorGroup.style.display = e.target.checked ? 'block' : 'none';
+            this.updateMergePreview();
+        });
+
+        // 连接符变化
+        rowConnectors.forEach(radio => {
+            radio.addEventListener('change', () => this.updateMergePreview());
+        });
+        colConnectors.forEach(radio => {
+            radio.addEventListener('change', () => this.updateMergePreview());
+        });
+    }
+
+    // 更新合并预览
+    updateMergePreview() {
+        const config = this.getMergeConfig();
+        const sampleData = this.currentData.slice(0, 4); // 取前4行作为预览
+        
+        if (sampleData.length === 0) {
+            document.getElementById('merge-preview').innerHTML = '<p>No data to preview</p>';
+            return;
+        }
+
+        const previewResult = this.processDataMerge(sampleData, config);
+        this.renderPreviewTable(previewResult.slice(0, 3)); // 只显示前3行
+    }
+
+    // 渲染预览表格
+    renderPreviewTable(data) {
+        const previewDiv = document.getElementById('merge-preview');
+        
+        if (data.length === 0) {
+            previewDiv.innerHTML = '<p>No data to preview</p>';
+            return;
+        }
+
+        let html = '<table style="width: 100%; border-collapse: collapse;">';
+        
+        data.forEach((row, rowIndex) => {
+            html += '<tr>';
+            row.forEach((cell, colIndex) => {
+                const cellValue = (cell || '').toString().slice(0, 20); // 限制显示长度
+                const isHeader = rowIndex === 0 ? 'font-weight: bold; background: #f0f0f0;' : '';
+                html += `<td style="border: 1px solid #ddd; padding: 4px; font-size: 0.8rem; ${isHeader}">${cellValue}</td>`;
+            });
+            html += '</tr>';
+        });
+        
+        html += '</table>';
+        previewDiv.innerHTML = html;
+    }
+
+    // 获取合并配置
+    getMergeConfig() {
+        const mergeRows = document.getElementById('merge-rows-checkbox').checked;
+        const mergeCols = document.getElementById('merge-cols-checkbox').checked;
+        const rowConnector = document.querySelector('input[name="row-connector"]:checked')?.value || ' ';
+        const colConnector = document.querySelector('input[name="col-connector"]:checked')?.value || ' ';
+
+        return {
+            enabled: mergeRows || mergeCols,
+            mergeRows,
+            mergeCols,
+            rowConnector,
+            colConnector
+        };
+    }
+
+    // 主合并处理函数（条件执行核心）
+    processDataMerge(tableData, config) {
+        // 最快路径：功能未启用直接返回
+        if (!config.enabled) {
+            return tableData;
+        }
+        
+        // 次快路径：都没选择合并选项  
+        if (!config.mergeRows && !config.mergeCols) {
+            return tableData;
+        }
+        
+        let result = [...tableData]; // 浅拷贝避免修改原数据
+        
+        // 条件1: 只有勾选行合并才执行行合并代码
+        if (config.mergeRows && tableData.length >= 2) {
+            result = this.mergeTopRows(result, config.rowConnector);
+        }
+        
+        // 条件2: 只有勾选列合并才执行列合并代码
+        if (config.mergeCols && result.length > 0 && result[0].length >= 2) {
+            result = this.mergeLeftCols(result, config.colConnector);
+        }
+        
+        return result;
+    }
+
+    // 行合并算法 - 处理层级表头
+    mergeTopRows(data, connector = ' ') {
+        if (data.length < 2) return data;
+        
+        const row1 = data[0]; // 父级分类
+        const row2 = data[1]; // 子级分类
+        const maxCols = Math.max(row1.length, row2.length);
+        
+        // 生成新的表头行
+        const newHeader = [];
+        for (let i = 0; i < maxCols; i++) {
+            const parent = (row1[i] || '').toString().trim();
+            const child = (row2[i] || '').toString().trim();
+            
+            // 智能合并逻辑
+            if (parent && child) {
+                newHeader[i] = `${parent}${connector}${child}`;
+            } else if (parent) {
+                newHeader[i] = parent;
+            } else if (child) {
+                newHeader[i] = child;
+            } else {
+                newHeader[i] = '';
+            }
+        }
+        
+        // 返回新表头 + 剩余数据
+        return [newHeader, ...data.slice(2)];
+    }
+
+    // 列合并算法 - 处理标识列
+    mergeLeftCols(data, connector = ' ') {
+        return data.map(row => {
+            if (row.length < 2) return row;
+            
+            const col1 = (row[0] || '').toString().trim();
+            const col2 = (row[1] || '').toString().trim();
+            
+            // 生成新的第一列
+            let newFirstCol;
+            if (col1 && col2) {
+                newFirstCol = `${col1}${connector}${col2}`;
+            } else if (col1) {
+                newFirstCol = col1;
+            } else if (col2) {
+                newFirstCol = col2;
+            } else {
+                newFirstCol = '';
+            }
+            
+            // 返回新第一列 + 剩余列
+            return [newFirstCol, ...row.slice(2)];
+        });
+    }
+
+    // 应用合并设置
+    applyMergeSettings() {
+        const config = this.getMergeConfig();
+        
+        // 如果都没选择，等于跳过功能
+        if (!config.mergeRows && !config.mergeCols) {
+            this.skipMergeSettings();
+            return;
+        }
+        
+        // 执行条件合并
+        const mergedData = this.processDataMerge(this.currentData, config);
+        
+        // 更新当前数据
+        this.currentData = mergedData;
+        
+        // 更新表格显示
+        this.updateTableDisplay();
+        
+        // 关闭弹窗
+        this.closeMergeModal();
+        
+        // 重新初始化列选择器
+        this.initializeColumnSelectors();
+        
+        // 显示成功提示
+        this.showAlert('Data preprocessing completed successfully!', 'success');
+    }
+
+    // 跳过合并设置
+    skipMergeSettings() {
+        this.closeMergeModal();
+        // 直接初始化列选择器，无需数据处理
+        this.initializeColumnSelectors();
+    }
+
+    // 关闭合并模态框
+    closeMergeModal() {
+        const modal = document.getElementById('merge-modal');
+        modal.style.display = 'none';
+        
+        // 重置复选框状态
+        document.getElementById('merge-rows-checkbox').checked = false;
+        document.getElementById('merge-cols-checkbox').checked = false;
+        
+        // 隐藏连接符选项
+        document.getElementById('row-connector-group').style.display = 'none';
+        document.getElementById('col-connector-group').style.display = 'none';
+    }
+
+    // 更新表格显示
+    updateTableDisplay() {
+        const grid = document.getElementById('data-grid');
+        grid.innerHTML = '';
+        
+        this.currentData.forEach(row => {
+            const tr = document.createElement('tr');
+            row.forEach(cell => {
+                const td = document.createElement('td');
+                td.textContent = cell || '';
+                td.contentEditable = true;
+                tr.appendChild(td);
+            });
+            grid.appendChild(tr);
+        });
+    }
 }
 
-// 页面加载完成后初始化应用
-document.addEventListener('DOMContentLoaded', () => {
-    new UnpivotTool();
-});
+// 页面加载完成后初始化应用 - 已移动到文件末尾
 
 // FAQ切换功能
 function toggleFAQ(element) {
@@ -1152,3 +1523,34 @@ UnpivotTool.prototype.displayResults = function() {
         enhanceResultsTable();
     }, 100);
 }; 
+
+// ===== 全局函数 - 供HTML onclick事件调用 =====
+
+// 全局引用到UnpivotTool实例
+let unpivotToolInstance = null;
+
+// 更新实例化代码以保存引用
+document.addEventListener('DOMContentLoaded', () => {
+    unpivotToolInstance = new UnpivotTool();
+});
+
+// 关闭合并模态框
+function closeMergeModal() {
+    if (unpivotToolInstance) {
+        unpivotToolInstance.closeMergeModal();
+    }
+}
+
+// 应用合并设置
+function applyMergeSettings() {
+    if (unpivotToolInstance) {
+        unpivotToolInstance.applyMergeSettings();
+    }
+}
+
+// 跳过合并设置
+function skipMergeSettings() {
+    if (unpivotToolInstance) {
+        unpivotToolInstance.skipMergeSettings();
+    }
+} 
