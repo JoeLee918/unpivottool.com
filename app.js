@@ -341,31 +341,43 @@ class UnpivotTool {
                 
                 // 判断是否为全选：选中文本几乎等于表格全部文本
                 if (selectedText.trim().length >= gridText.trim().length * 0.9) {
-                    // 🔑 全选情况：特殊处理，避免调用extractTableData
-                    const cells = grid.querySelectorAll('td');
+                                    // 🔑 全选情况：特殊处理，确保表格结构完整
+                const cells = grid.querySelectorAll('td');
+                const rowCount = grid.querySelectorAll('tr').length;
+                const colCount = cells.length > 0 ? grid.querySelector('tr').querySelectorAll('td').length : 0;
+                
+                // 如果表格结构不够，重建一个基础的3x3表格
+                if (rowCount < 3 || colCount < 3) {
+                    const basicData = [
+                        ['', '', ''],
+                        ['', '', ''],
+                        ['', '', '']
+                    ];
+                    this.loadDataToGrid(basicData);
+                } else {
+                    // 表格结构足够，只清空内容
                     cells.forEach(cell => {
-                        // 只清空文本内容，保持单元格DOM结构
                         cell.textContent = '';
-                        // 确保单元格仍然可编辑
                         cell.setAttribute('contenteditable', 'true');
                     });
-                    
-                    // 将焦点设置到第一个单元格
-                    const firstCell = grid.querySelector('td');
-                    if (firstCell) {
-                        firstCell.focus();
-                    }
-                    
-                    // 🚨 关键修复：全选删除时不调用extractTableData
-                    // 直接清空当前数据，但保持基本结构
-                    this.currentData = [];
-                    this.columns = [];
-                    
-                    // 清空列配置界面，避免显示错误信息
-                    const idColumnsEl = document.getElementById('id-columns');
-                    const valueColumnsEl = document.getElementById('value-columns');
-                    if (idColumnsEl) idColumnsEl.innerHTML = '';
-                    if (valueColumnsEl) valueColumnsEl.innerHTML = '';
+                }
+                
+                // 将焦点设置到第一个单元格
+                const firstCell = grid.querySelector('td');
+                if (firstCell) {
+                    firstCell.focus();
+                }
+                
+                // 🚨 关键修复：全选删除时不调用extractTableData
+                // 直接清空当前数据，但保持基本结构
+                this.currentData = [];
+                this.columns = [];
+                
+                // 清空列配置界面，避免显示错误信息
+                const idColumnsEl = document.getElementById('id-columns');
+                const valueColumnsEl = document.getElementById('value-columns');
+                if (idColumnsEl) idColumnsEl.innerHTML = '';
+                if (valueColumnsEl) valueColumnsEl.innerHTML = '';
                     
                 } else {
                     // 部分选中，删除选中内容，正常处理
@@ -393,16 +405,21 @@ class UnpivotTool {
             .replace(/\r/g, '\n')
             .trim();
 
+        console.log('📋 parseExcelClipboard 开始解析:', normalizedData.substring(0, 100) + '...');
+
         // Excel clipboard data is typically tab-separated values (TSV)
         // We need to intelligently detect row boundaries vs. intra-cell line breaks
         
         if (normalizedData.includes('\t')) {
+            console.log('📊 检测到制表符分隔格式(TSV)');
             // Handle tab-separated format (most common from Excel)
             return this.parseTSVWithCellLineBreaks(normalizedData);
         } else if (normalizedData.includes(',')) {
+            console.log('📊 检测到逗号分隔格式(CSV)');
             // Handle comma-separated format with proper CSV parsing
             return this.parseCSVWithCellLineBreaks(normalizedData);
         } else {
+            console.log('📊 检测到简单格式(Simple)');
             // Single column or simple data
             return this.parseSimpleFormat(normalizedData);
         }
@@ -444,6 +461,9 @@ class UnpivotTool {
     handleMergedCells(data) {
         if (data.length === 0) return data;
         
+        console.log('🔧 handleMergedCells 开始处理数据:', data);
+        let cellsFilled = 0;
+        
         // 第一步：处理行方向的合并单元格（从左到右填充）
         for (let rowIndex = 0; rowIndex < data.length; rowIndex++) {
             const currentRow = data[rowIndex];
@@ -451,6 +471,8 @@ class UnpivotTool {
                 // 如果当前单元格为空且左边单元格有内容，则继承左边的值
                 if (currentRow[colIndex] === '' && currentRow[colIndex - 1] !== '') {
                     currentRow[colIndex] = currentRow[colIndex - 1];
+                    cellsFilled++;
+                    console.log(`📝 水平填充: [${rowIndex}][${colIndex}] = "${currentRow[colIndex]}"`);
                 }
             }
         }
@@ -464,10 +486,14 @@ class UnpivotTool {
                 // 如果当前单元格为空且上一行对应位置有内容，则继承上一行的值
                 if (currentRow[colIndex] === '' && previousRow && previousRow[colIndex] !== '') {
                     currentRow[colIndex] = previousRow[colIndex];
+                    cellsFilled++;
+                    console.log(`📝 垂直填充: [${rowIndex}][${colIndex}] = "${currentRow[colIndex]}"`);
                 }
             }
         }
         
+        console.log(`✅ handleMergedCells 完成，共填充 ${cellsFilled} 个单元格`);
+        console.log('🔧 处理后的数据:', data);
         return data;
     }
 
@@ -499,9 +525,12 @@ class UnpivotTool {
     // Parse simple format (single column or basic data)
     parseSimpleFormat(data) {
         const lines = data.split('\n');
-        return lines
+        const parsedData = lines
             .map(line => [this.cleanCell(line)])
             .filter(row => row[0] !== '');
+        
+        // 即使是简单格式也要处理合并单元格
+        return this.handleMergedCells(parsedData);
     }
 
     // Clean individual cell data
