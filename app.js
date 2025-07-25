@@ -341,43 +341,52 @@ class UnpivotTool {
                 
                 // 判断是否为全选：选中文本几乎等于表格全部文本
                 if (selectedText.trim().length >= gridText.trim().length * 0.9) {
-                                    // 🔑 全选情况：特殊处理，确保表格结构完整
-                const cells = grid.querySelectorAll('td');
-                const rowCount = grid.querySelectorAll('tr').length;
-                const colCount = cells.length > 0 ? grid.querySelector('tr').querySelectorAll('td').length : 0;
-                
-                // 如果表格结构不够，重建一个基础的3x3表格
-                if (rowCount < 3 || colCount < 3) {
-                    const basicData = [
-                        ['', '', ''],
-                        ['', '', ''],
-                        ['', '', '']
-                    ];
-                    this.loadDataToGrid(basicData);
-                } else {
-                    // 表格结构足够，只清空内容
-                    cells.forEach(cell => {
-                        cell.textContent = '';
-                        cell.setAttribute('contenteditable', 'true');
-                    });
-                }
-                
-                // 将焦点设置到第一个单元格
-                const firstCell = grid.querySelector('td');
-                if (firstCell) {
-                    firstCell.focus();
-                }
-                
-                // 🚨 关键修复：全选删除时不调用extractTableData
-                // 直接清空当前数据，但保持基本结构
-                this.currentData = [];
-                this.columns = [];
-                
-                // 清空列配置界面，避免显示错误信息
-                const idColumnsEl = document.getElementById('id-columns');
-                const valueColumnsEl = document.getElementById('value-columns');
-                if (idColumnsEl) idColumnsEl.innerHTML = '';
-                if (valueColumnsEl) valueColumnsEl.innerHTML = '';
+                    // 🔑 全选情况：特殊处理，确保表格结构完整
+                    console.log('🗑️ 检测到全选删除，开始处理...');
+                    
+                    const cells = grid.querySelectorAll('td');
+                    const rowCount = grid.querySelectorAll('tr').length;
+                    const colCount = cells.length > 0 ? grid.querySelector('tr').querySelectorAll('td').length : 0;
+                    
+                    console.log(`📊 当前表格结构: ${rowCount}行 x ${colCount}列`);
+                    
+                    // 如果表格结构不够，重建一个基础的3x3表格
+                    if (rowCount < 3 || colCount < 3) {
+                        console.log('🔧 表格结构不足，重建3x3基础表格');
+                        const basicData = [
+                            ['', '', ''],
+                            ['', '', ''],
+                            ['', '', '']
+                        ];
+                        this.loadDataToGrid(basicData);
+                    } else {
+                        console.log('🧹 表格结构充足，只清空内容');
+                        // 表格结构足够，只清空内容
+                        cells.forEach(cell => {
+                            cell.textContent = '';
+                            cell.setAttribute('contenteditable', 'true');
+                        });
+                    }
+                    
+                    // 将焦点设置到第一个单元格
+                    const firstCell = grid.querySelector('td');
+                    if (firstCell) {
+                        firstCell.focus();
+                        console.log('✅ 焦点已设置到第一个单元格');
+                    }
+                    
+                    // 🚨 关键修复：全选删除时不调用extractTableData
+                    // 直接清空当前数据，但保持基本结构
+                    this.currentData = [];
+                    this.columns = [];
+                    
+                    // 清空列配置界面，避免显示错误信息
+                    const idColumnsEl = document.getElementById('id-columns');
+                    const valueColumnsEl = document.getElementById('value-columns');
+                    if (idColumnsEl) idColumnsEl.innerHTML = '';
+                    if (valueColumnsEl) valueColumnsEl.innerHTML = '';
+                    
+                    console.log('✅ 全选删除处理完成');
                     
                 } else {
                     // 部分选中，删除选中内容，正常处理
