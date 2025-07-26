@@ -12,7 +12,7 @@
     <meta name="title" content="Unpivot Tool: Convert Excel Tables Easily Online">
     <meta name="description" content="Free online unpivot tool for data flattening. Convert wide tables to long format, transform columns to rows without losing granularity. No signup required.">
     <meta name="author" content="UnpivotTool">
-    <meta name="keywords" content="Unpivot Tool, Data Flattening, Matrix Format Converter, Online Table Conversion, Excel to Long Format, CSV to Excel Converter, Free Data Transformation, Pivot Table Tutorial">
+    <meta name="keywords" content="Unpivot Tool, Data Flattening, Matrix Format Converter, Power Query Alternative, Excel Data Normalization, Online Table Conversion, Excel to Long Format, CSV to Excel Converter, Wide to Long Format">
     
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
@@ -47,6 +47,50 @@
     }
     </script>
     
+    <!-- HowTo Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "HowTo",
+      "name": "How to Unpivot Excel Tables Online Without Power Query",
+      "description": "Convert wide Excel tables to long format using our free online unpivot tool - faster than Power Query",
+      "image": "https://unpivottool.com/unpivot-tutorial-image.jpg",
+      "totalTime": "PT2M",
+      "supply": [
+        {
+          "@type": "HowToSupply",
+          "name": "Excel file (.xlsx, .xls) or CSV file"
+        }
+      ],
+      "tool": [
+        {
+          "@type": "HowToTool",
+          "name": "UnpivotTool Online Converter"
+        }
+      ],
+      "step": [
+        {
+          "@type": "HowToStep",
+          "name": "Upload or paste your wide table data",
+          "text": "Input your Excel data with multiple columns. Our tool supports .xlsx, .csv files or direct copy-paste from spreadsheets. Perfect for sales data, financial reports, or any matrix format.",
+          "url": "https://unpivottool.com/#step1"
+        },
+        {
+          "@type": "HowToStep", 
+          "name": "Select columns to unpivot",
+          "text": "Choose ID columns (keep as-is) and value columns (to flatten). Our data normalization engine automatically converts attribute-value pairs into long format for easier analysis.",
+          "url": "https://unpivottool.com/#step2"
+        },
+        {
+          "@type": "HowToStep",
+          "name": "Download converted results", 
+          "text": "Get your unpivoted data instantly as Excel or CSV. Ready for pivot tables, charts, or database import. Faster than Power Query and works on any device.",
+          "url": "https://unpivottool.com/#step3"
+        }
+      ]
+    }
+    </script>
+    
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -58,6 +102,7 @@
                     <div class="brand-logo">📊 UnpivotTool</div>
                 </div>
                 <div class="nav-links">
+                    <a href="#how-it-works">How it works</a>
                     <a href="#faq">FAQ</a>
                     <a href="#learn">Learn</a>
                 </div>
@@ -91,7 +136,7 @@
 
 
             <section class="input-section">
-                <h2>Step 1: Input your table data</h2>
+                <h2>Step 1: Upload Excel Data or Paste Table for Data Flattening</h2>
                 
                 <!-- Method Selection -->
                 <div class="method-tabs">
@@ -166,7 +211,7 @@
 
             <!-- Configuration Section -->
             <section class="config-section">
-                <h2>Step 2: Choose your columns</h2>
+                <h2>Step 2: Configure Matrix Format Conversion - Select ID and Value Columns</h2>
                 <div class="config-panel">
                     <div class="column-config">
                         <div class="config-group">
@@ -199,7 +244,7 @@
 
             <!-- Results Section -->
             <section class="results-section" id="results-section" style="display: none;">
-                <h2>Step 3: Get your results</h2>
+                <h2>Step 3: Download Unpivoted Data - Export to Excel or CSV Format</h2>
                 <div class="results-header">
                     <div class="results-info">
                         <span id="results-count">0 rows converted</span>
@@ -303,6 +348,16 @@
                     
                     <div class="faq-item">
                         <div class="faq-question" onclick="toggleFAQ(this)">
+                            <h3>How does this compare to Excel Power Query unpivot?</h3>
+                            <span class="faq-toggle">+</span>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Excel Power Query requires multiple steps: Data → Get Data → From Table/Range → Transform → Unpivot Columns → Close & Load. Our online tool simplifies this to 3 clicks with instant preview. No need to learn Power Query syntax or deal with data normalization complexities. Perfect for users seeking a faster Power Query alternative.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
                             <h3>Why use this tool instead of Excel's built-in data flattening?</h3>
                             <span class="faq-toggle">+</span>
                         </div>
@@ -324,7 +379,7 @@
         <div class="container">
             <div class="section-header">
                 <h2>Learn About Data Transformation</h2>
-                <p>Expert guides on unpivoting tables and data flattening techniques</p>
+                <p>Expert guides on unpivoting tables, Power Query alternatives, and data normalization techniques</p>
             </div>
             
             <div class="blog-grid">
@@ -333,12 +388,12 @@
                         <div class="blog-placeholder">📊</div>
                     </div>
                     <div class="blog-content">
-                        <div class="blog-category">TUTORIAL</div>
-                        <h3>How to Pivot Data: Converting Long to Wide Format</h3>
-                        <p>Step-by-step Excel tutorial: Select your long format data → Insert → Pivot Table → Drag row fields to Rows area → Drag value fields to Values area → Drag column categories to Columns area. Perfect for summarizing data by categories and time periods.</p>
+                        <div class="blog-category">FUNDAMENTALS</div>
+                        <h3>Understanding Wide vs Long Data Formats</h3>
+                        <p>Learn the core difference between data structures: Wide format stores categories as separate columns making it human-readable but analysis-unfriendly. Long format stacks all values vertically with category identifiers, creating database-ready structure perfect for statistical software and visualization tools.</p>
                         <div class="blog-meta">
-                            <span>Excel Tutorial</span>
-                            <span>5 mins read</span>
+                            <span>Data Structure</span>
+                            <span>4 mins read</span>
                         </div>
                     </div>
                 </article>
@@ -348,12 +403,12 @@
                         <div class="blog-placeholder">🔄</div>
                     </div>
                     <div class="blog-content">
-                        <div class="blog-category">GUIDE</div>
-                        <h3>Excel Unpivot: Step-by-Step Power Query Tutorial</h3>
-                        <p>In Excel: Data → Get Data → From Other Sources → Blank Query → Advanced Editor → Paste your data → Transform → Select columns to unpivot → Unpivot Columns → Close & Load. Requires Power Query knowledge and multiple steps for each transformation.</p>
+                        <div class="blog-category">METHODOLOGY</div>
+                        <h3>When Your Spreadsheet Needs Unpivoting</h3>
+                        <p>Identify the warning signs: You have months as column headers, multiple product categories spread horizontally, or repeated copy-paste for similar analyses. These patterns indicate your data structure is limiting your analytical capabilities and would benefit from normalization.</p>
                         <div class="blog-meta">
-                            <span>Power Query Guide</span>
-                            <span>7 mins read</span>
+                            <span>Data Assessment</span>
+                            <span>6 mins read</span>
                         </div>
                     </div>
                 </article>
@@ -363,19 +418,169 @@
                         <div class="blog-placeholder">⚡</div>
                     </div>
                     <div class="blog-content">
-                        <div class="blog-category">COMPARISON</div>
-                        <h3>Online Tool vs Manual: Why Automated Conversion Wins</h3>
-                        <p>Online tools: 3 clicks, instant results, no software installation, works on any device. Excel method: 15+ steps, Power Query learning curve, Windows-only, complex formulas. Online conversion is 10x faster and error-free.</p>
+                        <div class="blog-category">EFFICIENCY</div>
+                        <h3>Manual vs Automated Data Restructuring</h3>
+                        <p>Compare transformation approaches: Manual copy-paste takes hours and introduces errors. Excel formulas require advanced knowledge and break easily. Online unpivot tools deliver instant results with built-in validation, making complex restructuring accessible to non-technical users.</p>
                         <div class="blog-meta">
-                            <span>Efficiency Analysis</span>
-                            <span>4 mins read</span>
+                            <span>Workflow Optimization</span>
+                            <span>5 mins read</span>
+                        </div>
+                    </div>
+                </article>
+                
+                <article class="blog-card">
+                    <div class="blog-image">
+                        <div class="blog-placeholder">💼</div>
+                    </div>
+                    <div class="blog-content">
+                        <div class="blog-category">REAL WORLD</div>
+                        <h3>Sales Report Transformation Success Story</h3>
+                        <p>Follow a marketing team's journey: They had monthly sales data spread across 12 columns making trend analysis impossible. After unpivoting to month-value pairs, they gained the ability to create dynamic charts, calculate growth rates, and identify seasonal patterns that drove strategy decisions.</p>
+                        <div class="blog-meta">
+                            <span>Business Impact</span>
+                            <span>7 mins read</span>
+                        </div>
+                    </div>
+                </article>
+                
+                <article class="blog-card">
+                    <div class="blog-image">
+                        <div class="blog-placeholder">🎯</div>
+                    </div>
+                    <div class="blog-content">
+                        <div class="blog-category">QUALITY CONTROL</div>
+                        <h3>Maintaining Data Integrity During Transformation</h3>
+                        <p>Essential validation steps: Verify row counts match expectations, check for missing values in key columns, ensure data types remain consistent, and confirm no relationships are broken. Proper quality checks prevent downstream analysis errors and maintain trustworthy results.</p>
+                        <div class="blog-meta">
+                            <span>Data Validation</span>
+                            <span>5 mins read</span>
+                        </div>
+                    </div>
+                </article>
+                
+                <article class="blog-card">
+                    <div class="blog-image">
+                        <div class="blog-placeholder">🚀</div>
+                    </div>
+                    <div class="blog-content">
+                        <div class="blog-category">ADVANCED TECHNIQUES</div>
+                        <h3>Multi-Level Header Unpivoting Strategies</h3>
+                        <p>Handle complex spreadsheets with hierarchical headers: Product categories above month columns, or region-country combinations. Learn header merging techniques, nested category handling, and how to preserve all dimensional information while creating clean normalized output.</p>
+                        <div class="blog-meta">
+                            <span>Complex Structures</span>
+                            <span>8 mins read</span>
                         </div>
                     </div>
                 </article>
             </div>
         </div>
     </section>
-  
+
+
+    
+    <section id="how-it-works" class="how-it-works-section">
+        <div class="container">
+            <div class="section-header">
+                <p class="section-subtitle">3 easy steps</p>
+                <h2>How Our Unpivot Tool Works</h2>
+                <p>Convert wide Excel tables to long format instantly. Our data flattening tool transforms columns to rows without losing granularity - no Power Query expertise required.</p>
+            </div>
+            
+            <div class="how-it-works-grid">
+                <!-- Step 1 -->
+                <div class="step-card">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h3>Upload or Paste Your Wide Table</h3>
+                        <p>Input your Excel data with multiple columns. Our tool supports .xlsx, .csv files or direct copy-paste from spreadsheets. Perfect for sales data, financial reports, or any matrix format.</p>
+                    </div>
+                </div>
+                
+                <!-- Step 2 -->
+                <div class="step-card">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h3>Select Columns to Unpivot</h3>
+                        <p>Choose ID columns (keep as-is) and value columns (to flatten). Our data normalization engine automatically converts attribute-value pairs into long format for easier analysis.</p>
+                    </div>
+                </div>
+                
+                <!-- Step 3 -->
+                <div class="step-card">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h3>Download Converted Results</h3>
+                        <p>Get your unpivoted data instantly as Excel or CSV. Ready for pivot tables, charts, or database import. Faster than Power Query and works on any device.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Visual Demo -->
+            <div class="demo-container">
+                <h3>Unpivot Data Transformation</h3>
+                <div class="demo-grid">
+                    <!-- Before Table -->
+                    <div class="demo-section">
+                        <h4>Wide Format (Before)</h4>
+                        <div class="demo-table">
+                            <table>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Jan</th>
+                                    <th>Feb</th>
+                                    <th>Mar</th>
+                                </tr>
+                                <tr>
+                                    <td>John</td>
+                                    <td>100</td>
+                                    <td>150</td>
+                                    <td>200</td>
+                                </tr>
+                                <tr>
+                                    <td>Jane</td>
+                                    <td>120</td>
+                                    <td>180</td>
+                                    <td>220</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <p class="demo-caption">Columns spread wide<br>Hard to analyze</p>
+                    </div>
+                    
+                    <!-- Arrow -->
+                    <div class="demo-arrow">
+                        <div class="arrow-button">
+                            <span class="arrow-mobile">↓ Unpivot ↓</span>
+                            <span class="arrow-desktop">→ Unpivot →</span>
+                        </div>
+                    </div>
+                    
+                    <!-- After Table -->
+                    <div class="demo-section">
+                        <h4>Long Format (After)</h4>
+                        <div class="demo-table">
+                            <table>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Month</th>
+                                    <th>Value</th>
+                                </tr>
+                                <tr><td>John</td><td>Jan</td><td>100</td></tr>
+                                <tr><td>John</td><td>Feb</td><td>150</td></tr>
+                                <tr><td>John</td><td>Mar</td><td>200</td></tr>
+                                <tr><td>Jane</td><td>Jan</td><td>120</td></tr>
+                                <tr><td>Jane</td><td>Feb</td><td>180</td></tr>
+                                <tr><td>Jane</td><td>Mar</td><td>220</td></tr>
+                            </table>
+                        </div>
+                        <p class="demo-caption">Data normalized<br>Ready for analysis</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    
 
     <!-- Footer -->
     <footer class="footer">
