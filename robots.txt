@@ -1,0 +1,34 @@
+# robots.txt for unpivottool.com
+# 允许所有搜索引擎访问所有内容
+
+User-agent: *
+Allow: /
+
+# 指向sitemap位置
+Sitemap: https://unpivottool.com/sitemap.xml
+
+# 爬取频率建议（仅建议，搜索引擎可能不遵守）
+# Crawl-delay: 1
+
+# 特别欢迎主要搜索引擎
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Slurp
+Allow: /
+
+# 屏蔽常见的垃圾爬虫（可选）
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: MJ12bot
+Disallow: /
+
+User-agent: DotBot
+Disallow: /
+
+# 最后修改时间: 2025-01-27
+# 网站: UnpivotTool - Free Online Excel Table Converter 
