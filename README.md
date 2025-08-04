@@ -123,6 +123,12 @@ parseExcelClipboard(data) {
 
 ## 🆕 Version History
 
+### v2.2 (2025-08-04) - SEO & Sitemap Optimization
+- 🔧 Fixed sitemap.xml to include only homepage URL
+- 🗑️ Removed unnecessary anchor link URLs from sitemap
+- 📅 Updated lastmod date to current version
+- 🎯 Improved SEO structure for single-page application
+
 ### v2.1 (2025-01-27) - Critical Bug Fix
 - 🔧 Fixed Excel cell line break handling bug
 - 🇺🇸 Updated to native American English
