@@ -1,196 +1,72 @@
-# 📊 UnpivotTool - Transform Wide Tables to Long Format
+# Unpivot Tool - Excel Data Transformation Tool
 
-**Latest Update v2.1 (2025-01-27): Critical Excel Bug Fix & Native English UI** 🚨✅
+A free, browser-based tool for converting wide Excel tables to long format without Power Query complexity.
 
-A powerful, free online tool that converts wide Excel tables to normalized long format instantly. Perfect for data analysis, reporting, and database normalization.
+## Features
 
-## 🚨 Major Bug Fixes in v2.1
+- **Instant Conversion**: Transform Excel data in seconds
+- **Local Processing**: All data stays in your browser
+- **Multiple Formats**: Support for Excel (.xlsx, .xls) and CSV files
+- **No Registration**: Completely free, no account required
+- **Privacy First**: No data sent to servers
 
-### ✅ FIXED: Excel Cell Line Break Handling
-- **Problem**: Excel cells with line breaks (Alt+Enter) were incorrectly split into multiple cells
-- **Solution**: Complete rewrite of clipboard parser with intelligent TSV detection
-- **Impact**: Now handles complex Excel data with perfect accuracy
+## Recent Updates (Latest)
 
-### 🇺🇸 IMPROVED: Native American English Interface
-- Updated all UI text for international markets
-- Enhanced error messages for better user experience
-- Professional, conversational tone throughout
+### UI/UX Improvements
+- **FAQ Layout**: Adjusted FAQ boxes to be wider and better fit overall layout
+- **Excel Grid Height**: Fixed Excel input boxes to maintain consistent height after content deletion
+- **Alert System**: Added proper CSS styling for success/error alerts with smooth animations
+- **Table Styling**: Enhanced Excel-like cell borders for better visual clarity
 
-## ✨ Key Features
+### Previous Fixes
+- **Page Stretching**: Limited displayed rows to 20 to prevent page stretching with large files
+- **Step 1 Buttons**: Cleaned up redundant buttons, keeping only essential ones
+- **Advanced Options**: Removed unnecessary "Advanced Options" button from Step 2
+- **Table Borders**: Added prominent Excel-like cell borders to data grids
+- **FAQ Toggle**: Fixed FAQ expansion/collapse functionality
+- **Modal Behavior**: Ensured "Expand Full Editor" works as modal popup
+- **File Upload Feedback**: Added clear guidance after successful file upload
 
-- 🔄 **Smart Data Transform**: Convert wide tables to long format in 3 easy steps
-- 📋 **Multiple Input Methods**: Paste directly or upload Excel/CSV files
-- 🎯 **Intelligent Column Detection**: Automatically suggests ID and value columns
-- 📊 **Multiple Export Options**: Download as Excel, CSV, or copy to clipboard
-- 🚫 **No Sign-Up Required**: Completely free, no registration needed
-- 🔒 **Privacy First**: All processing happens in your browser
-- 📱 **Mobile Friendly**: Responsive design works on all devices
+## How to Use
 
-## 🚀 Quick Start
+1. **Step 1**: Paste your Excel data or upload a file
+2. **Step 2**: Configure which columns to keep as ID and which to unpivot
+3. **Step 3**: Download your converted data as Excel or CSV
 
-1. **Input Data**: Paste your table or upload an Excel/CSV file
-2. **Choose Columns**: Select which columns to keep (ID) and transform (Values)
-3. **Get Results**: Download or copy your normalized data
+## Technical Details
 
-## 💡 Perfect For
+- Built with vanilla JavaScript, HTML5, and CSS3
+- Uses SheetJS for Excel file processing
+- Papa Parse for CSV handling
+- Responsive design with mobile-first approach
 
-- 📈 **Data Analysts**: Preparing data for visualization tools
-- 🔬 **Researchers**: Converting survey data for statistical analysis
-- 💼 **Business Users**: Normalizing reports for database import
-- 🎓 **Students**: Learning data transformation concepts
+## Local Development
 
-## 🛠️ Technical Features
+To run the tool locally:
 
-### Enhanced Excel Support
-- Handles multi-line cell content (Alt+Enter in Excel)
-- Preserves data integrity during paste operations
-- Smart detection of TSV vs CSV formats
-- Robust error handling and validation
-
-### Advanced UI
-- Intelligent column selector for large datasets
-- Expandable table editor with keyboard navigation
-- Real-time preview of transformations
-- Professional error messages and feedback
-
-## 📖 How It Works
-
-### Input Methods
-1. **Direct Paste**: Copy from Excel and paste directly into the grid
-2. **File Upload**: Support for .xlsx, .xls, and .csv files (up to 5MB)
-
-### Column Configuration
-- **ID Columns**: Data to keep unchanged (e.g., Name, Date)
-- **Value Columns**: Data to transform from wide to long format
-- **Custom Names**: Set your own variable and value column names
-
-### Output Formats
-- **Excel (.xlsx)**: Professional spreadsheet format
-- **CSV**: Universal compatibility
-- **Clipboard**: Ready to paste into other applications
-
-## 🔧 Technical Implementation
-
-### Core Algorithm
-```javascript
-// Enhanced clipboard parser handles Excel line breaks correctly
-parseExcelClipboard(data) {
-    // Intelligent format detection
-    if (data.includes('\t')) {
-        return this.parseTSVWithCellLineBreaks(data);
-    }
-    // Robust CSV parsing with PapaParse
-    return this.parseCSVWithCellLineBreaks(data);
-}
+```bash
+python -m http.server 3000
 ```
 
-### Browser Compatibility
-- ✅ Chrome 80+
-- ✅ Firefox 75+
-- ✅ Safari 13+
-- ✅ Edge 80+
+Then open `http://localhost:3000` in your browser.
 
-## 📊 Example Transformation
+## File Structure
 
-### Before (Wide Format)
-| Name | Jan | Feb | Mar |
-|------|-----|-----|-----|
-| John | 100 | 150 | 200 |
-| Jane | 120 | 180 | 220 |
+- `index.html` - Main application interface
+- `app.js` - Core JavaScript functionality
+- `styles.css` - Styling and responsive design
+- `README.md` - Project documentation
 
-### After (Long Format)
-| Name | Variable | Value |
-|------|----------|-------|
-| John | Jan      | 100   |
-| John | Feb      | 150   |
-| John | Mar      | 200   |
-| Jane | Jan      | 120   |
-| Jane | Feb      | 180   |
-| Jane | Mar      | 220   |
+## Browser Compatibility
 
-## 🚀 Getting Started
+- Chrome 80+
+- Firefox 75+
+- Safari 13+
+- Edge 80+
 
-### Local Development
-1. Clone the repository
-2. Open `index.html` in your browser
-3. Start transforming data!
+## Privacy & Security
 
-### File Requirements
-- Data should start at cell A1
-- Include one header row
-- Avoid merged cells and multiple sheets
-- File size limit: 5MB
-
-## 🆕 Version History
-
-### v2.2 (2025-08-04) - SEO & Sitemap Optimization
-- 🔧 Fixed sitemap.xml to include only homepage URL
-- 🗑️ Removed unnecessary anchor link URLs from sitemap
-- 📅 Updated lastmod date to current version
-- 🎯 Improved SEO structure for single-page application
-
-### v2.1 (2025-01-27) - Critical Bug Fix
-- 🔧 Fixed Excel cell line break handling bug
-- 🇺🇸 Updated to native American English
-- ✨ Enhanced error messages and user feedback
-- 🚀 Improved paste operation reliability
-
-### v2.0 (2025-01-27) - Major Feature Update
-- 🎯 Smart column configuration with popup selectors
-- 🔧 Enhanced data management controls
-- 📊 Improved large table handling
-- ⌨️ Keyboard navigation support
-
-### v1.0 (2025-01-26) - Initial Release
-- 📋 Basic unpivot functionality
-- 📁 File upload support
-- 📊 Excel and CSV export
-
-## 🤝 Contributing
-
-We welcome contributions! Please feel free to submit issues or pull requests.
-
-## 📄 License
-
-This project is open source and available under the MIT License.
-
-## 🌟 Why Choose UnpivotTool?
-
-- **Accuracy**: Handles complex Excel data with perfect precision
-- **Speed**: Instant transformations, no server processing
-- **Privacy**: Your data never leaves your browser
-- **Simplicity**: No learning curve, works immediately
-- **Professional**: Native English interface for international users
-
----
-
-## 📝 Recent Updates
-
-### Version 2.0 - Major Enhancement (2025-01-27)
-
-🚀 **Major Update: Fixed 9 Critical Issues**
-
-**Enhanced Data Processing:**
-- ✅ **Excel Line Break Fix**: Completely revamped Excel clipboard parsing using PapaParse for reliable multi-line cell handling
-- ✅ **Keyboard Support**: Added Delete/Backspace key support for intuitive table editing experience
-
-**Improved User Interface:**
-- ✅ **Fixed Table Layout**: Table container now has consistent 300px height, preventing layout shifts
-- ✅ **Step 3 Editor**: Added Full Table Editor for results, allowing post-conversion data editing
-- ✅ **Navigation Fix**: Fixed breadcrumb Home link and added complete "How it Works" section
-
-**SEO & Language Optimization:**
-- ✅ **American English**: Updated all "Transform" references to "Convert" based on SEO analysis
-- ✅ **Better UX**: More intuitive language throughout the interface
-
-**Documentation:**
-- ✅ **Analysis Report**: Updated comprehensive problem analysis document  
-- ✅ **Learning Guide**: Created detailed technical learning documentation
-
-This update significantly improves data reliability, user experience, and overall tool functionality.
-
----
-
-**Convert your data today - it's that simple!** 🚀
-
-*Built with ❤️ for data professionals worldwide* 
+- All processing happens locally in your browser
+- No data is sent to external servers
+- No cookies or tracking mechanisms
+- No account registration required 

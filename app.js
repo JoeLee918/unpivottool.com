@@ -38,7 +38,8 @@ class UnpivotTool {
         dataGrid.addEventListener('keydown', this.handleTableKeydown.bind(this));
 
         // 扩展编辑器
-        document.getElementById('expand-editor').addEventListener('click', this.openExpandedEditor.bind(this));
+        const expandBtn = document.getElementById('expand-editor');
+        if (expandBtn) expandBtn.addEventListener('click', this.openExpandedEditor.bind(this));
 
         // 模态框控制
         document.querySelectorAll('.modal-close').forEach(btn => {
@@ -80,11 +81,21 @@ class UnpivotTool {
         document.getElementById('download-excel').addEventListener('click', this.downloadExcel.bind(this));
         document.getElementById('download-csv').addEventListener('click', this.downloadCSV.bind(this));
 
-        // 数据管理功能
-        this.addDataManagementControls();
+        // 数据管理功能 - 直接绑定HTML中的按钮，不再动态创建
+        // this.addDataManagementControls(); // 注释掉这一行
+        
+        // 直接绑定HTML中已存在的按钮
+        const resetBtn = document.getElementById('reset-sample');  
+        const addRowBtn = document.getElementById('add-row');
+        const addColBtn = document.getElementById('add-column');
+        
+        if (resetBtn) resetBtn.addEventListener('click', this.resetToSample.bind(this));
+        if (addRowBtn) addRowBtn.addEventListener('click', this.addRow.bind(this));
+        if (addColBtn) addColBtn.addEventListener('click', this.addColumn.bind(this));
     }
 
-    // 添加数据管理控制按钮
+    // 添加数据管理控制按钮 - 已注释掉，改为直接绑定HTML中的按钮
+    /*
     addDataManagementControls() {
         const pasteArea = document.querySelector('.paste-area');
         const controlsDiv = document.createElement('div');
@@ -104,6 +115,7 @@ class UnpivotTool {
         document.getElementById('add-row').addEventListener('click', this.addRow.bind(this));
         document.getElementById('add-column').addEventListener('click', this.addColumn.bind(this));
     }
+    */
 
     // Clear all data from the grid
     clearAllData() {
@@ -236,7 +248,12 @@ class UnpivotTool {
                 this.loadDataToGrid(data);
                 this.extractTableData();
                 this.updateColumnConfig();
-                this.showAlert('File loaded successfully!', 'success');
+                
+                // 切换到Paste Data标签
+                this.switchInputMethod('paste');
+                
+                // 显示成功提示并引导用户
+                this.showAlert('File uploaded successfully! Your data is now in the "Paste Data" tab. You can edit it there or proceed to Step 2.', 'success');
             }
         } catch (error) {
             console.error('File processing error:', error);
@@ -312,7 +329,11 @@ class UnpivotTool {
         const grid = document.getElementById('data-grid');
         grid.innerHTML = '';
 
-        data.forEach((row, rowIndex) => {
+        // 限制显示的行数，避免页面过长
+        const maxRows = 20;
+        const displayData = data.slice(0, maxRows);
+
+        displayData.forEach((row, rowIndex) => {
             const tr = document.createElement('tr');
             row.forEach((cell, colIndex) => {
                 const td = document.createElement('td');
@@ -322,6 +343,20 @@ class UnpivotTool {
             });
             grid.appendChild(tr);
         });
+
+        // 如果数据超过最大行数，显示提示
+        if (data.length > maxRows) {
+            const infoRow = document.createElement('tr');
+            const infoCell = document.createElement('td');
+            infoCell.colSpan = data[0] ? data[0].length : 1;
+            infoCell.textContent = `... and ${data.length - maxRows} more rows (use Expand Full Editor to see all)`;
+            infoCell.style.textAlign = 'center';
+            infoCell.style.fontStyle = 'italic';
+            infoCell.style.color = '#6b7280';
+            infoCell.style.backgroundColor = '#f9fafb';
+            infoRow.appendChild(infoCell);
+            grid.appendChild(infoRow);
+        }
     }
 
     // 处理表格编辑
@@ -1174,9 +1209,22 @@ class UnpivotTool {
 
     // 复制结果到剪贴板
     async copyResults() {
-        if (this.resultData.length === 0) return;
+        if (this.resultData.length === 0) {
+            this.showAlert('No data to copy. Please convert data first.', 'warning');
+            return;
+        }
+
+        // 获取Copy按钮元素，用于视觉反馈
+        const copyBtn = document.getElementById('copy-all');
+        const originalText = copyBtn.textContent;
+        const originalClass = copyBtn.className;
 
         try {
+            // 显示复制中状态
+            copyBtn.textContent = '📋 Copying...';
+            copyBtn.disabled = true;
+            copyBtn.className = copyBtn.className.replace('btn-secondary', 'btn-info');
+
             const headers = Object.keys(this.resultData[0]);
             let csvText = headers.join('\t') + '\n';
             
@@ -1185,11 +1233,60 @@ class UnpivotTool {
                 csvText += values.join('\t') + '\n';
             });
 
-            await navigator.clipboard.writeText(csvText);
-            this.showAlert('Results copied to clipboard!', 'success');
+            // 尝试现代剪贴板API
+            if (navigator.clipboard && window.isSecureContext) {
+                await navigator.clipboard.writeText(csvText);
+            } else {
+                // 降级到传统方法
+                this.fallbackCopyToClipboard(csvText);
+            }
+
+            // 成功反馈
+            copyBtn.textContent = '✅ Copied!';
+            copyBtn.className = copyBtn.className.replace('btn-info', 'btn-success');
+            this.showAlert(`Successfully copied ${this.resultData.length} rows to clipboard!`, 'success');
+
+            // 2秒后恢复按钮状态
+            setTimeout(() => {
+                copyBtn.textContent = originalText;
+                copyBtn.className = originalClass;
+                copyBtn.disabled = false;
+            }, 2000);
+
         } catch (error) {
             console.error('Copy failed:', error);
-            this.showAlert('Unable to copy to clipboard. Please try again.', 'error');
+            
+            // 错误反馈
+            copyBtn.textContent = '❌ Failed';
+            copyBtn.className = copyBtn.className.replace('btn-info', 'btn-danger');
+            this.showAlert('Unable to copy to clipboard. Please try selecting and copying manually.', 'error');
+            
+            // 2秒后恢复按钮状态
+            setTimeout(() => {
+                copyBtn.textContent = originalText;
+                copyBtn.className = originalClass;
+                copyBtn.disabled = false;
+            }, 2000);
+        }
+    }
+
+    // 添加降级复制方法（用于不支持现代API的浏览器）
+    fallbackCopyToClipboard(text) {
+        const textArea = document.createElement('textarea');
+        textArea.value = text;
+        textArea.style.position = 'fixed';
+        textArea.style.left = '-999999px';
+        textArea.style.top = '-999999px';
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        
+        try {
+            document.execCommand('copy');
+            textArea.remove();
+        } catch (err) {
+            textArea.remove();
+            throw err;
         }
     }
 
@@ -1539,21 +1636,17 @@ class UnpivotTool {
 
 // FAQ切换功能
 function toggleFAQ(element) {
-    const faqItem = element.closest('.faq-item');
-    const isActive = faqItem.classList.contains('active');
+    const answer = element.nextElementSibling;
+    const toggle = element.querySelector('.faq-toggle');
     
-    // 关闭所有其他FAQ项目
-    document.querySelectorAll('.faq-item.active').forEach(item => {
-        if (item !== faqItem) {
-            item.classList.remove('active');
-        }
-    });
-    
-    // 切换当前FAQ项目
-    if (isActive) {
-        faqItem.classList.remove('active');
+    if (answer.style.display === 'block') {
+        answer.style.display = 'none';
+        toggle.textContent = '+';
+        element.classList.remove('active');
     } else {
-        faqItem.classList.add('active');
+        answer.style.display = 'block';
+        toggle.textContent = '−';
+        element.classList.add('active');
     }
 }
 
