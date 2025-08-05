@@ -1,6 +1,22 @@
 # Unpivot Tool - Excel Data Transformation Tool
 
+🔗 **Live Demo: [unpivottool.com](https://unpivottool.com)**
+
 A free, browser-based tool for converting wide Excel tables to long format without Power Query complexity.
+
+## Features
+- ⚡ **Instant Conversion**: Transform Excel data in seconds
+- 🔒 **Local Processing**: All data stays in your browser
+- 🆓 **Completely Free**: No signup required
+- 📊 **Professional Results**: Clean, formatted output
+
+## Usage
+Visit [unpivottool.com](https://unpivottool.com) and start converting your Excel data instantly.
+
+## Tech Stack
+- HTML5/CSS3/JavaScript
+- Client-side processing
+- Responsive design
 
 ## Features
 
