@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="canonical" href="https://unpivottool.com/excel-tools/unmerge-fill">
+    
+    <!-- SEO Meta Tags -->
+    <title>Free Unmerge & Fill Tool - Split Merged Excel Cells Instantly</title>
+    <meta name="description" content="Instantly unmerge cells and fill empty data in Excel. Simple 3-step process: paste, process, copy. No complex formulas needed. Free local processing tool.">
+    <meta name="keywords" content="unmerge cells, fill empty cells, excel unmerge tool, split merged cells, excel cell filler, unmerge and fill excel, merged cells converter">
+    
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Free Unmerge & Fill Tool - Split Merged Excel Cells">
+    <meta property="og:description" content="Split merged Excel cells and auto-fill empty data in seconds. Simple paste, process, copy workflow.">
+    <meta property="og:url" content="https://unpivottool.com/excel-tools/unmerge-fill">
+    
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "Unmerge & Fill Tool - Excel Cell Splitter",
+      "description": "Instantly split merged Excel cells and fill empty data. Simple 3-step process with local processing - no complex formulas required.",
+      "url": "https://unpivottool.com/excel-tools/unmerge-fill",
+      "applicationCategory": "BusinessApplication",
+      "operatingSystem": "Web Browser",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    }
+    </script>
+    
+    <!-- Shared CSS -->
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="/excel-tools/unmerge-fill/tool-specific.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <nav class="nav">
+                <div class="nav-brand">🔧 Unmerge & Fill</div>
+                <ul class="nav-links">
+                    <li><a href="/">← Back to Unpivot Tool</a></li>
+                    <li><a href="/excel-tools/">All Tools</a></li>
+                </ul>
+                <div class="nav-info">
+                    <span>✅ 100% Free</span>
+                    <span>✅ Local Processing</span>
+                    <span>✅ No Signup</span>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1>Unmerge & Fill Tool - Split Excel Merged Cells Instantly</h1>
+            <p class="hero-subtitle">The simplest way to unmerge cells and fill empty data in Excel. Just paste your data, choose your action, and copy the results. No complex formulas or settings required.</p>
+            <div class="hero-features">
+                <span>🎯 Paste, Choose, Copy</span>
+                <span>⚡ Instant Results</span>
+                <span>🔒 Local Processing Only</span>
+                <span>📊 Works with Any Excel Data</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Quick Demo -->
+    <section class="demo-section">
+        <div class="container">
+            <h2>See the Magic: Split Merged Cells and Fill Empty Data</h2>
+            <div class="demo-grid">
+                <div class="demo-table-container">
+                    <h4>Before: Excel Data with Merged Cells (Hard to Process)</h4>
+                    <table class="demo-table">
+                        <tr><th>Department</th><th>Employee</th><th>Q1 Sales</th><th>Q2 Sales</th></tr>
+                        <tr><td>Sales</td><td>John Smith</td><td>75000</td><td>82000</td></tr>
+                        <tr><td></td><td>Sarah Wilson</td><td>68000</td><td>71000</td></tr>
+                        <tr><td></td><td>Mike Johnson</td><td>72000</td><td>76000</td></tr>
+                    </table>
+                    <p class="demo-caption">❌ Empty cells from merged ranges</p>
+                </div>
+                <div class="demo-arrow">
+                    <div class="conversion-info">
+                        <span class="arrow-desktop">→</span>
+                        <span class="arrow-mobile">↓</span>
+                        <div class="conversion-time">
+                            <strong>30 seconds</strong>
+                            <small>vs manual work</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="demo-table-container">
+                    <h4>After: Clean Data Ready for Analysis</h4>
+                    <table class="demo-table">
+                        <tr><th>Department</th><th>Employee</th><th>Q1 Sales</th><th>Q2 Sales</th></tr>
+                        <tr><td>Sales</td><td>John Smith</td><td>75000</td><td>82000</td></tr>
+                        <tr><td>Sales</td><td>Sarah Wilson</td><td>68000</td><td>71000</td></tr>
+                        <tr><td>Sales</td><td>Mike Johnson</td><td>72000</td><td>76000</td></tr>
+                    </table>
+                    <p class="demo-caption">✅ Perfect for charts, pivot tables, analysis</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Tool -->
+    <main class="main">
+        <div class="container">
+            <!-- Step 1: Input -->
+            <section id="step1" class="tool-section">
+                <h2>Step 1: Paste Your Excel Data with Merged Cells</h2>
+                <p class="step-description">📋 Copy your data from Excel and paste it here, or upload your file directly</p>
+                
+                <!-- Method Selection -->
+                <div class="method-tabs">
+                    <button class="tab-btn active" data-method="paste">📋 Paste Data</button>
+                    <button class="tab-btn" data-method="upload">📁 Upload File</button>
+                </div>
+
+                <!-- Paste Method -->
+                <div class="input-method active" data-method="paste">
+                    <div class="paste-area">
+                        <p class="paste-instruction">Paste or edit your Excel data with merged cells here:</p>
+                        <div class="table-container">
+                            <table id="data-grid" contenteditable="true">
+                                <tr>
+                                    <td>Department</td>
+                                    <td>Employee</td>
+                                    <td>Q1 Sales</td>
+                                    <td>Q2 Sales</td>
+                                </tr>
+                                <tr>
+                                    <td>Sales</td>
+                                    <td>John Smith</td>
+                                    <td>75000</td>
+                                    <td>82000</td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td>Sarah Wilson</td>
+                                    <td>68000</td>
+                                    <td>71000</td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td>Mike Johnson</td>
+                                    <td>72000</td>
+                                    <td>76000</td>
+                                </tr>
+                                <tr>
+                                    <td>Marketing</td>
+                                    <td>Lisa Brown</td>
+                                    <td>85000</td>
+                                    <td>89000</td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td>Tom Davis</td>
+                                    <td>62000</td>
+                                    <td>65000</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div style="margin-top: 1rem; display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                            <button id="expand-editor" class="btn btn-secondary">🔍 Expand Editor</button>
+                            <button id="clear-data" class="btn btn-secondary">🗑️ Clear All</button>
+                            <button id="add-row" class="btn btn-secondary">➕ Add Row</button>
+                            <button id="add-column" class="btn btn-secondary">➕ Add Column</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Upload Method -->
+                <div class="input-method" data-method="upload">
+                    <div class="upload-area">
+                        <div class="upload-zone" id="upload-zone">
+                            <div class="upload-icon">📁</div>
+                            <p><strong>Drop your Excel file here or click to browse</strong></p>
+                            <p>🔒 Files processed locally - never uploaded to servers</p>
+                            <p class="upload-formats">Supports: Excel (.xlsx, .xls) and CSV files up to 5MB</p>
+                            <input type="file" id="file-input" accept=".xlsx,.xls,.csv" hidden>
+                        </div>
+                        <div class="privacy-note">
+                            <h4>🛡️ Your Privacy is Protected:</h4>
+                            <ul>
+                                <li>✅ All processing happens in your browser</li>
+                                <li>✅ No data sent to our servers</li>
+                                <li>✅ No cookies or tracking</li>
+                                <li>✅ No account registration required</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Step 2: Action Selection -->
+            <section class="tool-section">
+                <h2>Step 2: Choose Your Action</h2>
+                <p class="step-description">🔧 Select what you want to do with your data - split merged cells or fill empty data</p>
+                
+                <div class="action-selection">
+                    <div class="action-card" data-action="split">
+                        <div class="action-icon">✂️</div>
+                        <h3>Split Merged Cells</h3>
+                        <p>Separate merged cells into individual cells. Perfect for data that was merged in Excel.</p>
+                        <button class="btn btn-primary action-btn" data-action="split">Split Cells</button>
+                    </div>
+                    
+                    <div class="action-card" data-action="fill">
+                        <div class="action-icon">🎨</div>
+                        <h3>Fill Empty Cells</h3>
+                        <p>Automatically fill empty cells with values from above. Great for data with gaps.</p>
+                        <button class="btn btn-primary action-btn" data-action="fill">Fill Cells</button>
+                    </div>
+                    
+                    <div class="action-card" data-action="both">
+                        <div class="action-icon">⚡</div>
+                        <h3>Split & Fill</h3>
+                        <p>Do both operations in one go. Split merged cells and fill any remaining empty cells.</p>
+                        <button class="btn btn-success action-btn" data-action="both">Split & Fill</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Step 3: Results -->
+            <section class="tool-section results-section" id="results-section" style="display: none;">
+                <h2>Step 3: Copy Your Results</h2>
+                <p class="step-description">✅ Your data has been processed - copy or download the results</p>
+                
+                <div class="results-header">
+                    <div class="results-info">
+                        <span id="results-count">Data processed successfully</span>
+                        <span class="time-saved">⚡ Saved you manual work!</span>
+                    </div>
+                    <div class="results-actions">
+                        <button id="copy-results" class="btn btn-primary">📋 Copy All</button>
+                        <button id="download-excel" class="btn btn-success">📊 Download Excel</button>
+                        <button id="download-csv" class="btn btn-secondary">📄 Download CSV</button>
+                    </div>
+                </div>
+                
+                <div class="results-preview">
+                    <div id="results-table" class="results-table">
+                        <!-- Results will be populated here -->
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Benefits Section -->
+    <section class="benefits-section">
+        <div class="container">
+            <h2>Why Use Our Unmerge & Fill Tool?</h2>
+            <div class="benefits-grid">
+                <div class="benefit-card">
+                    <div class="benefit-icon">⚡</div>
+                    <h3>Instant Processing</h3>
+                    <p>No need to manually fill hundreds of empty cells. Our tool automatically detects and fills merged cell data in seconds, saving you hours of tedious work.</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon">🎯</div>
+                    <h3>Simple 3-Step Process</h3>
+                    <p>Just paste your data, choose your action, and copy results. No complex Excel formulas, no VBA scripts, no learning curve required.</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon">🔒</div>
+                    <h3>100% Private & Secure</h3>
+                    <p>All processing happens locally in your browser. Your Excel data never leaves your computer - no uploads, no storage, no privacy concerns.</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon">💰</div>
+                    <h3>Completely Free</h3>
+                    <p>No subscription fees, no usage limits, no hidden costs. Access all unmerge and fill features forever without any payment or registration.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Use Cases -->
+    <section class="use-cases-section">
+        <div class="container">
+            <h2>Perfect Solutions for These Common Excel Challenges</h2>
+            <div class="use-cases-grid">
+                <div class="use-case">
+                    <div class="use-case-icon">📊</div>
+                    <h3>Financial Reports</h3>
+                    <p><strong>Problem:</strong> Excel reports with merged cells make data analysis impossible.</p>
+                    <p><strong>Solution:</strong> Split merged cells and fill empty data for clean analysis.</p>
+                </div>
+                <div class="use-case">
+                    <div class="use-case-icon">🏢</div>
+                    <h3>Sales Data</h3>
+                    <p><strong>Problem:</strong> Department headers merged across multiple rows.</p>
+                    <p><strong>Solution:</strong> Split and fill to create proper data structure for analysis.</p>
+                </div>
+                <div class="use-case">
+                    <div class="use-case-icon">📈</div>
+                    <h3>Survey Results</h3>
+                    <p><strong>Problem:</strong> Category headers merged in survey data.</p>
+                    <p><strong>Solution:</strong> Clean data for statistical analysis and reporting.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="faq-section">
+        <div class="container">
+            <h2>Frequently Asked Questions</h2>
+            <div class="faq-grid">
+                <div class="faq-column">
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            <h3>How does the split merged cells feature work?</h3>
+                            <span class="faq-toggle">+</span>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Our tool detects merged cell patterns and separates them into individual cells. It automatically identifies when cells were merged in Excel and restores the original structure.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            <h3>What's the difference between split and fill?</h3>
+                            <span class="faq-toggle">+</span>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Split separates merged cells into individual cells. Fill takes empty cells and fills them with values from above. Use both for complete data cleanup.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            <h3>Is my Excel data really safe and private?</h3>
+                            <span class="faq-toggle">+</span>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Yes! 100% local processing means your Excel data never leaves your browser. No uploads to servers, no data storage, no tracking cookies. Your privacy is completely protected.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="faq-column">
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            <h3>What Excel file formats can I process?</h3>
+                            <span class="faq-toggle">+</span>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Upload Excel (.xlsx, .xls) or CSV files, or paste data directly from any spreadsheet. After processing, download as Excel or CSV for use in any application.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            <h3>Do I need to create an account?</h3>
+                            <span class="faq-toggle">+</span>
+                        </div>
+                        <div class="faq-answer">
+                            <p>No registration required! Just visit the page and start processing Excel data. No passwords, no emails, no personal information needed. It's truly free and anonymous.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            <h3>Are there any file size limits?</h3>
+                            <span class="faq-toggle">+</span>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Excel files up to 5MB are supported, which covers thousands of rows. Since processing happens in your browser, very large Excel files may be slower depending on your device's performance.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>🔧 Free Unmerge & Fill Tool</h4>
+                    <p>Free Excel tool for splitting merged cells and filling empty data. Transform messy Excel data into clean, analysis-ready format instantly.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Features</h4>
+                    <ul>
+                        <li>⚡ Instant Excel processing</li>
+                        <li>🔒 Local processing</li>
+                        <li>💰 Completely free</li>
+                        <li>📊 Excel & CSV support</li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Privacy</h4>
+                    <ul>
+                        <li>No data collection</li>
+                        <li>No user tracking</li>
+                        <li>No account required</li>
+                        <li>Browser-only processing</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 UnpivotTool. Free Excel unmerge and fill tool with local processing. Your data stays private.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Expandable Modal Editor -->
+    <div id="modal-editor" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Full Table Editor</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="large-grid-container" class="large-grid-container">
+                    <!-- Large editable grid will be populated here -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="save-changes" class="btn btn-primary">Save Changes</button>
+                <button class="btn btn-secondary modal-close">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    <script src="/app.js"></script>
+    <script src="/excel-tools/unmerge-fill/tool-specific.js"></script>
+
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-QBEQGBK7GE"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-QBEQGBK7GE');
+    </script>
+</body>
+</html>
