@@ -48,73 +48,11 @@ body {
 
 .nav-info span {
     background: #f1f5f9;
-    color: #475569;
+    color: ##475569;
     padding: 0.25rem 0.75rem;
     border-radius: 20px;
     font-size: 0.875rem;
     font-weight: 500;
-}
-
-/* Dropdown Menu */
-.nav-dropdown {
-    position: relative;
-    display: inline-block;
-}
-
-.dropdown-btn {
-    background: #ffffff;
-    border: 2px solid #e5e7eb;
-    color: #374151;
-    padding: 0.5rem 1rem;
-    border-radius: 6px;
-    cursor: pointer;
-    font-weight: 500;
-    font-size: 0.875rem;
-    transition: all 0.2s ease;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.dropdown-btn:hover {
-    border-color: #3b82f6;
-    color: #3b82f6;
-}
-
-.dropdown-content {
-    display: none;
-    position: absolute;
-    top: 100%;
-    left: 0;
-    background: #ffffff;
-    min-width: 200px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
-    border: 1px solid #e5e7eb;
-    z-index: 1000;
-    margin-top: 0.5rem;
-}
-
-.nav-dropdown:hover .dropdown-content {
-    display: block;
-}
-
-.dropdown-content a {
-    color: #374151;
-    padding: 0.75rem 1rem;
-    text-decoration: none;
-    display: block;
-    transition: background-color 0.2s ease;
-    border-bottom: 1px solid #f3f4f6;
-}
-
-.dropdown-content a:last-child {
-    border-bottom: none;
-}
-
-.dropdown-content a:hover {
-    background-color: #f8fafc;
-    color: #3b82f6;
 }
 
 /* Hero Section */
@@ -838,28 +776,21 @@ body {
 /* Responsive Design */
 @media (max-width: 768px) {
     .hero h1 {
-        font-size: 1.75rem;
-        line-height: 1.2;
+        font-size: 2rem;
     }
     
     .hero-subtitle {
-        font-size: 1rem;
-        line-height: 1.5;
+        font-size: 1.125rem;
     }
     
     .hero-features {
         flex-direction: column;
-        gap: 0.75rem;
-    }
-    
-    .hero-features span {
-        font-size: 0.875rem;
-        padding: 0.375rem 0.75rem;
+        gap: 1rem;
     }
     
     .demo-grid {
         grid-template-columns: 1fr;
-        gap: 1.5rem;
+        gap: 2rem;
     }
     
     .arrow-desktop {
@@ -867,7 +798,7 @@ body {
     }
     
     .arrow-mobile {
-        display: block;
+    display: block;
     }
     
     .config-panel {
@@ -897,41 +828,12 @@ body {
         justify-content: center;
     }
     
-    .nav-info span {
-        font-size: 0.75rem;
-        padding: 0.25rem 0.5rem;
-    }
-    
     .method-tabs {
         flex-direction: column;
     }
     
     .action-buttons {
         justify-content: center;
-    }
-    
-    /* Mobile dropdown */
-    .nav-dropdown {
-        width: 100%;
-    }
-    
-    .dropdown-btn {
-        width: 100%;
-        justify-content: center;
-        font-size: 0.875rem;
-        padding: 0.75rem 1rem;
-    }
-    
-    .dropdown-content {
-        position: static;
-        box-shadow: none;
-        border: 1px solid #e5e7eb;
-        margin-top: 0.5rem;
-    }
-    
-    .dropdown-content a {
-        padding: 0.875rem 1rem;
-        font-size: 0.875rem;
     }
 }
 
@@ -1333,66 +1235,6 @@ body {
         opacity: 1;
         transform: translateY(0);
     }
-}
-
-/* 响应式设计 */
-
-/* Tools Overview */
-.tools-overview-section {
-    padding: 4rem 0;
-    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-}
-
-.tools-overview-section h2 {
-    text-align: center;
-    font-size: 2rem;
-    margin-bottom: 3rem;
-    color: #1f2937;
-}
-
-.tools-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 2rem;
-}
-
-.tool-card {
-    background: white;
-    padding: 2rem;
-    border-radius: 16px;
-    text-align: center;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-    transition: all 0.3s ease;
-    border: 2px solid transparent;
-}
-
-.tool-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-    border-color: #3b82f6;
-}
-
-.tool-icon {
-    font-size: 3rem;
-    margin-bottom: 1rem;
-}
-
-.tool-card h3 {
-    font-size: 1.25rem;
-    margin-bottom: 1rem;
-    color: #1f2937;
-    font-weight: 600;
-}
-
-.tool-card p {
-    color: #6b7280;
-    line-height: 1.6;
-    margin-bottom: 1.5rem;
-}
-
-.tool-card .btn {
-    width: 100%;
-    margin-top: auto;
 }
 
 /* 响应式设计 */
