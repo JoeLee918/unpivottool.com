@@ -1,5 +1,61 @@
 /* Unmerge & Fill Tool - Specific Styles */
 
+/* Merged Cells Demo Styling */
+.merged-cells-demo {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.merged-cells-demo th,
+.merged-cells-demo td {
+    border: 1px solid #d1d5db;
+    padding: 0.5rem;
+    text-align: left;
+}
+
+.merged-cell {
+    background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+    font-weight: 600;
+    color: #374151;
+    position: relative;
+}
+
+.merged-cell::after {
+    content: "Merged";
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    background: #3b82f6;
+    color: white;
+    font-size: 0.6rem;
+    padding: 0.125rem 0.25rem;
+    border-radius: 3px;
+    font-weight: 500;
+}
+
+/* Merged cell placeholder styling */
+.merged-cell-placeholder {
+    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%) !important;
+    border: 2px dashed #f59e0b !important;
+    position: relative;
+    color: #92400e;
+    font-style: italic;
+}
+
+.merged-cell-placeholder::after {
+    content: attr(data-merged-value);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(254, 243, 199, 0.9);
+    padding: 0.125rem 0.375rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    opacity: 0.8;
+}
+
 /* Action Selection Cards */
 .action-selection {
     display: grid;
