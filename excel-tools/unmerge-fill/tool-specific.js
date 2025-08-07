@@ -1,5 +1,37 @@
 // Unmerge & Fill Tool - Specific JavaScript Logic
 
+// 导航下拉菜单功能
+function initializeNavigationDropdown() {
+    const dropdownBtn = document.querySelector('.dropdown-btn');
+    const dropdownContent = document.querySelector('.dropdown-content');
+    
+    if (dropdownBtn && dropdownContent) {
+        // 点击按钮切换下拉菜单
+        dropdownBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            dropdownContent.classList.toggle('show');
+        });
+        
+        // 点击其他地方关闭下拉菜单
+        document.addEventListener('click', function(e) {
+            if (!dropdownBtn.contains(e.target) && !dropdownContent.contains(e.target)) {
+                dropdownContent.classList.remove('show');
+            }
+        });
+        
+        // 移动端触摸事件
+        dropdownBtn.addEventListener('touchstart', function(e) {
+            e.preventDefault();
+            dropdownContent.classList.toggle('show');
+        });
+        
+        console.log('✅ 导航下拉菜单初始化完成');
+    } else {
+        console.log('ℹ️ 未找到导航下拉菜单元素，可能不在当前页面');
+    }
+}
+
 class UnmergeFillTool {
     constructor() {
         console.log('🔧 UnmergeFillTool initializing...');
@@ -100,9 +132,6 @@ class UnmergeFillTool {
                 switch (action) {
                     case 'split':
                         this.processedData = this.splitMergedCells(this.currentData);
-                        break;
-                    case 'fill':
-                        this.processedData = this.fillEmptyCells(this.currentData);
                         break;
                     case 'both':
                         this.processedData = this.splitMergedCells(this.fillEmptyCells(this.currentData));
@@ -227,7 +256,6 @@ class UnmergeFillTool {
     getButtonText(action) {
         const texts = {
             'split': 'Split Cells',
-            'fill': 'Fill Cells',
             'both': 'Split & Fill'
         };
         return texts[action] || 'Process';
@@ -298,12 +326,34 @@ class UnmergeFillTool {
                     if (mergedValue) {
                         td.classList.add('merged-cell-placeholder');
                         td.setAttribute('data-merged-value', mergedValue);
+                        td.style.minHeight = '40px'; // 确保有足够高度显示placeholder
+                    }
+                }
+                
+                // Add merged cell styling for non-empty cells that are part of merged ranges
+                if (cell !== '' && cellIndex === 0 && rowIndex > 0) {
+                    // Check if this is the start of a merged cell
+                    let isMergedStart = true;
+                    for (let i = rowIndex - 1; i >= 0; i--) {
+                        if (this.currentData[i][cellIndex] !== '') {
+                            isMergedStart = false;
+                            break;
+                        }
+                    }
+                    if (isMergedStart) {
+                        td.classList.add('merged-cell');
+                        td.style.minHeight = '40px';
                     }
                 }
                 
                 // Add event listeners for editing
                 td.addEventListener('blur', () => {
                     this.currentData[rowIndex][cellIndex] = td.textContent;
+                });
+                
+                // Fix delete key issue
+                td.addEventListener('keydown', (e) => {
+                    e.stopPropagation(); // 防止事件冒泡
                 });
                 
                 tr.appendChild(td);
@@ -548,6 +598,7 @@ class UnmergeFillTool {
 
 // Initialize tool when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
+    initializeNavigationDropdown(); // Initialize dropdown
     window.unmergeFillTool = new UnmergeFillTool();
 });
 

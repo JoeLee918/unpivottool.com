@@ -39,6 +39,15 @@
     <!-- Shared CSS -->
     <link rel="stylesheet" href="../../styles.css">
     <link rel="stylesheet" href="tool-specific.css">
+    
+    <!-- Microsoft Clarity -->
+    <script type="text/javascript">
+        (function(c,l,a,r,i,t,y){
+            c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+            t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+            y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+        })(window, document, "clarity", "script", "sr4f04mgfe");
+    </script>
 </head>
 <body>
     <!-- Header -->
@@ -46,15 +55,18 @@
         <div class="container">
             <nav class="nav">
                 <div class="nav-brand">🔧 Unmerge & Fill</div>
-                <ul class="nav-links">
-                    <li><a href="/">← Back to Unpivot Tool</a></li>
-                    <li><a href="/excel-tools/">All Tools</a></li>
-                </ul>
                 <div class="nav-info">
                     <span>✅ 100% Free</span>
                     <span>✅ Local Processing</span>
                     <span>✅ No Signup</span>
                 </div>
+                <div class="nav-dropdown">
+                    <button class="dropdown-btn">Excel Tools ▼</button>
+                    <div class="dropdown-content">
+                        <a href="/">🔄 Unpivot Tool</a>
+                    </div>
+                </div>
+
             </nav>
         </div>
     </header>
@@ -62,13 +74,19 @@
     <!-- Hero Section -->
     <section class="hero">
         <div class="container">
-            <h1>Unmerge & Fill Tool - Split Excel Merged Cells Instantly</h1>
+            <h1>Unmerge & Fill Tool<br>Split Excel Merged Cells Instantly</h1>
             <p class="hero-subtitle">The simplest way to unmerge cells and fill empty data in Excel. Just paste your data, choose your action, and copy the results. No complex formulas or settings required.</p>
             <div class="hero-features">
                 <span>🎯 Paste, Choose, Copy</span>
                 <span>⚡ Instant Results</span>
                 <span>🔒 Local Processing Only</span>
                 <span>📊 Works with Any Excel Data</span>
+            </div>
+            <div class="hero-cta">
+                <button onclick="document.getElementById('step1').scrollIntoView({behavior: 'smooth'})" 
+                        class="btn btn-primary btn-large">
+                    🚀 Start Processing Now
+                </button>
             </div>
         </div>
     </section>
@@ -81,12 +99,13 @@
                 <div class="demo-table-container">
                     <h4>Before: Excel Data with Merged Cells (Hard to Process)</h4>
                     <table class="demo-table merged-cells-demo">
-                        <tr><th>Department</th><th>Employee</th><th>Q1 Sales</th><th>Q2 Sales</th></tr>
-                        <tr><td class="merged-cell" rowspan="3">Sales</td><td>John Smith</td><td>75000</td><td>82000</td></tr>
-                        <tr><td>Sarah Wilson</td><td>68000</td><td>71000</td></tr>
-                        <tr><td>Mike Johnson</td><td>72000</td><td>76000</td></tr>
-                        <tr><td class="merged-cell" rowspan="2">Marketing</td><td>Lisa Brown</td><td>85000</td><td>89000</td></tr>
-                        <tr><td>Tom Davis</td><td>62000</td><td>65000</td></tr>
+                        <tr><th>Department</th><th>Employee</th><th colspan="2">Q1 2024</th><th colspan="2">Q2 2024</th></tr>
+                        <tr><th></th><th></th><th>Jan</th><th>Feb</th><th>Apr</th><th>May</th></tr>
+                        <tr><td class="merged-cell" rowspan="3">Sales</td><td>John Smith</td><td>75000</td><td>82000</td><td>68000</td><td>71000</td></tr>
+                        <tr><td>Sarah Wilson</td><td>72000</td><td>76000</td><td>85000</td><td>89000</td></tr>
+                        <tr><td>Mike Johnson</td><td>62000</td><td>65000</td><td>58000</td><td>61000</td></tr>
+                        <tr><td class="merged-cell" rowspan="2">Marketing</td><td>Lisa Brown</td><td>85000</td><td>89000</td><td>92000</td><td>95000</td></tr>
+                        <tr><td>Tom Davis</td><td>62000</td><td>65000</td><td>68000</td><td>71000</td></tr>
                     </table>
                     <p class="demo-caption">❌ Empty cells from merged ranges</p>
                 </div>
@@ -105,8 +124,10 @@
                     <table class="demo-table">
                         <tr><th>Department</th><th>Employee</th><th>Q1 Sales</th><th>Q2 Sales</th></tr>
                         <tr><td>Sales</td><td>John Smith</td><td>75000</td><td>82000</td></tr>
-                        <tr><td>Sales</td><td>Sarah Wilson</td><td>68000</td><td>71000</td></tr>
-                        <tr><td>Sales</td><td>Mike Johnson</td><td>72000</td><td>76000</td></tr>
+                        <tr><td>Sales</td><td>Sarah Wilson</td><td>72000</td><td>76000</td></tr>
+                        <tr><td>Sales</td><td>Mike Johnson</td><td>62000</td><td>65000</td></tr>
+                        <tr><td>Marketing</td><td>Lisa Brown</td><td>85000</td><td>89000</td></tr>
+                        <tr><td>Marketing</td><td>Tom Davis</td><td>62000</td><td>65000</td></tr>
                     </table>
                     <p class="demo-caption">✅ Perfect for charts, pivot tables, analysis</p>
                 </div>
@@ -214,13 +235,6 @@
                         <button class="btn btn-primary action-btn" data-action="split">Split Cells</button>
                     </div>
                     
-                    <div class="action-card" data-action="fill">
-                        <div class="action-icon">🎨</div>
-                        <h3>Fill Empty Cells</h3>
-                        <p>Automatically fill empty cells with values from above. Great for data with gaps.</p>
-                        <button class="btn btn-primary action-btn" data-action="fill">Fill Cells</button>
-                    </div>
-                    
                     <div class="action-card" data-action="both">
                         <div class="action-icon">⚡</div>
                         <h3>Split & Fill</h3>
@@ -280,6 +294,16 @@
                     <div class="benefit-icon">💰</div>
                     <h3>Completely Free</h3>
                     <p>No subscription fees, no usage limits, no hidden costs. Access all unmerge and fill features forever without any payment or registration.</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon">📱</div>
+                    <h3>Works on Any Device</h3>
+                    <p>Use our tool on desktop, tablet, or mobile. Responsive design ensures perfect functionality across all devices and screen sizes.</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon">🚀</div>
+                    <h3>No Learning Required</h3>
+                    <p>Intuitive interface designed for everyone. No technical skills needed - just paste, choose, and copy. Get results in seconds.</p>
                 </div>
             </div>
         </div>
@@ -439,7 +463,6 @@
     <!-- Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
-    <script src="../../app.js"></script>
     <script src="tool-specific.js"></script>
 
     <!-- Google Analytics -->

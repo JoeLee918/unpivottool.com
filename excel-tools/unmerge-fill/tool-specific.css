@@ -40,6 +40,7 @@
     position: relative;
     color: #92400e;
     font-style: italic;
+    min-height: 40px;
 }
 
 .merged-cell-placeholder::after {
@@ -54,6 +55,28 @@
     font-size: 0.75rem;
     font-weight: 500;
     opacity: 0.8;
+}
+
+/* Merged cell styling for editable grid */
+#data-grid .merged-cell {
+    background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%) !important;
+    font-weight: 600;
+    color: #374151;
+    position: relative;
+    min-height: 40px;
+}
+
+#data-grid .merged-cell::after {
+    content: "Merged";
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    background: #3b82f6;
+    color: white;
+    font-size: 0.6rem;
+    padding: 0.125rem 0.25rem;
+    border-radius: 3px;
+    font-weight: 500;
 }
 
 /* Action Selection Cards */
