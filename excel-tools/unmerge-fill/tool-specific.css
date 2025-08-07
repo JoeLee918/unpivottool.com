@@ -38,12 +38,12 @@
     background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%) !important;
     border: 2px dashed #f59e0b !important;
     position: relative;
-    color: #92400e;
+    color: #92400e !important;
     font-style: italic;
     min-height: 40px;
 }
 
-.merged-cell-placeholder::after {
+.merged-cell-placeholder::before {
     content: attr(data-merged-value);
     position: absolute;
     top: 50%;
@@ -55,6 +55,7 @@
     font-size: 0.75rem;
     font-weight: 500;
     opacity: 0.8;
+    pointer-events: none;
 }
 
 /* Merged cell styling for editable grid */
@@ -77,6 +78,7 @@
     padding: 0.125rem 0.25rem;
     border-radius: 3px;
     font-weight: 500;
+    z-index: 10; /* 确保显示在最上层 */
 }
 
 /* Action Selection Cards */
@@ -253,13 +255,20 @@
 
 /* Enhanced Table Styling */
 #data-grid {
+    table-layout: fixed;
+    width: 100%;
+    border-collapse: collapse;
     border-radius: 8px;
     overflow: hidden;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
 }
 
 #data-grid td {
-    transition: all 0.2s ease;
+    min-height: 40px;
+    height: 40px;
+    overflow: hidden;
+    word-wrap: break-word;
+    transition: none; /* 移除可能导致跳动的过渡效果 */
     position: relative;
 }
 

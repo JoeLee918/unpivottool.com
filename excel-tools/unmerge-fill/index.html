@@ -97,16 +97,44 @@
             <h2>See the Magic: Split Merged Cells and Fill Empty Data</h2>
             <div class="demo-grid">
                 <div class="demo-table-container">
-                    <h4>Before: Excel Data with Merged Cells (Hard to Process)</h4>
-                    <table class="demo-table merged-cells-demo">
-                        <tr><th>Department</th><th>Employee</th><th colspan="2">Q1 2024</th><th colspan="2">Q2 2024</th></tr>
-                        <tr><th></th><th></th><th>Jan</th><th>Feb</th><th>Apr</th><th>May</th></tr>
-                        <tr><td class="merged-cell" rowspan="3">Sales</td><td>John Smith</td><td>75000</td><td>82000</td><td>68000</td><td>71000</td></tr>
-                        <tr><td>Sarah Wilson</td><td>72000</td><td>76000</td><td>85000</td><td>89000</td></tr>
-                        <tr><td>Mike Johnson</td><td>62000</td><td>65000</td><td>58000</td><td>61000</td></tr>
-                        <tr><td class="merged-cell" rowspan="2">Marketing</td><td>Lisa Brown</td><td>85000</td><td>89000</td><td>92000</td><td>95000</td></tr>
-                        <tr><td>Tom Davis</td><td>62000</td><td>65000</td><td>68000</td><td>71000</td></tr>
-                    </table>
+                                         <h4>Before: Excel Data with Merged Cells (Hard to Process)</h4>
+                     <table class="demo-table merged-cells-demo">
+                         <tr>
+                             <th>Department</th>
+                             <th>Employee</th>
+                             <th>Q1 Sales</th>
+                             <th>Q2 Sales</th>
+                         </tr>
+                         <tr>
+                             <td class="merged-cell" rowspan="3">Sales</td>
+                             <td>John Smith</td>
+                             <td>75000</td>
+                             <td>82000</td>
+                         </tr>
+                         <tr>
+                             <!-- 注意：这里不需要Department单元格，因为被上面的rowspan=3覆盖了 -->
+                             <td>Sarah Wilson</td>
+                             <td>68000</td>
+                             <td>71000</td>
+                         </tr>
+                         <tr>
+                             <!-- 同样，这里也不需要Department单元格 -->
+                             <td>Mike Johnson</td>
+                             <td>72000</td>
+                             <td>76000</td>
+                         </tr>
+                         <tr>
+                             <td class="merged-cell" rowspan="2">Marketing</td>
+                             <td>Lisa Brown</td>
+                             <td>85000</td>
+                             <td>89000</td>
+                         </tr>
+                         <tr>
+                             <td>Tom Davis</td>
+                             <td>62000</td>
+                             <td>65000</td>
+                         </tr>
+                     </table>
                     <p class="demo-caption">❌ Empty cells from merged ranges</p>
                 </div>
                 <div class="demo-arrow">
@@ -129,7 +157,7 @@
                         <tr><td>Marketing</td><td>Lisa Brown</td><td>85000</td><td>89000</td></tr>
                         <tr><td>Marketing</td><td>Tom Davis</td><td>62000</td><td>65000</td></tr>
                     </table>
-                    <p class="demo-caption">✅ Perfect for charts, pivot tables, analysis</p>
+                    <p class="demo-caption">✅ Clean data - ready for any analysis tool</p>
                 </div>
             </div>
         </div>
@@ -153,43 +181,11 @@
                 <div class="input-method active" data-method="paste">
                     <div class="paste-area">
                         <p class="paste-instruction">Paste or edit your Excel data with merged cells here:</p>
-                        <div class="table-container">
-                            <table id="data-grid" contenteditable="true">
-                                <tr>
-                                    <td>Department</td>
-                                    <td>Employee</td>
-                                    <td>Q1 Sales</td>
-                                    <td>Q2 Sales</td>
-                                </tr>
-                                <tr>
-                                    <td class="merged-cell" rowspan="3">Sales</td>
-                                    <td>John Smith</td>
-                                    <td>75000</td>
-                                    <td>82000</td>
-                                </tr>
-                                <tr>
-                                    <td>Sarah Wilson</td>
-                                    <td>68000</td>
-                                    <td>71000</td>
-                                </tr>
-                                <tr>
-                                    <td>Mike Johnson</td>
-                                    <td>72000</td>
-                                    <td>76000</td>
-                                </tr>
-                                <tr>
-                                    <td class="merged-cell" rowspan="2">Marketing</td>
-                                    <td>Lisa Brown</td>
-                                    <td>85000</td>
-                                    <td>89000</td>
-                                </tr>
-                                <tr>
-                                    <td>Tom Davis</td>
-                                    <td>62000</td>
-                                    <td>65000</td>
-                                </tr>
-                            </table>
-                        </div>
+                                                 <div class="table-container">
+                             <table id="data-grid" contenteditable="true">
+                                 <!-- Data grid will be populated by JavaScript -->
+                             </table>
+                         </div>
                         <div style="margin-top: 1rem; display: flex; gap: 0.5rem; flex-wrap: wrap;">
                             <button id="expand-editor" class="btn btn-secondary">🔍 Expand Editor</button>
                             <button id="clear-data" class="btn btn-secondary">🔄 Reset to Sample</button>

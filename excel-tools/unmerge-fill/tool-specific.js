@@ -283,11 +283,11 @@ class UnmergeFillTool {
     }
 
     loadDefaultData() {
-        // Load sample data with merged cells into the grid
+        // 修改示例数据，正确表示合并单元格的状态
         const sampleData = [
             ['Department', 'Employee', 'Q1 Sales', 'Q2 Sales'],
             ['Sales', 'John Smith', '75000', '82000'],
-            ['', 'Sarah Wilson', '68000', '71000'],
+            ['', 'Sarah Wilson', '68000', '71000'],  // 空字符串表示合并的单元格
             ['', 'Mike Johnson', '72000', '76000'],
             ['Marketing', 'Lisa Brown', '85000', '89000'],
             ['', 'Tom Davis', '62000', '65000']
@@ -301,21 +301,21 @@ class UnmergeFillTool {
         const grid = document.getElementById('data-grid');
         if (!grid) return;
 
-        // Clear existing content
+        // 清空并重建表格结构
         grid.innerHTML = '';
 
-        // Create table structure with merged cells support
         this.currentData.forEach((row, rowIndex) => {
             const tr = document.createElement('tr');
             
             row.forEach((cell, cellIndex) => {
                 const td = document.createElement('td');
-                td.textContent = cell;
                 td.contentEditable = true;
+                td.textContent = cell;
                 
-                // Add merged cell styling for empty cells that represent merged ranges
+                // 为空单元格添加合并单元格占位符样式
                 if (cell === '' && cellIndex === 0 && rowIndex > 0) {
-                    // Check if this is part of a merged cell
+                    td.classList.add('merged-cell-placeholder');
+                    // 查找对应的合并值
                     let mergedValue = '';
                     for (let i = rowIndex - 1; i >= 0; i--) {
                         if (this.currentData[i][cellIndex] !== '') {
@@ -323,39 +323,28 @@ class UnmergeFillTool {
                             break;
                         }
                     }
-                    if (mergedValue) {
-                        td.classList.add('merged-cell-placeholder');
-                        td.setAttribute('data-merged-value', mergedValue);
-                        td.style.minHeight = '40px'; // 确保有足够高度显示placeholder
-                    }
+                    td.setAttribute('data-merged-value', mergedValue);
                 }
                 
-                // Add merged cell styling for non-empty cells that are part of merged ranges
+                // 为非空的可能合并单元格添加样式
                 if (cell !== '' && cellIndex === 0 && rowIndex > 0) {
-                    // Check if this is the start of a merged cell
-                    let isMergedStart = true;
-                    for (let i = rowIndex - 1; i >= 0; i--) {
-                        if (this.currentData[i][cellIndex] !== '') {
-                            isMergedStart = false;
+                    // 检查下面是否有空单元格（表示这是合并的开始）
+                    let hasEmptyBelow = false;
+                    for (let i = rowIndex + 1; i < this.currentData.length; i++) {
+                        if (this.currentData[i][cellIndex] === '') {
+                            hasEmptyBelow = true;
+                            break;
+                        } else {
                             break;
                         }
                     }
-                    if (isMergedStart) {
+                    if (hasEmptyBelow) {
                         td.classList.add('merged-cell');
-                        td.style.minHeight = '40px';
                     }
                 }
                 
-                // Add event listeners for editing
-                td.addEventListener('blur', () => {
-                    this.currentData[rowIndex][cellIndex] = td.textContent;
-                });
-                
-                // Fix delete key issue
-                td.addEventListener('keydown', (e) => {
-                    e.stopPropagation(); // 防止事件冒泡
-                });
-                
+                // 添加事件监听器
+                this.addCellEventListeners(td, rowIndex, cellIndex);
                 tr.appendChild(td);
             });
             
@@ -511,24 +500,94 @@ class UnmergeFillTool {
         const grid = document.getElementById('data-grid');
         if (!grid) return;
 
-        // Handle paste events
+        // 处理删除键
+        grid.addEventListener('keydown', (e) => {
+            if (e.key === 'Delete' || e.key === 'Backspace') {
+                e.preventDefault(); // 防止默认行为
+                this.handleCellDeletion(e);
+            }
+        });
+
+        // 处理粘贴
         grid.addEventListener('paste', (e) => {
             e.preventDefault();
             const text = e.clipboardData.getData('text');
             this.parsePastedData(text);
         });
 
-        // Fix mobile delete key issue
-        grid.addEventListener('keydown', (e) => {
-            if (e.key === 'Backspace' || e.key === 'Delete') {
-                e.stopPropagation();
-            }
-        });
-
-        // Improve mobile input experience
+        // 防止表格跳动的输入处理
         grid.addEventListener('input', (e) => {
             if (e.target.tagName === 'TD') {
-                e.target.style.minHeight = 'auto';
+                const rowIndex = Array.from(e.target.parentNode.parentNode.children).indexOf(e.target.parentNode);
+                const cellIndex = Array.from(e.target.parentNode.children).indexOf(e.target);
+                
+                // 更新数据但不重建DOM
+                if (this.currentData[rowIndex] && this.currentData[rowIndex][cellIndex] !== undefined) {
+                    this.currentData[rowIndex][cellIndex] = e.target.textContent;
+                }
+            }
+        });
+    }
+
+    handleCellDeletion(e) {
+        const target = e.target;
+        
+        // 检查是否是全选删除
+        const selection = window.getSelection();
+        const selectedText = selection.toString();
+        const gridText = document.getElementById('data-grid').textContent;
+        
+        if (selectedText.trim().length >= gridText.trim().length * 0.8) {
+            // 全选删除：重置为空白数据
+            this.resetToEmptyGrid();
+        } else if (target.tagName === 'TD') {
+            // 单个单元格删除：只清空内容，不破坏结构
+            const rowIndex = Array.from(target.parentNode.parentNode.children).indexOf(target.parentNode);
+            const cellIndex = Array.from(target.parentNode.children).indexOf(target);
+            
+            target.textContent = '';
+            this.currentData[rowIndex][cellIndex] = '';
+            
+            // 移除合并单元格样式
+            target.classList.remove('merged-cell', 'merged-cell-placeholder');
+            target.removeAttribute('data-merged-value');
+        }
+    }
+
+    resetToEmptyGrid() {
+        // 创建空白4x5网格
+        this.currentData = Array(5).fill().map(() => Array(4).fill(''));
+        // 添加标题行
+        this.currentData[0] = ['Column 1', 'Column 2', 'Column 3', 'Column 4'];
+        
+        // 稳定地重建表格
+        this.updateDataGrid();
+        
+        // 设置焦点到第一个数据单元格
+        setTimeout(() => {
+            const firstDataCell = document.querySelector('#data-grid tr:nth-child(2) td:first-child');
+            if (firstDataCell) {
+                firstDataCell.focus();
+            }
+        }, 50);
+        
+        this.showAlert('Grid cleared and ready for new data', 'info');
+    }
+
+    addCellEventListeners(td, rowIndex, cellIndex) {
+        // 防抖的内容更新
+        let updateTimeout;
+        td.addEventListener('input', (e) => {
+            clearTimeout(updateTimeout);
+            updateTimeout = setTimeout(() => {
+                this.currentData[rowIndex][cellIndex] = td.textContent;
+            }, 100);
+        });
+        
+        // 防止默认的删除行为
+        td.addEventListener('keydown', (e) => {
+            if (e.key === 'Delete' || e.key === 'Backspace') {
+                e.stopPropagation();
             }
         });
     }
