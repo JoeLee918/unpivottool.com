@@ -95,7 +95,7 @@ body {
     margin-top: 0.5rem;
 }
 
-.nav-dropdown:hover .dropdown-content {
+.nav-dropdown .dropdown-content.show {
     display: block;
 }
 

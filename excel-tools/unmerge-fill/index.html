@@ -80,11 +80,13 @@
             <div class="demo-grid">
                 <div class="demo-table-container">
                     <h4>Before: Excel Data with Merged Cells (Hard to Process)</h4>
-                    <table class="demo-table">
+                    <table class="demo-table merged-cells-demo">
                         <tr><th>Department</th><th>Employee</th><th>Q1 Sales</th><th>Q2 Sales</th></tr>
-                        <tr><td>Sales</td><td>John Smith</td><td>75000</td><td>82000</td></tr>
-                        <tr><td></td><td>Sarah Wilson</td><td>68000</td><td>71000</td></tr>
-                        <tr><td></td><td>Mike Johnson</td><td>72000</td><td>76000</td></tr>
+                        <tr><td class="merged-cell" rowspan="3">Sales</td><td>John Smith</td><td>75000</td><td>82000</td></tr>
+                        <tr><td>Sarah Wilson</td><td>68000</td><td>71000</td></tr>
+                        <tr><td>Mike Johnson</td><td>72000</td><td>76000</td></tr>
+                        <tr><td class="merged-cell" rowspan="2">Marketing</td><td>Lisa Brown</td><td>85000</td><td>89000</td></tr>
+                        <tr><td>Tom Davis</td><td>62000</td><td>65000</td></tr>
                     </table>
                     <p class="demo-caption">❌ Empty cells from merged ranges</p>
                 </div>
@@ -139,31 +141,28 @@
                                     <td>Q2 Sales</td>
                                 </tr>
                                 <tr>
-                                    <td>Sales</td>
+                                    <td class="merged-cell" rowspan="3">Sales</td>
                                     <td>John Smith</td>
                                     <td>75000</td>
                                     <td>82000</td>
                                 </tr>
                                 <tr>
-                                    <td></td>
                                     <td>Sarah Wilson</td>
                                     <td>68000</td>
                                     <td>71000</td>
                                 </tr>
                                 <tr>
-                                    <td></td>
                                     <td>Mike Johnson</td>
                                     <td>72000</td>
                                     <td>76000</td>
                                 </tr>
                                 <tr>
-                                    <td>Marketing</td>
+                                    <td class="merged-cell" rowspan="2">Marketing</td>
                                     <td>Lisa Brown</td>
                                     <td>85000</td>
                                     <td>89000</td>
                                 </tr>
                                 <tr>
-                                    <td></td>
                                     <td>Tom Davis</td>
                                     <td>62000</td>
                                     <td>65000</td>
@@ -172,7 +171,7 @@
                         </div>
                         <div style="margin-top: 1rem; display: flex; gap: 0.5rem; flex-wrap: wrap;">
                             <button id="expand-editor" class="btn btn-secondary">🔍 Expand Editor</button>
-                            <button id="clear-data" class="btn btn-secondary">🗑️ Clear All</button>
+                            <button id="clear-data" class="btn btn-secondary">🔄 Reset to Sample</button>
                             <button id="add-row" class="btn btn-secondary">➕ Add Row</button>
                             <button id="add-column" class="btn btn-secondary">➕ Add Column</button>
                         </div>

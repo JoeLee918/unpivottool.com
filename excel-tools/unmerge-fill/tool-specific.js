@@ -255,7 +255,7 @@ class UnmergeFillTool {
     }
 
     loadDefaultData() {
-        // Load sample data into the grid
+        // Load sample data with merged cells into the grid
         const sampleData = [
             ['Department', 'Employee', 'Q1 Sales', 'Q2 Sales'],
             ['Sales', 'John Smith', '75000', '82000'],
@@ -276,7 +276,7 @@ class UnmergeFillTool {
         // Clear existing content
         grid.innerHTML = '';
 
-        // Create table structure
+        // Create table structure with merged cells support
         this.currentData.forEach((row, rowIndex) => {
             const tr = document.createElement('tr');
             
@@ -284,6 +284,22 @@ class UnmergeFillTool {
                 const td = document.createElement('td');
                 td.textContent = cell;
                 td.contentEditable = true;
+                
+                // Add merged cell styling for empty cells that represent merged ranges
+                if (cell === '' && cellIndex === 0 && rowIndex > 0) {
+                    // Check if this is part of a merged cell
+                    let mergedValue = '';
+                    for (let i = rowIndex - 1; i >= 0; i--) {
+                        if (this.currentData[i][cellIndex] !== '') {
+                            mergedValue = this.currentData[i][cellIndex];
+                            break;
+                        }
+                    }
+                    if (mergedValue) {
+                        td.classList.add('merged-cell-placeholder');
+                        td.setAttribute('data-merged-value', mergedValue);
+                    }
+                }
                 
                 // Add event listeners for editing
                 td.addEventListener('blur', () => {
@@ -298,9 +314,8 @@ class UnmergeFillTool {
     }
 
     clearData() {
-        this.currentData = [['']];
-        this.updateDataGrid();
-        this.showAlert('Data cleared', 'info');
+        this.loadDefaultData();
+        this.showAlert('Reset to sample data', 'success');
     }
 
     addRow() {
