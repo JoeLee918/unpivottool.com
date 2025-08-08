@@ -1477,37 +1477,16 @@ body {
 /* 响应式设计 */
 
 /* ===== Editable grid: merged placeholder visuals (shared) ===== */
-.merged-cell {
-  background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%) !important;
-  font-weight: 600;
-  color: #374151;
-  position: relative;
-  min-height: 40px;
-}
-.merged-cell::after {
-  content: "Merged";
-  position: absolute;
-  top: 2px; right: 2px;
-  background: #3b82f6; color: #fff; font-size: 0.6rem;
-  padding: 2px 4px; border-radius: 3px; z-index: 10;
-}
-.merged-cell-placeholder {
-  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%) !important;
-  border: 2px dashed #f59e0b !important;
-  position: relative;
-  color: #92400e !important;
-  font-style: italic;
-  min-height: 40px;
-}
-.merged-cell-placeholder::before {
-  content: attr(data-merged-value);
-  position: absolute;
-  top: 50%; left: 50%; transform: translate(-50%, -50%);
-  background: rgba(254,243,199,0.9);
-  padding: 2px 6px; border-radius: 4px;
-  font-size: 0.75rem; font-weight: 500; opacity: 0.8; pointer-events: none;
-}
+/* 现阶段按需求不再在首页显示任何合并占位视觉，保留类但不渲染明显样式 */
+.merged-cell { outline: none; }
+.merged-cell-placeholder { outline: none; }
 
 /* Grid stability for editable table */
 #data-grid { table-layout: fixed; width: 100%; border-collapse: collapse; }
 #data-grid td { min-height: 40px; height: 40px; overflow: hidden; word-wrap: break-word; transition: none; }
+
+/* 空单元格高亮（仅视觉，不修改数据） */
+.empty-cell {
+  background: #fffbea !important; /* Yellow-50 */
+  border: 2px dashed #facc15 !important; /* Amber-400 */
+}

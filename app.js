@@ -43,6 +43,12 @@ class UnpivotTool {
         this.treatBlanksAsMerged = false;
         // 合并分组（用于虚拟合并的展示与转换阶段拆分）
         this.merges = [];
+        // 高亮状态：按区域记忆是否开启标黄
+        this.highlightState = {
+            '#data-grid': false,
+            '#large-grid': false,
+            '#results-table table': false
+        };
         
         this.initializeEventListeners();
         this.loadDefaultData();
@@ -72,6 +78,34 @@ class UnpivotTool {
         dataGrid.addEventListener('input', this.handleTableEdit.bind(this));
         dataGrid.addEventListener('paste', this.handlePaste.bind(this));
         dataGrid.addEventListener('keydown', this.handleTableKeydown.bind(this));
+        // 统一处理批量删除，防止范围删除导致结构跳动
+        dataGrid.addEventListener('keydown', (e) => {
+            if (e.key === 'Delete' || e.key === 'Backspace') {
+                const selection = window.getSelection();
+                if (selection && selection.rangeCount > 0) {
+                    const range = selection.getRangeAt(0);
+                    if (dataGrid.contains(range.startContainer) && dataGrid.contains(range.endContainer)) {
+                        const selectedText = selection.toString();
+                        if (selectedText && selectedText.length > 0) {
+                            e.preventDefault();
+                            // 逐格清空所有被选中的单元格
+                            dataGrid.querySelectorAll('td').forEach(td => {
+                                if (selection.containsNode(td, true)) td.textContent = '';
+                            });
+                            // 保持结构，重新渲染
+                            this.extractTableData({ keepEmptyRows: true });
+                            this.updateTableDisplay();
+                            if (this.highlightState['#data-grid']) this.toggleEmptyHighlight('#data-grid');
+                            selection.removeAllRanges();
+                        }
+                    }
+                }
+            }
+        });
+
+        // 仅当存在空单元格时允许“标黄空格”
+        const toggleEmptyBtn = document.getElementById('toggle-empty-highlight');
+        if (toggleEmptyBtn) toggleEmptyBtn.addEventListener('click', () => this.toggleEmptyHighlight('#data-grid'));
 
         // 扩展编辑器
         const expandBtn = document.getElementById('expand-editor');
@@ -285,8 +319,13 @@ class UnpivotTool {
                 return;
             }
 
-            if (this.validateFileData(data)) {
-                this.loadDataToGrid(data);
+            const matrix = Array.isArray(data) ? data : (data && data.matrix ? data.matrix : []);
+            const merges = (data && data.merges) ? data.merges : [];
+
+            if (this.validateFileData(matrix)) {
+                // 上传后同样执行一次“合并展开填充”（严格空才填）
+                const expanded = this.expandMergesForConvert({ matrix, merges }, { keepTrueBlank: true });
+                this.loadDataToGrid(expanded, merges);
                 this.extractTableData();
                 this.updateColumnConfig();
                 
@@ -310,7 +349,8 @@ class UnpivotTool {
                     if (results.errors.length > 0) {
                         reject(new Error('CSV parsing failed'));
                     } else {
-                        resolve(results.data);
+                        const matrix = results.data;
+                        resolve({ matrix, merges: [] });
                     }
                 },
                 error: reject
@@ -326,15 +366,20 @@ class UnpivotTool {
                 try {
                     const data = new Uint8Array(e.target.result);
                     const workbook = XLSX.read(data, { type: 'array' });
-                    
-                    // 使用第一个工作表
                     const sheetName = workbook.SheetNames[0];
                     const worksheet = workbook.Sheets[sheetName];
-                    
-                    // 转换为数组
-                    const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
-                    // Excel上传保持空白，不做合并继承
-                    resolve(this.treatBlanksAsMerged ? this.handleMergedCells(jsonData) : jsonData);
+                    // 使用 defval 保留空白；blankrows: false 以去掉完全空行
+                    const matrixRaw = XLSX.utils.sheet_to_json(worksheet, { header: 1, defval: '', blankrows: false });
+                    const matrix = this.ensureRectangular(matrixRaw);
+                    const merges = (worksheet['!merges'] || []).map(r => ({
+                        id: `x_${r.s.r}_${r.s.c}`,
+                        top: r.s.r,
+                        left: r.s.c,
+                        rowSpan: (r.e.r - r.s.r + 1),
+                        colSpan: (r.e.c - r.s.c + 1),
+                        value: (matrix[r.s.r] && matrix[r.s.r][r.s.c]) ? String(matrix[r.s.r][r.s.c]).trim() : ''
+                    }));
+                    resolve({ matrix, merges });
                 } catch (error) {
                     reject(error);
                 }
@@ -367,7 +412,7 @@ class UnpivotTool {
     }
 
     // 将数据加载到表格
-    loadDataToGrid(data) {
+    loadDataToGrid(data, mergesOverride = null) {
         const grid = document.getElementById('data-grid');
         grid.innerHTML = '';
 
@@ -377,10 +422,15 @@ class UnpivotTool {
 
         // 保存当前数据与合并分组（展示阶段仅做检测，不做填充）
         this.currentData = displayData.map(row => row.slice());
-        this.merges = this.detectMergedGroups(this.currentData, { detectHorizontal: true });
+        this.merges = Array.isArray(mergesOverride) ? mergesOverride : this.detectMergedGroups(this.currentData, { detectHorizontal: true });
 
         // 渲染：带合并占位外观
         this.renderGridWithMerges(grid, this.currentData, this.merges);
+
+        // 根据是否存在空单元格，切换按钮可用态
+        const hasEmpty = this.currentData.some(row => row.some(cell => cell === '' || /^(?:\s|\u00A0)+$/.test(cell)));
+        const toggleEmptyBtn = document.getElementById('toggle-empty-highlight');
+        if (toggleEmptyBtn) toggleEmptyBtn.disabled = !hasEmpty;
 
         // 如果数据超过最大行数，显示提示
         if (data.length > maxRows) {
@@ -401,11 +451,13 @@ class UnpivotTool {
     handleTableEdit() {
         // 表格内容变化时重新提取数据
         setTimeout(() => {
-            this.extractTableData();
+            this.extractTableData({ keepEmptyRows: true });
             // 重新检测合并并按占位渲染（保持展示与数据一致）
             this.merges = this.detectMergedGroups(this.currentData, { detectHorizontal: true });
             this.updateTableDisplay();
             this.updateColumnConfig();
+            // 若区域高亮开着，自动重应用
+            if (this.highlightState['#data-grid']) this.toggleEmptyHighlight('#data-grid');
         }, 100);
     }
 
@@ -413,28 +465,36 @@ class UnpivotTool {
     handlePaste(e) {
         e.preventDefault();
         
-        // 获取粘贴数据
+        // 优先解析 HTML 表格（可读取 colspan/rowspan）
+        const html = e.clipboardData.getData('text/html');
+        if (html && /<table[\s\S]*?>[\s\S]*?<\/table>/i.test(html)) {
+            try {
+                const { matrix, merges } = this.parseHtmlTableFromClipboard(html);
+                // 需求：粘贴后即“拆分并填充合并空白”，但真实空白保留
+                const expanded = this.expandMergesForConvert({ matrix, merges }, { keepTrueBlank: true });
+                this.loadDataToGrid(expanded, merges);
+                this.extractTableData();
+                this.updateColumnConfig();
+                this.showAlert('Data imported from HTML table!', 'success');
+                return;
+            } catch (err) {
+                console.warn('HTML table parse failed, fallback to TSV:', err);
+            }
+        }
+
+        // 回退到 TSV 解析
         const paste = e.clipboardData.getData('text');
-        
-        console.log('📋 粘贴事件触发，数据长度:', paste ? paste.length : 0);
-        
         if (paste) {
             try {
-                console.log('🔄 开始解析粘贴数据...');
-                // 增强的解析逻辑，处理Excel特殊格式
                 const rows = this.parseExcelClipboard(paste);
-                console.log('✅ 数据解析完成，行数:', rows.length);
-                console.log('📊 解析结果预览:', rows.slice(0, 3));
-                
-                this.loadDataToGrid(rows);
+                // 粘贴TSV也执行“拆分并填充合并空白（启发式识别）”
+                const merges = this.detectMergedGroups(rows, { detectHorizontal: true });
+                const expanded = this.expandMergesForConvert({ matrix: rows, merges }, { keepTrueBlank: true });
+                this.loadDataToGrid(expanded, merges);
                 this.extractTableData();
                 this.updateColumnConfig();
                 this.showAlert('Data imported successfully!', 'success');
-                
-                // 🔧 更新全局window.unpivotTool的currentData
-                if (window.unpivotTool) {
-                    window.unpivotTool.currentData = this.currentData;
-                }
+                if (window.unpivotTool) window.unpivotTool.currentData = this.currentData;
             } catch (error) {
                 console.error('❌ 粘贴数据处理失败:', error);
                 this.showAlert('Failed to process pasted data. Please try again.', 'error');
@@ -708,13 +768,12 @@ class UnpivotTool {
 
     // Clean individual cell data
     cleanCell(cell) {
-        return cell
-            .replace(/^["']|["']$/g, '') // Remove surrounding quotes
-            .trim(); // Remove whitespace
+        // 仅移除包裹引号，不做 trim，保留空格/制表符/nbsp
+        return cell.replace(/^["']|["']$/g, '');
     }
 
     // 从表格提取数据
-    extractTableData() {
+    extractTableData(options = {}) {
         const grid = document.getElementById('data-grid');
         const rows = grid.querySelectorAll('tr');
         
@@ -726,7 +785,7 @@ class UnpivotTool {
             const rowData = [];
             
             cells.forEach((cell, colIndex) => {
-                const value = cell.textContent.trim();
+                const value = cell.textContent; // 保留空格
                 
                 if (rowIndex === 0) {
                     // 头部行，提取列名
@@ -735,9 +794,8 @@ class UnpivotTool {
                 rowData.push(value);
             });
             
-            if (rowData.some(cell => cell !== '')) {
-                this.currentData.push(rowData);
-            }
+            if (options.keepEmptyRows) this.currentData.push(rowData);
+            else if (rowData.some(cell => cell !== '')) this.currentData.push(rowData);
         });
     }
 
@@ -752,12 +810,12 @@ class UnpivotTool {
         for (let c = 0; c < cols; c++) {
             let r = 0;
             while (r < rows) {
-                const v = (matrix[r][c] || '').trim();
+                const v = (matrix[r][c] || '');
                 if (v !== '') {
                     let r2 = r + 1;
                     let emptyCount = 0;
-                    while (r2 < rows && (matrix[r2][c] || '').trim() === '') {
-                        const hasOtherValues = matrix[r2].some((cell, cc) => cc !== c && (cell || '').trim() !== '');
+                    while (r2 < rows && (matrix[r2][c] || '') === '') {
+                        const hasOtherValues = matrix[r2].some((cell, cc) => cc !== c && (cell || '') !== '');
                         if (!hasOtherValues) break;
                         emptyCount++; r2++;
                     }
@@ -773,14 +831,17 @@ class UnpivotTool {
         // 横向（可选）
         if (detectHorizontal) {
             for (let r = 0; r < rows; r++) {
-                const nonEmptyRatio = matrix[r].filter(x => (x || '').trim() !== '').length / (cols || 1);
-                if (nonEmptyRatio < 0.3) continue;
+                // 对疑似表头行（前3行）放宽阈值，便于识别 NGB / SZX / Grand total 等横向合并
+                const nonEmptyCount = matrix[r].filter(x => (x || '') !== '').length;
+                const nonEmptyRatio = nonEmptyCount / (cols || 1);
+                const ratioThreshold = r <= 3 ? 0.05 : 0.3;
+                if (nonEmptyRatio < ratioThreshold) continue;
                 let c = 0;
                 while (c < cols) {
-                    const v = (matrix[r][c] || '').trim();
+                    const v = (matrix[r][c] || '');
                     if (v !== '') {
                         let c2 = c + 1; let emptyCount = 0;
-                        while (c2 < cols && (matrix[r][c2] || '').trim() === '') { emptyCount++; c2++; }
+                        while (c2 < cols && (matrix[r][c2] || '') === '') { emptyCount++; c2++; }
                         if (emptyCount > 0) {
                             merges.push({ id: `m${id++}`, top: r, left: c, rowSpan: 1, colSpan: emptyCount + 1, value: v });
                             c = c2; continue;
@@ -805,6 +866,7 @@ class UnpivotTool {
                 const hit = merges.find(m => r >= m.top && r < m.top + m.rowSpan && c >= m.left && c < m.left + m.colSpan);
                 if (hit) {
                     if (r === hit.top && c === hit.left) td.classList.add('merged-cell');
+                    // 现在我们已经在粘贴/上传阶段直接填充展开，仍保留占位样式用于可视提示
                     else {
                         td.classList.add('merged-cell-placeholder');
                         td.setAttribute('data-merged-value', hit.value);
@@ -825,13 +887,86 @@ class UnpivotTool {
                     const isAnchor = r === m.top && c === m.left;
                     if (!isAnchor) {
                         if (keepTrueBlank) {
-                            if ((out[r][c] || '').trim() === '') out[r][c] = m.value;
+                            if ((out[r][c] || '') === '') out[r][c] = m.value;
                         } else out[r][c] = m.value;
                     }
                 }
             }
         });
         return out;
+    }
+
+    // 切换空单元格高亮（只在存在空单元格时可点）
+    toggleEmptyHighlight(selector) {
+        const grid = selector ? document.querySelector(selector) : document.getElementById('data-grid');
+        if (!grid) return;
+        let hasAny = false;
+        // 切换记忆状态
+        if (selector) this.highlightState[selector] = !this.highlightState[selector];
+        grid.querySelectorAll('tr').forEach((tr) => {
+            tr.querySelectorAll('td').forEach((td) => {
+                const v = td.textContent || '';
+                // 视觉空：全是空白字符（包含 NBSP）
+                const isVisualEmpty = v === '' || /^(?:\s|\u00A0)+$/.test(v);
+                if (isVisualEmpty) {
+                    hasAny = true;
+                    td.classList.toggle('empty-cell');
+                }
+            });
+        });
+        if (!hasAny) this.showAlert('No empty cells to highlight.', 'info');
+    }
+
+    // HTML表格解析为矩阵与合并模型
+    parseHtmlTableFromClipboard(html) {
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, 'text/html');
+        const table = doc.querySelector('table');
+        if (!table) throw new Error('No table found');
+
+        const rows = Array.from(table.rows);
+        // 预估最大列数
+        const totalCols = rows.reduce((max, tr) => {
+            let count = 0; Array.from(tr.cells).forEach(td => count += (parseInt(td.colSpan || 1))); return Math.max(max, count);
+        }, 0);
+
+        const matrix = Array.from({ length: rows.length }, () => Array(totalCols).fill(''));
+        const occupied = Array.from({ length: rows.length }, () => Array(totalCols).fill(false));
+        const merges = [];
+
+        rows.forEach((tr, r) => {
+            let cIndex = 0;
+            Array.from(tr.cells).forEach(td => {
+                while (cIndex < totalCols && occupied[r][cIndex]) cIndex++;
+                const rowSpan = parseInt(td.rowSpan || 1);
+                const colSpan = parseInt(td.colSpan || 1);
+                const value = (td.textContent ?? '');
+                matrix[r][cIndex] = value;
+                if (rowSpan > 1 || colSpan > 1) {
+                    merges.push({ top: r, left: cIndex, rowSpan, colSpan, value });
+                    for (let rr = r; rr < r + rowSpan; rr++) {
+                        for (let cc = cIndex; cc < cIndex + colSpan; cc++) {
+                            occupied[rr][cc] = true;
+                        }
+                    }
+                    occupied[r][cIndex] = true; // 锚点也标记为占用
+                } else {
+                    occupied[r][cIndex] = true;
+                }
+                cIndex += colSpan;
+            });
+        });
+
+        return { matrix: this.ensureRectangular(matrix), merges };
+    }
+
+    ensureRectangular(matrix) {
+        const maxCols = matrix.reduce((m, row) => Math.max(m, row.length), 0);
+        return matrix.map(row => {
+            const out = row.slice();
+            while (out.length < maxCols) out.push('');
+            return out;
+        });
     }
 
     // 更新列配置界面
@@ -1025,6 +1160,17 @@ class UnpivotTool {
         
         // 添加键盘导航支持
         this.addKeyboardNavigation(container);
+
+        // 浮框标黄按钮状态与事件
+        const modalHighlightBtn = document.getElementById('modal-highlight-empty');
+        if (modalHighlightBtn) {
+            const hasEmpty = this.currentData.some(row => row.some(cell => cell === '' || /^(?:\s|\u00A0)+$/.test(cell)));
+            modalHighlightBtn.disabled = !hasEmpty;
+            if (!modalHighlightBtn.__bound) {
+                modalHighlightBtn.addEventListener('click', () => this.toggleEmptyHighlight('#large-grid'));
+                modalHighlightBtn.__bound = true;
+            }
+        }
     }
 
     // 打开结果数据编辑器
@@ -1045,7 +1191,7 @@ class UnpivotTool {
         const tableData = [headers];
         
         this.resultData.forEach(row => {
-            const rowData = headers.map(header => row[header] || '');
+            const rowData = headers.map(header => (row[header] !== undefined ? row[header] : ''));
             tableData.push(rowData);
         });
         
@@ -1058,6 +1204,17 @@ class UnpivotTool {
         
         // 标记这是结果编辑模式
         modal.setAttribute('data-editing-mode', 'results');
+
+        // 结果浮框：标黄按钮状态与事件（视觉空判定）
+        const modalHighlightBtn = document.getElementById('modal-highlight-empty');
+        if (modalHighlightBtn) {
+            const hasEmpty = tableData.some(row => row.some(cell => cell === '' || /^(?:\s|\u00A0)+$/.test(cell || '')));
+            modalHighlightBtn.disabled = !hasEmpty;
+            if (!modalHighlightBtn.__bound) {
+                modalHighlightBtn.addEventListener('click', () => this.toggleEmptyHighlight('#large-grid'));
+                modalHighlightBtn.__bound = true;
+            }
+        }
     }
 
     // 添加键盘导航支持
@@ -1183,11 +1340,11 @@ class UnpivotTool {
             const cells = row.querySelectorAll('td');
             const rowData = [];
             cells.forEach(cell => {
-                rowData.push(cell.textContent.trim());
+                // 保留空格，以便结果浮框也遵循视觉空与数据空的区分
+                rowData.push(cell.textContent);
             });
-            if (rowData.some(cell => cell !== '')) {
-                newData.push(rowData);
-            }
+            // 结果编辑也保留空行，避免用户清空后结构跳变
+            newData.push(rowData);
         });
 
         if (editingMode === 'results') {
@@ -1211,6 +1368,8 @@ class UnpivotTool {
             
             // 重新显示结果
             this.displayResults();
+            // 若结果区域高亮开着，重应用
+            if (this.highlightState['#results-table table']) this.toggleEmptyHighlight('#results-table table');
             this.showAlert('Results have been updated!', 'success');
         } else {
             // 默认编辑输入数据模式
@@ -1363,7 +1522,8 @@ class UnpivotTool {
         this.resultData.forEach(row => {
             html += '<tr>';
             headers.forEach(header => {
-                html += `<td>${row[header] || ''}</td>`;
+                const v = row.hasOwnProperty(header) ? row[header] : '';
+                html += `<td>${v}</td>`;
             });
             html += '</tr>';
         });
@@ -1374,6 +1534,17 @@ class UnpivotTool {
 
         // 滚动到结果区域
         resultsSection.scrollIntoView({ behavior: 'smooth' });
+
+        // 结果标黄按钮启用与绑定
+        const highlightBtn = document.getElementById('highlight-results');
+        if (highlightBtn) {
+            const hasEmpty = this.resultData.some(row => Object.values(row).some(v => v === '' || /^(?:\s|\u00A0)+$/.test(v || '')));
+            highlightBtn.disabled = !hasEmpty;
+            if (!highlightBtn.__bound) {
+                highlightBtn.addEventListener('click', () => this.toggleEmptyHighlight('#results-table table'));
+                highlightBtn.__bound = true;
+            }
+        }
     }
 
     // 复制结果到剪贴板
@@ -1624,7 +1795,7 @@ class UnpivotTool {
         data.forEach((row, rowIndex) => {
             html += '<tr>';
             row.forEach((cell, colIndex) => {
-                const cellValue = (cell || '').toString().slice(0, 20); // 限制显示长度
+                const cellValue = (cell ?? '').toString().slice(0, 20); // 限制显示长度
                 const isHeader = rowIndex === 0 ? 'font-weight: bold; background: #f0f0f0;' : '';
                 html += `<td style="border: 1px solid #ddd; padding: 4px; font-size: 0.8rem; ${isHeader}">${cellValue}</td>`;
             });

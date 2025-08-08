@@ -35,7 +35,11 @@ function initializeNavigationDropdown() {
 class UnmergeFillTool {
     constructor() {
         console.log('🔧 UnmergeFillTool initializing...');
+        // 原始矩阵（展示阶段不做填充）
         this.currentData = [];
+        // 合并分组（虚拟合并模型）
+        this.merges = [];
+        // 处理结果矩阵
         this.processedData = [];
         this.selectedAction = null;
         
@@ -129,15 +133,24 @@ class UnmergeFillTool {
         // Process data based on action
         setTimeout(() => {
             try {
-                switch (action) {
-                    case 'split':
-                        this.processedData = this.splitMergedCells(this.currentData);
-                        break;
-                    case 'both':
-                        this.processedData = this.splitMergedCells(this.fillEmptyCells(this.currentData));
-                        break;
-                    default:
-                        throw new Error('Invalid action');
+                // 每次处理前同步提取与重检，保证可重复点击刷新
+                this.extractTableData();
+                this.merges = this.detectMergedGroups(this.currentData, { detectHorizontal: true });
+
+                // 统一基于“虚拟合并模型”展开
+                const expanded = this.expandMergesForConvert({
+                    matrix: this.currentData,
+                    merges: this.merges || []
+                }, { keepTrueBlank: true });
+
+                if (action === 'split') {
+                    // 仅拆分并填充“因合并导致的空白”，真实空白保留
+                    this.processedData = expanded;
+                } else if (action === 'both') {
+                    // 拆分后，再对剩余真实空白做保守式向上填充
+                    this.processedData = this.fillRemainingBlanks(expanded);
+                } else {
+                    throw new Error('Invalid action');
                 }
 
                 this.displayResults();
@@ -154,59 +167,18 @@ class UnmergeFillTool {
         }, 500);
     }
 
-    splitMergedCells(data) {
-        console.log('✂️ Splitting merged cells...');
-        const result = [];
-        
-        for (let i = 0; i < data.length; i++) {
-            const row = [...data[i]];
-            
-            // Detect and split merged cells
-            for (let j = 0; j < row.length; j++) {
-                if (row[j] === '' && i > 0) {
-                    // Look for the last non-empty value in this column
-                    let lastValue = '';
-                    for (let k = i - 1; k >= 0; k--) {
-                        if (data[k][j] !== '') {
-                            lastValue = data[k][j];
-                            break;
-                        }
-                    }
-                    row[j] = lastValue;
+    // 对“非合并造成的空白”进行保守式向上填充
+    fillRemainingBlanks(data) {
+        const out = data.map(row => row.slice());
+        for (let r = 1; r < out.length; r++) {
+            for (let c = 0; c < out[r].length; c++) {
+                const v = (out[r][c] || '').trim();
+                if (v === '' && out[r - 1] && (out[r - 1][c] || '').trim() !== '') {
+                    out[r][c] = out[r - 1][c];
                 }
             }
-            
-            result.push(row);
         }
-        
-        return result;
-    }
-
-    fillEmptyCells(data) {
-        console.log('🎨 Filling empty cells...');
-        const result = [];
-        
-        for (let i = 0; i < data.length; i++) {
-            const row = [...data[i]];
-            
-            // Fill empty cells with values from above
-            for (let j = 0; j < row.length; j++) {
-                if (row[j] === '' && i > 0) {
-                    let lastValue = '';
-                    for (let k = i - 1; k >= 0; k--) {
-                        if (data[k][j] !== '') {
-                            lastValue = data[k][j];
-                            break;
-                        }
-                    }
-                    row[j] = lastValue;
-                }
-            }
-            
-            result.push(row);
-        }
-        
-        return result;
+        return out;
     }
 
     displayResults() {
@@ -283,17 +255,17 @@ class UnmergeFillTool {
     }
 
     loadDefaultData() {
-        // 修改示例数据，正确表示合并单元格的状态
+        // 示例数据：第一列存在纵向合并
         const sampleData = [
             ['Department', 'Employee', 'Q1 Sales', 'Q2 Sales'],
             ['Sales', 'John Smith', '75000', '82000'],
-            ['', 'Sarah Wilson', '68000', '71000'],  // 空字符串表示合并的单元格
+            ['', 'Sarah Wilson', '68000', '71000'],
             ['', 'Mike Johnson', '72000', '76000'],
             ['Marketing', 'Lisa Brown', '85000', '89000'],
             ['', 'Tom Davis', '62000', '65000']
         ];
-
         this.currentData = sampleData;
+        this.merges = this.detectMergedGroups(this.currentData, { detectHorizontal: true });
         this.updateDataGrid();
     }
 
@@ -301,54 +273,15 @@ class UnmergeFillTool {
         const grid = document.getElementById('data-grid');
         if (!grid) return;
 
-        // 清空并重建表格结构
+        // 清空并用统一占位渲染
         grid.innerHTML = '';
+        this.renderGridWithMerges(grid, this.currentData, this.merges || []);
 
-        this.currentData.forEach((row, rowIndex) => {
-            const tr = document.createElement('tr');
-            
-            row.forEach((cell, cellIndex) => {
-                const td = document.createElement('td');
-                td.contentEditable = true;
-                td.textContent = cell;
-                
-                // 为空单元格添加合并单元格占位符样式
-                if (cell === '' && cellIndex === 0 && rowIndex > 0) {
-                    td.classList.add('merged-cell-placeholder');
-                    // 查找对应的合并值
-                    let mergedValue = '';
-                    for (let i = rowIndex - 1; i >= 0; i--) {
-                        if (this.currentData[i][cellIndex] !== '') {
-                            mergedValue = this.currentData[i][cellIndex];
-                            break;
-                        }
-                    }
-                    td.setAttribute('data-merged-value', mergedValue);
-                }
-                
-                // 为非空的可能合并单元格添加样式
-                if (cell !== '' && cellIndex === 0 && rowIndex > 0) {
-                    // 检查下面是否有空单元格（表示这是合并的开始）
-                    let hasEmptyBelow = false;
-                    for (let i = rowIndex + 1; i < this.currentData.length; i++) {
-                        if (this.currentData[i][cellIndex] === '') {
-                            hasEmptyBelow = true;
-                            break;
-                        } else {
-                            break;
-                        }
-                    }
-                    if (hasEmptyBelow) {
-                        td.classList.add('merged-cell');
-                    }
-                }
-                
-                // 添加事件监听器
-                this.addCellEventListeners(td, rowIndex, cellIndex);
-                tr.appendChild(td);
+        // 重新绑定每个单元格的输入监听（用于同步 this.currentData）
+        grid.querySelectorAll('tr').forEach((tr, r) => {
+            tr.querySelectorAll('td').forEach((td, c) => {
+                this.addCellEventListeners(td, r, c);
             });
-            
-            grid.appendChild(tr);
         });
     }
 
@@ -508,9 +441,22 @@ class UnmergeFillTool {
             }
         });
 
-        // 处理粘贴
+        // 处理粘贴：优先解析HTML表格，回退到TSV
         grid.addEventListener('paste', (e) => {
             e.preventDefault();
+            const html = e.clipboardData.getData('text/html');
+            if (html && /<table[\s\S]*?>[\s\S]*?<\/table>/i.test(html)) {
+                try {
+                    const { matrix, merges } = this.parseHtmlTableFromClipboard(html);
+                    this.currentData = matrix;
+                    this.merges = merges;
+                    this.updateDataGrid();
+                    this.showAlert('Data imported from HTML table', 'success');
+                    return;
+                } catch (err) {
+                    console.warn('HTML paste parse failed, fallback to TSV', err);
+                }
+            }
             const text = e.clipboardData.getData('text');
             this.parsePastedData(text);
         });
@@ -525,6 +471,13 @@ class UnmergeFillTool {
                 if (this.currentData[rowIndex] && this.currentData[rowIndex][cellIndex] !== undefined) {
                     this.currentData[rowIndex][cellIndex] = e.target.textContent;
                 }
+
+                // 轻度防抖后重检合并并按占位渲染
+                clearTimeout(this.__recheckTimer);
+                this.__recheckTimer = setTimeout(() => {
+                    this.merges = this.detectMergedGroups(this.currentData, { detectHorizontal: true });
+                    this.updateDataGrid();
+                }, 120);
             }
         });
     }
@@ -593,11 +546,11 @@ class UnmergeFillTool {
     }
 
     parsePastedData(text) {
-        const lines = text.split('\n').filter(line => line.trim());
-        this.currentData = lines.map(line => 
-            line.split('\t').map(cell => cell.trim())
-        );
-        
+        const lines = text.replace(/\r\n?|\n/g, '\n').split('\n');
+        const data = lines.map(line => line.split('\t').map(cell => cell.trim()));
+        // 保留原始空白，展示阶段仅检测+占位
+        this.currentData = data.filter(row => row.some(cell => cell !== ''));
+        this.merges = this.detectMergedGroups(this.currentData, { detectHorizontal: true });
         this.updateDataGrid();
         this.showAlert('Data pasted successfully', 'success');
     }
@@ -652,6 +605,157 @@ class UnmergeFillTool {
         URL.revokeObjectURL(url);
 
         this.showAlert('CSV file downloaded', 'success');
+    }
+
+    // HTML表格解析为矩阵与合并
+    parseHtmlTableFromClipboard(html) {
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, 'text/html');
+        const table = doc.querySelector('table');
+        if (!table) throw new Error('No table');
+
+        const rows = Array.from(table.rows);
+        const totalCols = rows.reduce((max, tr) => {
+            const count = Array.from(tr.cells).reduce((c, td) => c + (parseInt(td.colSpan || 1)), 0);
+            return Math.max(max, count);
+        }, 0);
+
+        const matrix = Array.from({ length: rows.length }, () => Array(totalCols).fill(''));
+        const occupied = Array.from({ length: rows.length }, () => Array(totalCols).fill(false));
+        const merges = [];
+
+        rows.forEach((tr, r) => {
+            let cIndex = 0;
+            Array.from(tr.cells).forEach(td => {
+                while (cIndex < totalCols && occupied[r][cIndex]) cIndex++;
+                const rs = parseInt(td.rowSpan || 1);
+                const cs = parseInt(td.colSpan || 1);
+                const value = (td.textContent || '').trim();
+                matrix[r][cIndex] = value;
+                if (rs > 1 || cs > 1) {
+                    merges.push({ top: r, left: cIndex, rowSpan: rs, colSpan: cs, value });
+                    for (let rr = r; rr < r + rs; rr++) {
+                        for (let cc = cIndex; cc < cIndex + cs; cc++) occupied[rr][cc] = true;
+                    }
+                } else {
+                    occupied[r][cIndex] = true;
+                }
+                cIndex += cs;
+            });
+        });
+
+        return { matrix: this.ensureRectangular(matrix), merges };
+    }
+
+    ensureRectangular(matrix) {
+        const maxCols = matrix.reduce((m, row) => Math.max(m, row.length), 0);
+        return matrix.map(row => { const out = row.slice(); while (out.length < maxCols) out.push(''); return out; });
+    }
+    // ===== 共享：虚拟合并模型（与首页一致） =====
+    detectMergedGroups(matrix, { detectHorizontal = true } = {}) {
+        const merges = [];
+        const rows = matrix.length;
+        const cols = rows ? matrix[0].length : 0;
+        let id = 0;
+
+        // 纵向
+        for (let c = 0; c < cols; c++) {
+            let r = 0;
+            while (r < rows) {
+                const v = (matrix[r][c] || '').trim();
+                if (v !== '') {
+                    let r2 = r + 1; let emptyCount = 0;
+                    while (r2 < rows && (matrix[r2][c] || '').trim() === '') {
+                        const hasOtherValues = matrix[r2].some((cell, cc) => cc !== c && (cell || '').trim() !== '');
+                        if (!hasOtherValues) break;
+                        emptyCount++; r2++;
+                    }
+                    if (emptyCount > 0) {
+                        merges.push({ id: `m${id++}`, top: r, left: c, rowSpan: emptyCount + 1, colSpan: 1, value: v });
+                        r = r2; continue;
+                    }
+                }
+                r++;
+            }
+        }
+
+        // 横向（可选）
+        if (detectHorizontal) {
+            for (let r = 0; r < rows; r++) {
+                const nonEmptyCount = matrix[r].filter(x => (x || '').trim() !== '').length;
+                const nonEmptyRatio = nonEmptyCount / (cols || 1);
+                const ratioThreshold = r <= 3 ? 0.05 : 0.3; // 表头更宽松
+                if (nonEmptyRatio < ratioThreshold) continue;
+                let c = 0;
+                while (c < cols) {
+                    const v = (matrix[r][c] || '').trim();
+                    if (v !== '') {
+                        let c2 = c + 1; let emptyCount = 0;
+                        while (c2 < cols && (matrix[r][c2] || '').trim() === '') { emptyCount++; c2++; }
+                        if (emptyCount > 0) {
+                            merges.push({ id: `m${id++}`, top: r, left: c, rowSpan: 1, colSpan: emptyCount + 1, value: v });
+                            c = c2; continue;
+                        }
+                    }
+                    c++;
+                }
+            }
+        }
+
+        return merges;
+    }
+
+    renderGridWithMerges(grid, matrix, merges) {
+        grid.innerHTML = '';
+        matrix.forEach((row, r) => {
+            const tr = document.createElement('tr');
+            row.forEach((cell, c) => {
+                const td = document.createElement('td');
+                td.contentEditable = true;
+                td.textContent = cell || '';
+                const hit = merges.find(m => r >= m.top && r < m.top + m.rowSpan && c >= m.left && c < m.left + m.colSpan);
+                if (hit) {
+                    if (r === hit.top && c === hit.left) td.classList.add('merged-cell');
+                    else {
+                        td.classList.add('merged-cell-placeholder');
+                        td.setAttribute('data-merged-value', hit.value);
+                    }
+                }
+                tr.appendChild(td);
+            });
+            grid.appendChild(tr);
+        });
+    }
+
+    expandMergesForConvert(model, { keepTrueBlank = true } = {}) {
+        const { matrix, merges } = model;
+        const out = matrix.map(row => row.slice());
+        merges.forEach(m => {
+            for (let r = m.top; r < m.top + m.rowSpan; r++) {
+                for (let c = m.left; c < m.left + m.colSpan; c++) {
+                    const isAnchor = r === m.top && c === m.left;
+                    if (!isAnchor) {
+                        if (keepTrueBlank) {
+                            if ((out[r][c] || '').trim() === '') out[r][c] = m.value;
+                        } else out[r][c] = m.value;
+                    }
+                }
+            }
+        });
+        return out;
+    }
+
+    // 提取当前可编辑表格为矩阵
+    extractTableData() {
+        const grid = document.getElementById('data-grid');
+        const rows = grid.querySelectorAll('tr');
+        const matrix = [];
+        rows.forEach(tr => {
+            const row = [];
+            tr.querySelectorAll('td').forEach(td => row.push(td.textContent.trim()));
+            if (row.some(v => v !== '')) matrix.push(row);
+        });
+        this.currentData = matrix;
     }
 }
 

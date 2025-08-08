@@ -217,6 +217,7 @@
                         <button id="reset-sample" class="btn btn-secondary"> Reset to Sample</button>
                         <button id="add-row" class="btn btn-secondary"> Add Row</button>
                         <button id="add-column" class="btn btn-secondary"> Add Column</button>
+                        <button id="toggle-empty-highlight" class="btn btn-secondary" disabled> Highlight Empty Cells</button>
                     </div>
                 </div>
 
@@ -313,6 +314,7 @@
                         <button id="copy-all" class="btn btn-secondary">📋 Copy All</button>
                         <button id="download-excel" class="btn btn-success">📊 Download Excel</button>
                         <button id="download-csv" class="btn btn-secondary">📄 Download CSV</button>
+                        <button id="highlight-results" class="btn btn-secondary" disabled>Highlight Empty Cells</button>
                     </div>
                 </div>
                 
@@ -541,6 +543,7 @@
                 </div>
             </div>
             <div class="modal-footer">
+                <button id="modal-highlight-empty" class="btn btn-secondary" disabled>Highlight Empty Cells</button>
                 <button id="save-changes" class="btn btn-primary">Save Changes</button>
                 <button class="btn btn-secondary modal-close">Cancel</button>
             </div>

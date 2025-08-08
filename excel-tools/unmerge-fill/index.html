@@ -187,10 +187,10 @@
                              </table>
                          </div>
                         <div style="margin-top: 1rem; display: flex; gap: 0.5rem; flex-wrap: wrap;">
-                            <button id="expand-editor" class="btn btn-secondary">🔍 Expand Editor</button>
-                            <button id="clear-data" class="btn btn-secondary">🔄 Reset to Sample</button>
-                            <button id="add-row" class="btn btn-secondary">➕ Add Row</button>
-                            <button id="add-column" class="btn btn-secondary">➕ Add Column</button>
+                            <button id="expand-editor" class="btn btn-secondary">Expand Editor</button>
+                            <button id="clear-data" class="btn btn-secondary">Reset to Sample</button>
+                            <button id="add-row" class="btn btn-secondary">Add Row</button>
+                            <button id="add-column" class="btn btn-secondary">Add Column</button>
                         </div>
                     </div>
                 </div>
@@ -224,6 +224,14 @@
                 <p class="step-description">🔧 Select what you want to do with your data - split merged cells or fill empty data</p>
                 
                 <div class="action-selection">
+
+                    <div class="action-card" data-action="both">
+                        <div class="action-icon">⚡</div>
+                        <h3>Split & Fill</h3>
+                        <p>Do both operations in one go. Split merged cells and fill any remaining empty cells.</p>
+                        <button class="btn btn-success action-btn" data-action="both">Split & Fill</button>
+                    </div>
+                    
                     <div class="action-card" data-action="split">
                         <div class="action-icon">✂️</div>
                         <h3>Split Merged Cells</h3>
@@ -231,12 +239,7 @@
                         <button class="btn btn-primary action-btn" data-action="split">Split Cells</button>
                     </div>
                     
-                    <div class="action-card" data-action="both">
-                        <div class="action-icon">⚡</div>
-                        <h3>Split & Fill</h3>
-                        <p>Do both operations in one go. Split merged cells and fill any remaining empty cells.</p>
-                        <button class="btn btn-success action-btn" data-action="both">Split & Fill</button>
-                    </div>
+                  
                 </div>
             </section>
 

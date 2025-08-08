@@ -31,10 +31,11 @@ Visit [unpivottool.com](https://unpivottool.com) and start converting your Excel
 ## Recent Updates
 
 ### Latest UI/UX Improvements
-- Enhanced FAQ layout with better visual hierarchy
-- Fixed Excel grid height consistency
-- Added smooth alert animations for user feedback
-- Improved table styling with Excel-like borders
+- Unified "virtual merge model" across Home and Unmerge tools
+- Step1 now visually preserves merged ranges with placeholders
+- Step2 conversion is idempotent; repeated clicks refresh correctly
+- Expanded cells only fill blanks created by merges; true blanks stay empty
+- Softer placeholder visuals (neutral gray, dashed borders)
 
 ### Previous Fixes
 - Limited display to 20 rows for better performance
@@ -56,3 +57,9 @@ python -m http.server 3000
 
 # Open in browser
 http://localhost:3000
+
+## Changelog 2025-08-08
+
+- feat(unmerge): reuse virtual merge detection and expansion in `excel-tools/unmerge-fill/tool-specific.js`
+- fix(home): preserve merged appearance on paste and after edits; make Convert repeatable
+- style: tone down merged placeholders in `styles.css` for cleaner look
