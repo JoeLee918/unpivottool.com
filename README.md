@@ -30,12 +30,12 @@ Visit [unpivottool.com](https://unpivottool.com) and start converting your Excel
 
 ## Recent Updates
 
-### Latest UI/UX Improvements
-- Unified "virtual merge model" across Home and Unmerge tools
-- Step1 now visually preserves merged ranges with placeholders
-- Step2 conversion is idempotent; repeated clicks refresh correctly
-- Expanded cells only fill blanks created by merges; true blanks stay empty
-- Softer placeholder visuals (neutral gray, dashed borders)
+### Unmerge & Fill (Single-box, auto processing)
+- UI: Single-box workflow — paste or upload, results appear automatically below.
+- Behavior: Always performs Unmerge & Fill automatically; no action selection.
+- Controls: Removed full-screen editor modal; replaced "Reset to Sample" with "Clear All" (no confirmation).
+- Limits: CSV support retained; upload limit enforced at 5MB.
+- Copy: SEO/Demo/FAQ updated to emphasize "Paste, Done" and remove any "3-step" phrasing.
 
 ### Previous Fixes
 - Limited display to 20 rows for better performance
@@ -63,3 +63,9 @@ http://localhost:3000
 - feat(unmerge): reuse virtual merge detection and expansion in `excel-tools/unmerge-fill/tool-specific.js`
 - fix(home): preserve merged appearance on paste and after edits; make Convert repeatable
 - style: tone down merged placeholders in `styles.css` for cleaner look
+
+## Changelog 2025-01-27
+
+- feat(unmerge): migrate to single-box auto-processing UI; remove steps and modal editor
+- perf(unmerge): debounce auto processing by data size; add 5MB upload guard
+- docs: update page copy and README to "Paste, Done"; rename button to "Clear All"

@@ -41,7 +41,8 @@ class UnmergeFillTool {
         this.merges = [];
         // 处理结果矩阵
         this.processedData = [];
-        this.selectedAction = null;
+        // 自动处理防抖定时器
+        this.__autoTimer = null;
         
         this.initializeEventListeners();
         this.loadDefaultData();
@@ -49,45 +50,11 @@ class UnmergeFillTool {
     }
 
     initializeEventListeners() {
-        // Method switching
-        document.querySelectorAll('.tab-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const method = btn.dataset.method;
-                
-                // Update active tab
-                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                
-                // Show corresponding method
-                document.querySelectorAll('.input-method').forEach(m => m.classList.remove('active'));
-                document.querySelector(`[data-method="${method}"]`).classList.add('active');
-            });
+        // 单框：仅 Clear All 按钮
+        document.getElementById('clear-all')?.addEventListener('click', () => {
+            this.resetToEmptyGrid();
+            this.showAlert('Cleared all', 'info');
         });
-
-        // Action card selection
-        document.querySelectorAll('.action-card').forEach(card => {
-            card.addEventListener('click', (e) => {
-                if (e.target.classList.contains('action-btn')) return;
-                
-                const action = card.dataset.action;
-                this.selectAction(action);
-            });
-        });
-
-        // Action buttons
-        document.querySelectorAll('.action-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                const action = btn.dataset.action;
-                this.processData(action);
-            });
-        });
-
-        // Data management
-        document.getElementById('expand-editor')?.addEventListener('click', this.openFullEditor.bind(this));
-        document.getElementById('clear-data')?.addEventListener('click', this.clearData.bind(this));
-        document.getElementById('add-row')?.addEventListener('click', this.addRow.bind(this));
-        document.getElementById('add-column')?.addEventListener('click', this.addColumn.bind(this));
 
         // Results actions
         document.getElementById('copy-results')?.addEventListener('click', this.copyResults.bind(this));
@@ -101,34 +68,15 @@ class UnmergeFillTool {
         this.setupDataGridEvents();
     }
 
-    selectAction(action) {
-        // Remove previous selection
-        document.querySelectorAll('.action-card').forEach(card => {
-            card.classList.remove('selected');
-        });
+    // 已移除 action 选择逻辑
 
-        // Select new action
-        const selectedCard = document.querySelector(`[data-action="${action}"]`);
-        if (selectedCard) {
-            selectedCard.classList.add('selected');
-            this.selectedAction = action;
-        }
-
-        console.log(`🎯 Selected action: ${action}`);
-    }
-
-    processData(action) {
+    processData(action = 'both') {
         if (!this.currentData.length) {
             this.showAlert('Please add some data first', 'error');
             return;
         }
 
-        console.log(`🔧 Processing data with action: ${action}`);
-        
-        // Show loading state
-        const btn = document.querySelector(`[data-action="${action}"] .action-btn`);
-        btn.classList.add('loading');
-        btn.textContent = 'Processing...';
+        console.log(`🔧 Processing data (auto) with action: ${action}`);
 
         // Process data based on action
         setTimeout(() => {
@@ -154,15 +102,11 @@ class UnmergeFillTool {
                 }
 
                 this.displayResults();
-                this.showAlert(`Data processed successfully! ${this.processedData.length} rows generated.`, 'success');
+                this.showAlert(`Done. ${this.processedData.length} rows processed.`, 'success');
                 
             } catch (error) {
                 console.error('Processing error:', error);
                 this.showAlert('Error processing data. Please check your input.', 'error');
-            } finally {
-                // Remove loading state
-                btn.classList.remove('loading');
-                btn.textContent = this.getButtonText(action);
             }
         }, 500);
     }
@@ -214,9 +158,8 @@ class UnmergeFillTool {
         tableHTML += '</tbody></table>';
         resultsTable.innerHTML = tableHTML;
 
-        // Show results section
+        // 同框显示结果
         resultsSection.style.display = 'block';
-        resultsSection.scrollIntoView({ behavior: 'smooth' });
 
         // Add success animation
         resultsSection.classList.add('success-animation');
@@ -225,13 +168,7 @@ class UnmergeFillTool {
         }, 600);
     }
 
-    getButtonText(action) {
-        const texts = {
-            'split': 'Split Cells',
-            'both': 'Split & Fill'
-        };
-        return texts[action] || 'Process';
-    }
+    // 按钮文案函数已移除（不再需要）
 
     showAlert(message, type = 'info') {
         // Remove existing alerts
@@ -255,17 +192,10 @@ class UnmergeFillTool {
     }
 
     loadDefaultData() {
-        // 示例数据：第一列存在纵向合并
-        const sampleData = [
-            ['Department', 'Employee', 'Q1 Sales', 'Q2 Sales'],
-            ['Sales', 'John Smith', '75000', '82000'],
-            ['', 'Sarah Wilson', '68000', '71000'],
-            ['', 'Mike Johnson', '72000', '76000'],
-            ['Marketing', 'Lisa Brown', '85000', '89000'],
-            ['', 'Tom Davis', '62000', '65000']
-        ];
-        this.currentData = sampleData;
-        this.merges = this.detectMergedGroups(this.currentData, { detectHorizontal: true });
+        // 空白占位：B2（4列 x 5行；首行为列头）
+        this.currentData = Array(5).fill(0).map(() => Array(4).fill(''));
+        this.currentData[0] = ['Column 1', 'Column 2', 'Column 3', 'Column 4'];
+        this.merges = [];
         this.updateDataGrid();
     }
 
@@ -283,74 +213,16 @@ class UnmergeFillTool {
                 this.addCellEventListeners(td, r, c);
             });
         });
+
+        // 网格更新后自动调度处理（防抖）
+        this.scheduleAutoProcess();
     }
 
-    clearData() {
-        this.loadDefaultData();
-        this.showAlert('Reset to sample data', 'success');
-    }
+    // 移除旧的 clearData（改为 resetToEmptyGrid）
 
-    addRow() {
-        const newRow = new Array(this.currentData[0]?.length || 1).fill('');
-        this.currentData.push(newRow);
-        this.updateDataGrid();
-        this.showAlert('Row added', 'info');
-    }
+    // 移除增行/增列功能
 
-    addColumn() {
-        this.currentData.forEach(row => row.push(''));
-        this.updateDataGrid();
-        this.showAlert('Column added', 'info');
-    }
-
-    openFullEditor() {
-        const modal = document.getElementById('modal-editor');
-        const container = document.getElementById('large-grid-container');
-        
-        if (!modal || !container) return;
-
-        // Create large grid
-        let gridHTML = '<table>';
-        this.currentData.forEach(row => {
-            gridHTML += '<tr>';
-            row.forEach(cell => {
-                gridHTML += `<td contenteditable="true">${cell}</td>`;
-            });
-            gridHTML += '</tr>';
-        });
-        gridHTML += '</table>';
-        
-        container.innerHTML = gridHTML;
-        modal.style.display = 'flex';
-
-        // Save changes button
-        document.getElementById('save-changes')?.addEventListener('click', () => {
-            this.saveChangesFromModal();
-            modal.style.display = 'none';
-        });
-
-        // Close button
-        document.querySelectorAll('.modal-close').forEach(btn => {
-            btn.addEventListener('click', () => {
-                modal.style.display = 'none';
-            });
-        });
-    }
-
-    saveChangesFromModal() {
-        const container = document.getElementById('large-grid-container');
-        const rows = container.querySelectorAll('tr');
-        
-        this.currentData = [];
-        rows.forEach(row => {
-            const cells = row.querySelectorAll('td');
-            const rowData = Array.from(cells).map(cell => cell.textContent);
-            this.currentData.push(rowData);
-        });
-
-        this.updateDataGrid();
-        this.showAlert('Changes saved', 'success');
-    }
+    // 移除大编辑器逻辑
 
     setupFileUpload() {
         const uploadZone = document.getElementById('upload-zone');
@@ -391,7 +263,13 @@ class UnmergeFillTool {
 
     handleFileUpload(file) {
         console.log('📁 Processing file:', file.name);
-        
+        // 5MB 限制
+        const MAX = 5 * 1024 * 1024;
+        if (file.size > MAX) {
+            this.showAlert('File is too large. Please upload files up to 5MB.', 'error');
+            return;
+        }
+
         const reader = new FileReader();
         reader.onload = (e) => {
             try {
@@ -401,6 +279,7 @@ class UnmergeFillTool {
                     this.processExcel(e.target.result);
                 }
                 this.showAlert(`File "${file.name}" loaded successfully`, 'success');
+                this.scheduleAutoProcess();
             } catch (error) {
                 console.error('File processing error:', error);
                 this.showAlert('Error processing file. Please check the format.', 'error');
@@ -418,6 +297,7 @@ class UnmergeFillTool {
         ).filter(row => row.some(cell => cell !== ''));
         
         this.updateDataGrid();
+        this.scheduleAutoProcess();
     }
 
     processExcel(content) {
@@ -427,6 +307,7 @@ class UnmergeFillTool {
         this.currentData = XLSX.utils.sheet_to_json(firstSheet, { header: 1 });
         
         this.updateDataGrid();
+        this.scheduleAutoProcess();
     }
 
     setupDataGridEvents() {
@@ -452,6 +333,7 @@ class UnmergeFillTool {
                     this.merges = merges;
                     this.updateDataGrid();
                     this.showAlert('Data imported from HTML table', 'success');
+                    this.scheduleAutoProcess();
                     return;
                 } catch (err) {
                     console.warn('HTML paste parse failed, fallback to TSV', err);
@@ -534,6 +416,8 @@ class UnmergeFillTool {
             clearTimeout(updateTimeout);
             updateTimeout = setTimeout(() => {
                 this.currentData[rowIndex][cellIndex] = td.textContent;
+                // 输入稳定后自动处理
+                this.scheduleAutoProcess();
             }, 100);
         });
         
@@ -545,6 +429,17 @@ class UnmergeFillTool {
         });
     }
 
+    // 自动处理调度：根据数据规模设置防抖时间
+    scheduleAutoProcess() {
+        if (!this.currentData || this.currentData.length === 0) return;
+        clearTimeout(this.__autoTimer);
+        const cells = (this.currentData.length * (this.currentData[0]?.length || 0)) || 0;
+        let delay = 200;
+        if (cells > 2000) delay = 350;
+        if (cells > 10000) delay = 500;
+        this.__autoTimer = setTimeout(() => this.processData('both'), delay);
+    }
+
     parsePastedData(text) {
         const lines = text.replace(/\r\n?|\n/g, '\n').split('\n');
         const data = lines.map(line => line.split('\t').map(cell => cell.trim()));
@@ -553,6 +448,7 @@ class UnmergeFillTool {
         this.merges = this.detectMergedGroups(this.currentData, { detectHorizontal: true });
         this.updateDataGrid();
         this.showAlert('Data pasted successfully', 'success');
+        this.scheduleAutoProcess();
     }
 
     copyResults() {

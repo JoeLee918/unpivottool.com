@@ -8,9 +8,9 @@
     <link rel="canonical" href="https://unpivottool.com/excel-tools/unmerge-fill">
     
     <!-- SEO Meta Tags -->
-    <title>Free Unmerge & Fill Tool - Split Merged Excel Cells Instantly</title>
-    <meta name="description" content="Instantly unmerge cells and fill empty data in Excel. Simple 3-step process: paste, process, copy. No complex formulas needed. Free local processing tool.">
-    <meta name="keywords" content="unmerge cells, fill empty cells, excel unmerge tool, split merged cells, excel cell filler, unmerge and fill excel, merged cells converter">
+    <title>Free Auto Unmerge & Fill for Excel</title>
+    <meta name="description" content="Paste or upload Excel with merged cells and it's done. We auto unmerge and fill in your browser. 100% local, no steps, Excel & CSV supported.">
+    <meta name="keywords" content="auto unmerge cells, fill blanks, excel unmerge tool, split merged cells, excel filler, unmerge and fill excel, merged cells converter">
     
     <!-- Open Graph -->
     <meta property="og:type" content="website">
@@ -23,8 +23,8 @@
     {
       "@context": "https://schema.org",
       "@type": "SoftwareApplication",
-      "name": "Unmerge & Fill Tool - Excel Cell Splitter",
-      "description": "Instantly split merged Excel cells and fill empty data. Simple 3-step process with local processing - no complex formulas required.",
+      "name": "Auto Unmerge & Fill for Excel",
+      "description": "Paste or upload Excel with merged cells and get clean data instantly. 100% local processing in your browser.",
       "url": "https://unpivottool.com/excel-tools/unmerge-fill",
       "applicationCategory": "BusinessApplication",
       "operatingSystem": "Web Browser",
@@ -74,16 +74,16 @@
     <!-- Hero Section -->
     <section class="hero">
         <div class="container">
-            <h1>Unmerge & Fill Tool<br>Split Excel Merged Cells Instantly</h1>
-            <p class="hero-subtitle">The simplest way to unmerge cells and fill empty data in Excel. Just paste your data, choose your action, and copy the results. No complex formulas or settings required.</p>
+            <h1>Unmerge & Fill, Automatically</h1>
+            <p class="hero-subtitle">Paste or upload Excel with merged cells. We instantly unmerge and fill — no steps, no configs, 100% local.</p>
             <div class="hero-features">
-                <span>🎯 Paste, Choose, Copy</span>
+                <span>🎯 Paste, Done</span>
                 <span>⚡ Instant Results</span>
                 <span>🔒 Local Processing Only</span>
                 <span>📊 Works with Any Excel Data</span>
             </div>
             <div class="hero-cta">
-                <button onclick="document.getElementById('step1').scrollIntoView({behavior: 'smooth'})" 
+                <button onclick="document.getElementById('tool').scrollIntoView({behavior: 'smooth'})" 
                         class="btn btn-primary btn-large">
                     🚀 Start Processing Now
                 </button>
@@ -163,108 +163,56 @@
         </div>
     </section>
 
-    <!-- Main Tool -->
+    <!-- Main Tool (Single Box) -->
     <main class="main">
         <div class="container">
-            <!-- Step 1: Input -->
-            <section id="step1" class="tool-section">
-                <h2>Step 1: Paste Your Excel Data with Merged Cells</h2>
-                <p class="step-description">📋 Copy your data from Excel and paste it here, or upload your file directly</p>
-                
-                <!-- Method Selection -->
-                <div class="method-tabs">
-                    <button class="tab-btn active" data-method="paste">📋 Paste Data</button>
-                    <button class="tab-btn" data-method="upload">📁 Upload File</button>
-                </div>
+            <section id="tool" class="tool-section">
+                <h2>Paste or Upload — We’ll Auto Unmerge & Fill</h2>
+                <p class="step-description">📋 Paste your table here or drop a file. Processing happens automatically in your browser.</p>
 
-                <!-- Paste Method -->
-                <div class="input-method active" data-method="paste">
-                    <div class="paste-area">
-                        <p class="paste-instruction">Paste or edit your Excel data with merged cells here:</p>
-                                                 <div class="table-container">
-                             <table id="data-grid" contenteditable="true">
-                                 <!-- Data grid will be populated by JavaScript -->
-                             </table>
-                         </div>
-                        <div style="margin-top: 1rem; display: flex; gap: 0.5rem; flex-wrap: wrap;">
-                            <button id="expand-editor" class="btn btn-secondary">Expand Editor</button>
-                            <button id="clear-data" class="btn btn-secondary">Reset to Sample</button>
-                            <button id="add-row" class="btn btn-secondary">Add Row</button>
-                            <button id="add-column" class="btn btn-secondary">Add Column</button>
-                        </div>
+                <div class="paste-area">
+                    <div class="table-container">
+                        <table id="data-grid" contenteditable="true">
+                            <!-- Data grid will be populated by JavaScript -->
+                        </table>
+                    </div>
+                    <div style="margin-top: 1rem; display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                        <button id="clear-all" class="btn btn-secondary">Clear All</button>
                     </div>
                 </div>
 
-                <!-- Upload Method -->
-                <div class="input-method" data-method="upload">
-                    <div class="upload-area">
-                        <div class="upload-zone" id="upload-zone">
-                            <div class="upload-icon">📁</div>
-                            <p><strong>Drop your Excel file here or click to browse</strong></p>
-                            <p>🔒 Files processed locally - never uploaded to servers</p>
-                            <p class="upload-formats">Supports: Excel (.xlsx, .xls) and CSV files up to 5MB</p>
-                            <input type="file" id="file-input" accept=".xlsx,.xls,.csv" hidden>
-                        </div>
-                        <div class="privacy-note">
-                            <h4>🛡️ Your Privacy is Protected:</h4>
-                            <ul>
-                                <li>✅ All processing happens in your browser</li>
-                                <li>✅ No data sent to our servers</li>
-                                <li>✅ No cookies or tracking</li>
-                                <li>✅ No account registration required</li>
-                            </ul>
-                        </div>
+                <div class="upload-area" style="margin-top: 1rem;">
+                    <div class="upload-zone" id="upload-zone">
+                        <div class="upload-icon">📁</div>
+                        <p><strong>Drop your Excel file here or click to browse</strong></p>
+                        <p>🔒 Files processed locally - never uploaded to servers</p>
+                        <p class="upload-formats">Supports: Excel (.xlsx, .xls) and CSV files up to 5MB</p>
+                        <input type="file" id="file-input" accept=".xlsx,.xls,.csv" hidden>
                     </div>
                 </div>
-            </section>
 
-            <!-- Step 2: Action Selection -->
-            <section class="tool-section">
-                <h2>Step 2: Choose Your Action</h2>
-                <p class="step-description">🔧 Select what you want to do with your data - split merged cells or fill empty data</p>
-                
-                <div class="action-selection">
-
-                    <div class="action-card" data-action="both">
-                        <div class="action-icon">⚡</div>
-                        <h3>Split & Fill</h3>
-                        <p>Do both operations in one go. Split merged cells and fill any remaining empty cells.</p>
-                        <button class="btn btn-success action-btn" data-action="both">Split & Fill</button>
+                <section class="tool-section results-section" id="results-section" style="display: none; margin-top: 2rem;">
+                    <h2>Processed Results</h2>
+                    <p class="step-description">✅ Automatically unmerged and filled — copy or download below</p>
+                    
+                    <div class="results-header">
+                        <div class="results-info">
+                            <span id="results-count">Data processed successfully</span>
+                            <span class="time-saved">⚡ Saved you manual work!</span>
+                        </div>
+                        <div class="results-actions">
+                            <button id="copy-results" class="btn btn-primary">📋 Copy All</button>
+                            <button id="download-excel" class="btn btn-success">📊 Download Excel</button>
+                            <button id="download-csv" class="btn btn-secondary">📄 Download CSV</button>
+                        </div>
                     </div>
                     
-                    <div class="action-card" data-action="split">
-                        <div class="action-icon">✂️</div>
-                        <h3>Split Merged Cells</h3>
-                        <p>Separate merged cells into individual cells. Perfect for data that was merged in Excel.</p>
-                        <button class="btn btn-primary action-btn" data-action="split">Split Cells</button>
+                    <div class="results-preview">
+                        <div id="results-table" class="results-table">
+                            <!-- Results will be populated here -->
+                        </div>
                     </div>
-                    
-                  
-                </div>
-            </section>
-
-            <!-- Step 3: Results -->
-            <section class="tool-section results-section" id="results-section" style="display: none;">
-                <h2>Step 3: Copy Your Results</h2>
-                <p class="step-description">✅ Your data has been processed - copy or download the results</p>
-                
-                <div class="results-header">
-                    <div class="results-info">
-                        <span id="results-count">Data processed successfully</span>
-                        <span class="time-saved">⚡ Saved you manual work!</span>
-                    </div>
-                    <div class="results-actions">
-                        <button id="copy-results" class="btn btn-primary">📋 Copy All</button>
-                        <button id="download-excel" class="btn btn-success">📊 Download Excel</button>
-                        <button id="download-csv" class="btn btn-secondary">📄 Download CSV</button>
-                    </div>
-                </div>
-                
-                <div class="results-preview">
-                    <div id="results-table" class="results-table">
-                        <!-- Results will be populated here -->
-                    </div>
-                </div>
+                </section>
             </section>
         </div>
     </main>
@@ -281,8 +229,8 @@
                 </div>
                 <div class="benefit-card">
                     <div class="benefit-icon">🎯</div>
-                    <h3>Simple 3-Step Process</h3>
-                    <p>Just paste your data, choose your action, and copy results. No complex Excel formulas, no VBA scripts, no learning curve required.</p>
+                    <h3>Paste, Done</h3>
+                    <p>Just paste or upload and it’s done. No buttons to click, no complex formulas, no learning curve required.</p>
                 </div>
                 <div class="benefit-card">
                     <div class="benefit-icon">🔒</div>
@@ -343,21 +291,21 @@
                 <div class="faq-column">
                     <div class="faq-item">
                         <div class="faq-question" onclick="toggleFAQ(this)">
-                            <h3>How does the split merged cells feature work?</h3>
+                            <h3>What happens after I paste?</h3>
                             <span class="faq-toggle">+</span>
                         </div>
                         <div class="faq-answer">
-                            <p>Our tool detects merged cell patterns and separates them into individual cells. It automatically identifies when cells were merged in Excel and restores the original structure.</p>
+                            <p>We automatically unmerge cells and fill remaining blanks from above. Results appear below the editor ready to copy or download.</p>
                         </div>
                     </div>
                     
                     <div class="faq-item">
                         <div class="faq-question" onclick="toggleFAQ(this)">
-                            <h3>What's the difference between split and fill?</h3>
+                            <h3>Can I turn off filling?</h3>
                             <span class="faq-toggle">+</span>
                         </div>
                         <div class="faq-answer">
-                            <p>Split separates merged cells into individual cells. Fill takes empty cells and fills them with values from above. Use both for complete data cleanup.</p>
+                            <p>Not at the moment. The tool always unmerges and fills to produce a clean, analysis‑ready output.</p>
                         </div>
                     </div>
                     
@@ -440,24 +388,7 @@
         </div>
     </footer>
 
-    <!-- Expandable Modal Editor -->
-    <div id="modal-editor" class="modal" style="display: none;">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Full Table Editor</h3>
-                <button class="modal-close">&times;</button>
-            </div>
-            <div class="modal-body">
-                <div id="large-grid-container" class="large-grid-container">
-                    <!-- Large editable grid will be populated here -->
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button id="save-changes" class="btn btn-primary">Save Changes</button>
-                <button class="btn btn-secondary modal-close">Cancel</button>
-            </div>
-        </div>
-    </div>
+    <!-- Modal editor removed in single-box design -->
 
     <!-- Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
