@@ -41,6 +41,8 @@ class UnpivotTool {
         this.resultData = [];
         // 是否将空白单元格按“合并单元格”规则自动继承填充（首页默认关闭）
         this.treatBlanksAsMerged = false;
+        // 合并分组（用于虚拟合并的展示与转换阶段拆分）
+        this.merges = [];
         
         this.initializeEventListeners();
         this.loadDefaultData();
@@ -214,7 +216,12 @@ class UnpivotTool {
 
     // 加载默认示例数据
     loadDefaultData() {
+        // 从当前表格提取初始数据
         this.extractTableData();
+        // 初始即进行一次合并检测并按占位渲染，确保Step1也呈现合并外观
+        this.merges = this.detectMergedGroups(this.currentData, { detectHorizontal: true });
+        this.updateTableDisplay();
+        // 同步列配置
         this.updateColumnConfig();
     }
 
@@ -368,16 +375,12 @@ class UnpivotTool {
         const maxRows = 20;
         const displayData = data.slice(0, maxRows);
 
-        displayData.forEach((row, rowIndex) => {
-            const tr = document.createElement('tr');
-            row.forEach((cell, colIndex) => {
-                const td = document.createElement('td');
-                td.textContent = cell || '';
-                td.contentEditable = true;
-                tr.appendChild(td);
-            });
-            grid.appendChild(tr);
-        });
+        // 保存当前数据与合并分组（展示阶段仅做检测，不做填充）
+        this.currentData = displayData.map(row => row.slice());
+        this.merges = this.detectMergedGroups(this.currentData, { detectHorizontal: true });
+
+        // 渲染：带合并占位外观
+        this.renderGridWithMerges(grid, this.currentData, this.merges);
 
         // 如果数据超过最大行数，显示提示
         if (data.length > maxRows) {
@@ -399,6 +402,9 @@ class UnpivotTool {
         // 表格内容变化时重新提取数据
         setTimeout(() => {
             this.extractTableData();
+            // 重新检测合并并按占位渲染（保持展示与数据一致）
+            this.merges = this.detectMergedGroups(this.currentData, { detectHorizontal: true });
+            this.updateTableDisplay();
             this.updateColumnConfig();
         }, 100);
     }
@@ -733,6 +739,99 @@ class UnpivotTool {
                 this.currentData.push(rowData);
             }
         });
+    }
+
+    // ===== 合并检测 / 占位渲染 / 展开填充 =====
+    detectMergedGroups(matrix, { detectHorizontal = true } = {}) {
+        const merges = [];
+        const rows = matrix.length;
+        const cols = rows ? matrix[0].length : 0;
+        let id = 0;
+
+        // 纵向
+        for (let c = 0; c < cols; c++) {
+            let r = 0;
+            while (r < rows) {
+                const v = (matrix[r][c] || '').trim();
+                if (v !== '') {
+                    let r2 = r + 1;
+                    let emptyCount = 0;
+                    while (r2 < rows && (matrix[r2][c] || '').trim() === '') {
+                        const hasOtherValues = matrix[r2].some((cell, cc) => cc !== c && (cell || '').trim() !== '');
+                        if (!hasOtherValues) break;
+                        emptyCount++; r2++;
+                    }
+                    if (emptyCount > 0) {
+                        merges.push({ id: `m${id++}`, top: r, left: c, rowSpan: emptyCount + 1, colSpan: 1, value: v });
+                        r = r2; continue;
+                    }
+                }
+                r++;
+            }
+        }
+
+        // 横向（可选）
+        if (detectHorizontal) {
+            for (let r = 0; r < rows; r++) {
+                const nonEmptyRatio = matrix[r].filter(x => (x || '').trim() !== '').length / (cols || 1);
+                if (nonEmptyRatio < 0.3) continue;
+                let c = 0;
+                while (c < cols) {
+                    const v = (matrix[r][c] || '').trim();
+                    if (v !== '') {
+                        let c2 = c + 1; let emptyCount = 0;
+                        while (c2 < cols && (matrix[r][c2] || '').trim() === '') { emptyCount++; c2++; }
+                        if (emptyCount > 0) {
+                            merges.push({ id: `m${id++}`, top: r, left: c, rowSpan: 1, colSpan: emptyCount + 1, value: v });
+                            c = c2; continue;
+                        }
+                    }
+                    c++;
+                }
+            }
+        }
+
+        return merges;
+    }
+
+    renderGridWithMerges(grid, matrix, merges) {
+        grid.innerHTML = '';
+        matrix.forEach((row, r) => {
+            const tr = document.createElement('tr');
+            row.forEach((cell, c) => {
+                const td = document.createElement('td');
+                td.contentEditable = true;
+                td.textContent = cell || '';
+                const hit = merges.find(m => r >= m.top && r < m.top + m.rowSpan && c >= m.left && c < m.left + m.colSpan);
+                if (hit) {
+                    if (r === hit.top && c === hit.left) td.classList.add('merged-cell');
+                    else {
+                        td.classList.add('merged-cell-placeholder');
+                        td.setAttribute('data-merged-value', hit.value);
+                    }
+                }
+                tr.appendChild(td);
+            });
+            grid.appendChild(tr);
+        });
+    }
+
+    expandMergesForConvert(model, { keepTrueBlank = true } = {}) {
+        const { matrix, merges } = model;
+        const out = matrix.map(row => row.slice());
+        merges.forEach(m => {
+            for (let r = m.top; r < m.top + m.rowSpan; r++) {
+                for (let c = m.left; c < m.left + m.colSpan; c++) {
+                    const isAnchor = r === m.top && c === m.left;
+                    if (!isAnchor) {
+                        if (keepTrueBlank) {
+                            if ((out[r][c] || '').trim() === '') out[r][c] = m.value;
+                        } else out[r][c] = m.value;
+                    }
+                }
+            }
+        });
+        return out;
     }
 
     // 更新列配置界面
@@ -1159,8 +1258,26 @@ class UnpivotTool {
         const variableName = document.getElementById('variable-name').value || 'Variable';
         const valueName = document.getElementById('value-name').value || 'Value';
 
-        // 执行转换
-        this.resultData = this.unpivotData(idColumns, valueColumns, variableName, valueName);
+        // 强制同步：每次转换前重新提取数据并检测合并，确保二次点击也能刷新
+        this.extractTableData();
+        this.merges = this.detectMergedGroups(this.currentData, { detectHorizontal: true });
+
+        // 转换前：基于合并分组统一展开并填充（仅合并产生的空白），不修改展示用的 currentData
+        const expandedMatrix = this.expandMergesForConvert({
+            matrix: this.currentData,
+            merges: this.merges || []
+        }, { keepTrueBlank: true });
+
+        // 执行转换（从展开后的矩阵计算列名与数据）
+        const expandedColumns = expandedMatrix[0] || [];
+        const expandedRows = expandedMatrix.slice(1);
+
+        // 重新构建 columns -> 仅用于 unpivot 的临时映射
+        const tempColumns = expandedColumns.map((name, idx) => ({ index: idx, name }));
+        const idCols = idColumns.map(c => ({ index: c.index, name: expandedColumns[c.index] }));
+        const valCols = valueColumns.map(c => ({ index: c.index, name: expandedColumns[c.index] }));
+
+        this.resultData = this.unpivotDataFromMatrix(expandedRows, idCols, valCols, variableName, valueName);
         this.displayResults();
     }
 
@@ -1203,6 +1320,23 @@ class UnpivotTool {
             });
         });
 
+        return result;
+    }
+
+    // 基于矩阵的Unpivot（不依赖 this.currentData）
+    unpivotDataFromMatrix(dataRows, idColumns, valueColumns, variableName, valueName) {
+        const result = [];
+        dataRows.forEach(row => {
+            valueColumns.forEach(valueCol => {
+                const newRow = {};
+                idColumns.forEach(idCol => {
+                    newRow[idCol.name] = row[idCol.index] || '';
+                });
+                newRow[variableName] = valueCol.name;
+                newRow[valueName] = row[valueCol.index] || '';
+                result.push(newRow);
+            });
+        });
         return result;
     }
 
@@ -1621,8 +1755,8 @@ class UnpivotTool {
         // 关闭弹窗
         this.closeMergeModal();
         
-        // 重新初始化列选择器
-        this.initializeColumnSelectors();
+        // 重新更新列配置
+        this.updateColumnConfig();
         
         // 显示成功提示
         this.showAlert('Data preprocessing completed successfully!', 'success');
@@ -1631,8 +1765,8 @@ class UnpivotTool {
     // 跳过合并设置
     skipMergeSettings() {
         this.closeMergeModal();
-        // 直接初始化列选择器，无需数据处理
-        this.initializeColumnSelectors();
+        // 直接更新列配置，无需数据处理
+        this.updateColumnConfig();
     }
 
     // 关闭合并模态框
@@ -1653,17 +1787,7 @@ class UnpivotTool {
     updateTableDisplay() {
         const grid = document.getElementById('data-grid');
         grid.innerHTML = '';
-        
-        this.currentData.forEach(row => {
-            const tr = document.createElement('tr');
-            row.forEach(cell => {
-                const td = document.createElement('td');
-                td.textContent = cell || '';
-                td.contentEditable = true;
-                tr.appendChild(td);
-            });
-            grid.appendChild(tr);
-        });
+        this.renderGridWithMerges(grid, this.currentData, this.merges || []);
     }
 }
 
