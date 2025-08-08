@@ -39,6 +39,8 @@ class UnpivotTool {
         this.currentData = [];
         this.columns = [];
         this.resultData = [];
+        // 是否将空白单元格按“合并单元格”规则自动继承填充（首页默认关闭）
+        this.treatBlanksAsMerged = false;
         
         this.initializeEventListeners();
         this.loadDefaultData();
@@ -309,7 +311,7 @@ class UnpivotTool {
         });
     }
 
-    // 解析Excel文件
+        // 解析Excel文件
     parseExcel(file) {
         return new Promise((resolve, reject) => {
             const reader = new FileReader();
@@ -324,7 +326,8 @@ class UnpivotTool {
                     
                     // 转换为数组
                     const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
-                    resolve(jsonData);
+                    // Excel上传保持空白，不做合并继承
+                    resolve(this.treatBlanksAsMerged ? this.handleMergedCells(jsonData) : jsonData);
                 } catch (error) {
                     reject(error);
                 }
@@ -605,9 +608,9 @@ class UnpivotTool {
                 const parsedData = result.data
                     .map(row => row.map(cell => this.cleanCell(cell)))
                     .filter(row => row.some(cell => cell !== ''));
-                
-                // 处理合并单元格：如果当前单元格为空，使用上一行相同位置的值
-                return this.handleMergedCells(parsedData);
+
+                // 是否视空白为合并占位并进行继承填充
+                return this.treatBlanksAsMerged ? this.handleMergedCells(parsedData) : parsedData;
             }
         } catch (error) {
             console.warn('TSV parsing with PapaParse failed:', error);
@@ -617,8 +620,8 @@ class UnpivotTool {
         const simpleData = data.split('\n')
             .map(line => line.split('\t').map(cell => this.cleanCell(cell)))
             .filter(row => row.some(cell => cell !== ''));
-            
-        return this.handleMergedCells(simpleData);
+        
+        return this.treatBlanksAsMerged ? this.handleMergedCells(simpleData) : simpleData;
     }
 
     // 处理合并单元格：空单元格继承上一行或左边相同的值
@@ -676,7 +679,7 @@ class UnpivotTool {
                 const parsedData = result.data.map(row => 
                     row.map(cell => this.cleanCell(cell))
                 );
-                return this.handleMergedCells(parsedData);
+                return this.treatBlanksAsMerged ? this.handleMergedCells(parsedData) : parsedData;
             }
         } catch (error) {
             console.warn('CSV parsing failed, falling back to simple split:', error);
@@ -693,8 +696,8 @@ class UnpivotTool {
             .map(line => [this.cleanCell(line)])
             .filter(row => row[0] !== '');
         
-        // 即使是简单格式也要处理合并单元格
-        return this.handleMergedCells(parsedData);
+        // 简单格式是否处理为空合并占位
+        return this.treatBlanksAsMerged ? this.handleMergedCells(parsedData) : parsedData;
     }
 
     // Clean individual cell data
