@@ -29,8 +29,8 @@ body {
 
 .nav {
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    gap: 1rem;
     padding: 1rem 0;
 }
 
@@ -54,6 +54,13 @@ body {
     font-size: 0.875rem;
     font-weight: 500;
 }
+
+/* 让下拉菜单始终靠右，徽章紧挨品牌标识 */
+.nav-dropdown { margin-left: auto; }
+/* Unmerge 页使用的右侧链接组 */
+.nav-links { margin-left: auto; display: flex; gap: 1rem; list-style: none; }
+.nav-links a { color: #374151; text-decoration: none; font-weight: 500; }
+.nav-links a:hover { color: #2563eb; }
 
 /* Dropdown Menu */
 .nav-dropdown {
@@ -155,19 +162,22 @@ body {
     }
 }
 .hero-features {
-    display: flex;
-    justify-content: center;
-    gap: 2rem;
-    margin-bottom: 2rem;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    max-width: 600px;
+    margin: 0 auto 2.5rem;
 }
 
 .hero-features span {
+    display: block;
     background: #e2e8f0;
     color: #475569;
-    padding: 0.5rem 1rem;
-    border-radius: 25px;
+    padding: 12px 20px;
+    border-radius: 16px;
     font-weight: 500;
+    text-align: center;
+    min-height: 20px;
 }
 
 .hero-cta {
@@ -860,15 +870,8 @@ body {
         line-height: 1.5;
     }
     
-    .hero-features {
-        flex-direction: column;
-        gap: 0.75rem;
-    }
-    
-    .hero-features span {
-        font-size: 0.875rem;
-        padding: 0.375rem 0.75rem;
-    }
+    .hero-features { grid-template-columns: 1fr; gap: 12px; }
+    .hero-features span { font-size: 0.95rem; padding: 12px 16px; }
     
     .demo-grid {
         grid-template-columns: 1fr;
@@ -900,15 +903,8 @@ body {
         justify-content: center;
     }
     
-    .nav {
-        flex-direction: column;
-        gap: 1rem;
-        text-align: center;
-    }
-    
-    .nav-info {
-        justify-content: center;
-    }
+    .nav { flex-wrap: wrap; }
+    .nav-info { justify-content: center; flex-wrap: wrap; }
     
     .nav-info span {
         font-size: 0.75rem;

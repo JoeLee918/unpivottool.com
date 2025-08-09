@@ -31,6 +31,9 @@ Visit [unpivottool.com](https://unpivottool.com) and start converting your Excel
 ## Recent Updates
 
 ### Latest UI/UX Improvements
+- Header 徽章与 Logo 间距优化：重构 `.nav` 布局，徽章紧邻品牌标识；右侧下拉保持贴右
+- 首屏四个特性区块改为 2x2 网格：`.hero-features` 使用 CSS Grid，统一尺寸、文本居中，移动端单列
+- Unmerge 首页复用同样的 `.hero-features` 网格与导航对齐规则，保持站内一致性
 - Enhanced FAQ layout with better visual hierarchy
 - Fixed Excel grid height consistency
 - Added smooth alert animations for user feedback
