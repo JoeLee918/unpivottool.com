@@ -137,11 +137,23 @@ body {
     font-size: 1.25rem;
     margin-bottom: 2rem;
     opacity: 0.9;
-    max-width: 800px;
+    max-width: 900px; /* 增加宽度 */
     margin-left: auto;
     margin-right: auto;
-}
+    line-height: 1.5; /* 增加行高 */
 
+      /* 更好的换行控制 */
+    word-wrap: break-word;
+    hyphens: auto;
+}
+/* 响应式优化 */
+@media (max-width: 768px) {
+    .hero-subtitle {
+        font-size: 1.1rem;
+        max-width: 95%;
+        line-height: 1.6;
+    }
+}
 .hero-features {
     display: flex;
     justify-content: center;
