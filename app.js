@@ -111,6 +111,10 @@ class UnpivotTool {
         const expandBtn = document.getElementById('expand-editor');
         if (expandBtn) expandBtn.addEventListener('click', this.openExpandedEditor.bind(this));
 
+        // 右下角浮动按钮（仅引导，不自动弹出）
+        const fab = document.getElementById('open-full-editor-fab');
+        if (fab) fab.addEventListener('click', this.openExpandedEditor.bind(this));
+
         // 模态框控制
         document.querySelectorAll('.modal-close').forEach(btn => {
             btn.addEventListener('click', this.closeModal.bind(this));
@@ -411,16 +415,17 @@ class UnpivotTool {
         return true;
     }
 
-    // 将数据加载到表格
+    // 将数据加载到表格（仅页内渲染预览，但内存保留全量）
     loadDataToGrid(data, mergesOverride = null) {
         const grid = document.getElementById('data-grid');
         grid.innerHTML = '';
 
-        // 限制显示的行数，避免页面过长
-        const maxRows = 20;
-        const displayData = data.slice(0, maxRows);
+        // 限制显示的行数，避免页面过长（仅影响展示，不影响内存数据）
+        const maxRows = 15;
+        const displayData = Array.isArray(data) ? data.slice(0, maxRows) : [];
 
-        // 保存当前数据与合并分组（展示阶段仅做检测，不做填充）
+        // 保存全量数据到内存，currentData 仅用于小表或预览
+        this.fullData = Array.isArray(data) ? data.map(row => row.slice()) : [];
         this.currentData = displayData.map(row => row.slice());
         this.merges = Array.isArray(mergesOverride) ? mergesOverride : this.detectMergedGroups(this.currentData, { detectHorizontal: true });
 
@@ -432,18 +437,15 @@ class UnpivotTool {
         const toggleEmptyBtn = document.getElementById('toggle-empty-highlight');
         if (toggleEmptyBtn) toggleEmptyBtn.disabled = !hasEmpty;
 
-        // 如果数据超过最大行数，显示提示
-        if (data.length > maxRows) {
-            const infoRow = document.createElement('tr');
-            const infoCell = document.createElement('td');
-            infoCell.colSpan = data[0] ? data[0].length : 1;
-            infoCell.textContent = `... and ${data.length - maxRows} more rows (use Expand Full Editor to see all)`;
-            infoCell.style.textAlign = 'center';
-            infoCell.style.fontStyle = 'italic';
-            infoCell.style.color = '#6b7280';
-            infoCell.style.backgroundColor = '#f9fafb';
-            infoRow.appendChild(infoCell);
-            grid.appendChild(infoRow);
+        // 过去在表格内追加的提示行会污染数据，这里彻底移除
+
+        // 阈值提示：当全量单元格数 > 2000 时，仅显示右下角 FAB 引导
+        const fab = document.getElementById('open-full-editor-fab');
+        if (fab) {
+            const rowsCount = Array.isArray(this.fullData) ? this.fullData.length : 0;
+            const colsCount = rowsCount > 0 ? (this.fullData[0] ? this.fullData[0].length : 0) : 0;
+            const cells = rowsCount * colsCount;
+            fab.style.display = cells > 2000 ? 'inline-flex' : 'none';
         }
     }
 
@@ -772,7 +774,7 @@ class UnpivotTool {
         return cell.replace(/^["']|["']$/g, '');
     }
 
-    // 从表格提取数据
+    // 从表格提取数据（跳过提示/非数据行）
     extractTableData(options = {}) {
         const grid = document.getElementById('data-grid');
         const rows = grid.querySelectorAll('tr');
@@ -781,6 +783,8 @@ class UnpivotTool {
         this.columns = [];
 
         rows.forEach((row, rowIndex) => {
+            if (row.dataset && row.dataset.nonData === '1') return; // 跳过非数据行
+            if (row.classList && row.classList.contains('non-data-row')) return; // 兼容类名
             const cells = row.querySelectorAll('td');
             const rowData = [];
             
@@ -1284,8 +1288,9 @@ class UnpivotTool {
     createLargeGrid() {
         let html = '<table class="excel-grid" id="large-grid" contenteditable="true">';
         
-        // 如果有现有数据，使用现有数据，否则创建20x10的空表格
-        const data = this.currentData.length > 0 ? this.currentData : this.createEmptyGrid(20, 10);
+        // 优先使用 fullData（全量显示），否则退回 currentData，再退回空表
+        const base = Array.isArray(this.fullData) && this.fullData.length > 0 ? this.fullData : this.currentData;
+        const data = base && base.length > 0 ? base : this.createEmptyGrid(20, 10);
         
         data.forEach((row, rowIndex) => {
             html += '<tr>';
@@ -1417,13 +1422,21 @@ class UnpivotTool {
         const variableName = document.getElementById('variable-name').value || 'Variable';
         const valueName = document.getElementById('value-name').value || 'Value';
 
-        // 强制同步：每次转换前重新提取数据并检测合并，确保二次点击也能刷新
-        this.extractTableData();
-        this.merges = this.detectMergedGroups(this.currentData, { detectHorizontal: true });
+        // 选择用于转换的数据源：大表用 fullData，小表用 currentData（并同步编辑变更）
+        let sourceMatrix = Array.isArray(this.fullData) && this.fullData.length >= this.currentData.length
+            ? this.fullData
+            : this.currentData;
+        // 若两者等长，优先使用用户当前编辑后的 currentData
+        if (this.fullData && this.fullData.length === this.currentData.length) {
+            this.fullData = this.currentData.map(r => r.slice());
+            sourceMatrix = this.fullData;
+        }
+        // 每次转换前检测合并
+        this.merges = this.detectMergedGroups(sourceMatrix, { detectHorizontal: true });
 
         // 转换前：基于合并分组统一展开并填充（仅合并产生的空白），不修改展示用的 currentData
         const expandedMatrix = this.expandMergesForConvert({
-            matrix: this.currentData,
+            matrix: sourceMatrix,
             merges: this.merges || []
         }, { keepTrueBlank: true });
 

@@ -37,12 +37,17 @@ class UnmergeFillTool {
         console.log('🔧 UnmergeFillTool initializing...');
         // 原始矩阵（展示阶段不做填充）
         this.currentData = [];
+        // 全量矩阵（用于浮框完整呈现与实际处理）
+        this.fullData = [];
         // 合并分组（虚拟合并模型）
         this.merges = [];
         // 处理结果矩阵
         this.processedData = [];
         // 自动处理防抖定时器
         this.__autoTimer = null;
+        // 脏标记与提示状态
+        this.__isDirty = false; // 是否有未查看的新结果
+        this.__hasShownResultsTip = false; // 是否已提示过“结果在下方”
         
         this.initializeEventListeners();
         this.loadDefaultData();
@@ -53,13 +58,40 @@ class UnmergeFillTool {
         // 单框：仅 Clear All 按钮
         document.getElementById('clear-all')?.addEventListener('click', () => {
             this.resetToEmptyGrid();
-            this.showAlert('Cleared all', 'info');
+        });
+
+        // Check Results 按钮：滚动到结果或打开结果浮框
+        document.getElementById('check-results')?.addEventListener('click', () => {
+            const resultsSection = document.getElementById('results-section');
+            if (!resultsSection || resultsSection.style.display === 'none') return;
+            const tooTall = resultsSection.getBoundingClientRect().height > window.innerHeight * 0.7;
+            if (tooTall) this.openResultsModal();
+            else resultsSection.scrollIntoView({ behavior: 'smooth' });
+            // 用户已查看结果
+            this.__isDirty = false;
+            this.setCheckResultsBadge(false);
+        });
+
+        // Regenerate 按钮：立即重算
+        document.getElementById('regenerate-results')?.addEventListener('click', () => {
+            this.processData('both');
+            this.__isDirty = false;
+            const regenBtn = document.getElementById('regenerate-results');
+            if (regenBtn) regenBtn.style.display = 'none';
         });
 
         // Results actions
         document.getElementById('copy-results')?.addEventListener('click', this.copyResults.bind(this));
         document.getElementById('download-excel')?.addEventListener('click', this.downloadExcel.bind(this));
         document.getElementById('download-csv')?.addEventListener('click', this.downloadCSV.bind(this));
+
+        // 右下角浮动按钮（打开输入全表浮框）
+        const fab = document.getElementById('open-full-editor-fab');
+        if (fab) fab.addEventListener('click', () => this.openEditorModal());
+
+        // 浮框关闭/取消
+        document.getElementById('modal-editor-close')?.addEventListener('click', () => this.closeEditorModal());
+        document.getElementById('modal-editor-cancel')?.addEventListener('click', () => this.closeEditorModal());
 
         // File upload
         this.setupFileUpload();
@@ -81,14 +113,15 @@ class UnmergeFillTool {
         // Process data based on action
         setTimeout(() => {
             try {
-                // 每次处理前同步提取与重检，保证可重复点击刷新
+                // 每次处理前同步提取预览编辑变更，并基于全量数据处理
                 this.extractTableData();
-                this.merges = this.detectMergedGroups(this.currentData, { detectHorizontal: true });
+                const source = Array.isArray(this.fullData) && this.fullData.length ? this.fullData : this.currentData;
+                const fullMerges = this.detectMergedGroups(source, { detectHorizontal: true });
 
-                // 统一基于“虚拟合并模型”展开
+                // 统一基于“虚拟合并模型”展开（对全量）
                 const expanded = this.expandMergesForConvert({
-                    matrix: this.currentData,
-                    merges: this.merges || []
+                    matrix: source,
+                    merges: fullMerges || []
                 }, { keepTrueBlank: true });
 
                 if (action === 'split') {
@@ -103,6 +136,9 @@ class UnmergeFillTool {
 
                 this.displayResults();
                 this.showAlert(`Done. ${this.processedData.length} rows processed.`, 'success');
+                // 标记有新结果，等待用户查看
+                this.__isDirty = true;
+                this.setCheckResultsBadge(true);
                 
             } catch (error) {
                 console.error('Processing error:', error);
@@ -161,6 +197,22 @@ class UnmergeFillTool {
         // 同框显示结果
         resultsSection.style.display = 'block';
 
+        // 激活并显示 Check Results 按钮
+        const checkBtn = document.getElementById('check-results');
+        if (checkBtn) {
+            checkBtn.style.display = 'inline-block';
+            checkBtn.disabled = false;
+        }
+
+        // 根据脏标记控制徽标
+        this.setCheckResultsBadge(this.__isDirty);
+
+        // 首次生成结果时给出引导提示
+        if (!this.__hasShownResultsTip) {
+            this.showAlert('Results generated below — scroll to see.', 'info');
+            this.__hasShownResultsTip = true;
+        }
+
         // Add success animation
         resultsSection.classList.add('success-animation');
         setTimeout(() => {
@@ -191,11 +243,20 @@ class UnmergeFillTool {
         }, 5000);
     }
 
+    // 控制“Check Results”徽标
+    setCheckResultsBadge(show) {
+        const btn = document.getElementById('check-results');
+        if (!btn) return;
+        if (show) btn.setAttribute('data-new', '1');
+        else btn.removeAttribute('data-new');
+    }
+
     loadDefaultData() {
-        // 空白占位：B2（4列 x 5行；首行为列头）
-        this.currentData = Array(5).fill(0).map(() => Array(4).fill(''));
-        this.currentData[0] = ['Column 1', 'Column 2', 'Column 3', 'Column 4'];
-        this.merges = [];
+        // 空白占位（4列 x 5行；首行为列头）
+        this.fullData = Array(5).fill(0).map(() => Array(4).fill(''));
+        this.fullData[0] = ['Column 1', 'Column 2', 'Column 3', 'Column 4'];
+        this.currentData = this.fullData.slice(0, 15);
+        this.merges = this.detectMergedGroups(this.currentData, { detectHorizontal: true });
         this.updateDataGrid();
     }
 
@@ -216,6 +277,15 @@ class UnmergeFillTool {
 
         // 网格更新后自动调度处理（防抖）
         this.scheduleAutoProcess();
+
+        // 阈值 FAB：基于全量单元格数
+        const fab = document.getElementById('open-full-editor-fab');
+        if (fab) {
+            const rowsCount = Array.isArray(this.fullData) ? this.fullData.length : 0;
+            const colsCount = rowsCount > 0 ? (this.fullData[0]?.length || 0) : 0;
+            const cells = rowsCount * colsCount;
+            fab.style.display = cells > 2000 ? 'inline-flex' : 'none';
+        }
     }
 
     // 移除旧的 clearData（改为 resetToEmptyGrid）
@@ -292,10 +362,13 @@ class UnmergeFillTool {
     processCSV(content) {
         // Simple CSV processing
         const lines = content.split('\n');
-        this.currentData = lines.map(line => 
+        const matrix = lines.map(line => 
             line.split(',').map(cell => cell.trim().replace(/"/g, ''))
         ).filter(row => row.some(cell => cell !== ''));
-        
+
+        this.fullData = matrix;
+        this.currentData = matrix.slice(0, 15);
+        this.merges = this.detectMergedGroups(this.currentData, { detectHorizontal: true });
         this.updateDataGrid();
         this.scheduleAutoProcess();
     }
@@ -304,9 +377,15 @@ class UnmergeFillTool {
         // Use SheetJS for Excel processing
         const workbook = XLSX.read(content, { type: 'array' });
         const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
-        this.currentData = XLSX.utils.sheet_to_json(firstSheet, { header: 1 });
-        
+        const matrix = XLSX.utils.sheet_to_json(firstSheet, { header: 1 });
+
+        this.fullData = matrix;
+        this.currentData = matrix.slice(0, 15);
+        this.merges = this.detectMergedGroups(this.currentData, { detectHorizontal: true });
         this.updateDataGrid();
+        // 上传后标脏并显示徽标
+        this.__isDirty = true;
+        this.setCheckResultsBadge(true);
         this.scheduleAutoProcess();
     }
 
@@ -329,8 +408,9 @@ class UnmergeFillTool {
             if (html && /<table[\s\S]*?>[\s\S]*?<\/table>/i.test(html)) {
                 try {
                     const { matrix, merges } = this.parseHtmlTableFromClipboard(html);
-                    this.currentData = matrix;
-                    this.merges = merges;
+                    this.fullData = matrix;
+                    this.currentData = matrix.slice(0, 15);
+                    this.merges = this.detectMergedGroups(this.currentData, { detectHorizontal: true });
                     this.updateDataGrid();
                     this.showAlert('Data imported from HTML table', 'success');
                     this.scheduleAutoProcess();
@@ -360,6 +440,11 @@ class UnmergeFillTool {
                     this.merges = this.detectMergedGroups(this.currentData, { detectHorizontal: true });
                     this.updateDataGrid();
                 }, 120);
+
+                // 标脏 + 徽标 + 自动调度
+                this.__isDirty = true;
+                this.setCheckResultsBadge(true);
+                this.scheduleAutoProcess();
             }
         });
     }
@@ -391,13 +476,27 @@ class UnmergeFillTool {
 
     resetToEmptyGrid() {
         // 创建空白4x5网格
-        this.currentData = Array(5).fill().map(() => Array(4).fill(''));
+        this.fullData = Array(5).fill().map(() => Array(4).fill(''));
         // 添加标题行
-        this.currentData[0] = ['Column 1', 'Column 2', 'Column 3', 'Column 4'];
+        this.fullData[0] = ['Column 1', 'Column 2', 'Column 3', 'Column 4'];
+        this.currentData = this.fullData.slice(0, 15);
+        // 清空合并与结果、定时器
+        this.merges = [];
+        this.processedData = [];
+        clearTimeout(this.__autoTimer);
+        this.__autoTimer = null;
         
         // 稳定地重建表格
         this.updateDataGrid();
         
+        // 隐藏结果区与按钮
+        const resultsSection = document.getElementById('results-section');
+        if (resultsSection) resultsSection.style.display = 'none';
+        const checkBtn = document.getElementById('check-results');
+        if (checkBtn) { checkBtn.style.display = 'none'; checkBtn.disabled = true; checkBtn.removeAttribute('data-new'); }
+        const regenBtn = document.getElementById('regenerate-results');
+        if (regenBtn) regenBtn.style.display = 'none';
+
         // 设置焦点到第一个数据单元格
         setTimeout(() => {
             const firstDataCell = document.querySelector('#data-grid tr:nth-child(2) td:first-child');
@@ -416,7 +515,19 @@ class UnmergeFillTool {
             clearTimeout(updateTimeout);
             updateTimeout = setTimeout(() => {
                 this.currentData[rowIndex][cellIndex] = td.textContent;
-                // 输入稳定后自动处理
+                // 同步回全量数据对应行（仅限预览范围）
+                if (this.fullData[rowIndex]) {
+                    if (!Array.isArray(this.fullData[rowIndex])) this.fullData[rowIndex] = [];
+                    this.fullData[rowIndex][cellIndex] = td.textContent;
+                }
+                // 用户编辑后，若该格为占位格则移除水印与占位类（一次性）
+                if (td.classList.contains('merged-cell-placeholder')) {
+                    td.classList.remove('merged-cell-placeholder');
+                    td.removeAttribute('data-merged-value');
+                }
+                // 标脏 + 徽标 + 自动处理
+                this.__isDirty = true;
+                this.setCheckResultsBadge(true);
                 this.scheduleAutoProcess();
             }, 100);
         });
@@ -433,21 +544,38 @@ class UnmergeFillTool {
     scheduleAutoProcess() {
         if (!this.currentData || this.currentData.length === 0) return;
         clearTimeout(this.__autoTimer);
-        const cells = (this.currentData.length * (this.currentData[0]?.length || 0)) || 0;
-        let delay = 200;
-        if (cells > 2000) delay = 350;
-        if (cells > 10000) delay = 500;
-        this.__autoTimer = setTimeout(() => this.processData('both'), delay);
+        const cells = ( (this.fullData?.length || 0) * (this.fullData?.[0]?.length || 0) ) || 0;
+        const isSmall = cells <= 2000;
+
+        // 小表：自动刷新；大表：显示 Regenerate 按钮
+        const regenBtn = document.getElementById('regenerate-results');
+        if (!isSmall) {
+            if (regenBtn) regenBtn.style.display = 'inline-block';
+            return;
+        } else {
+            if (regenBtn) regenBtn.style.display = 'none';
+        }
+
+        let delay = 500; // 准实时刷新
+        if (cells > 10000) delay = 800;
+        this.__autoTimer = setTimeout(() => {
+            this.processData('both');
+            // 新结果生成后，仍保持徽标，直到用户查看
+        }, delay);
     }
 
     parsePastedData(text) {
         const lines = text.replace(/\r\n?|\n/g, '\n').split('\n');
         const data = lines.map(line => line.split('\t').map(cell => cell.trim()));
-        // 保留原始空白，展示阶段仅检测+占位
-        this.currentData = data.filter(row => row.some(cell => cell !== ''));
+        const filtered = data.filter(row => row.some(cell => cell !== ''));
+        this.fullData = filtered;
+        this.currentData = filtered.slice(0, 15);
         this.merges = this.detectMergedGroups(this.currentData, { detectHorizontal: true });
         this.updateDataGrid();
         this.showAlert('Data pasted successfully', 'success');
+        // 粘贴后标脏并显示徽标
+        this.__isDirty = true;
+        this.setCheckResultsBadge(true);
         this.scheduleAutoProcess();
     }
 
@@ -546,6 +674,26 @@ class UnmergeFillTool {
     ensureRectangular(matrix) {
         const maxCols = matrix.reduce((m, row) => Math.max(m, row.length), 0);
         return matrix.map(row => { const out = row.slice(); while (out.length < maxCols) out.push(''); return out; });
+    }
+
+    // 打开输入全表浮框
+    openEditorModal() {
+        const modal = document.getElementById('modal-editor');
+        const container = document.getElementById('large-grid-container');
+        if (!modal || !container) return;
+
+        // 构建表格并基于全量数据渲染
+        container.innerHTML = '<table class="excel-grid" id="large-grid" contenteditable="true"></table>';
+        const table = container.querySelector('#large-grid');
+        const merges = this.detectMergedGroups(Array.isArray(this.fullData) && this.fullData.length ? this.fullData : this.currentData, { detectHorizontal: true });
+        this.renderGridWithMerges(table, (this.fullData && this.fullData.length ? this.fullData : this.currentData), merges);
+
+        modal.style.display = 'flex';
+    }
+
+    closeEditorModal() {
+        const modal = document.getElementById('modal-editor');
+        if (modal) modal.style.display = 'none';
     }
     // ===== 共享：虚拟合并模型（与首页一致） =====
     detectMergedGroups(matrix, { detectHorizontal = true } = {}) {
@@ -652,6 +800,14 @@ class UnmergeFillTool {
             if (row.some(v => v !== '')) matrix.push(row);
         });
         this.currentData = matrix;
+        // 同步写回全量数据前 N 行
+        if (!Array.isArray(this.fullData)) this.fullData = [];
+        for (let r = 0; r < matrix.length; r++) {
+            if (!Array.isArray(this.fullData[r])) this.fullData[r] = [];
+            for (let c = 0; c < matrix[r].length; c++) {
+                this.fullData[r][c] = matrix[r][c];
+            }
+        }
     }
 }
 

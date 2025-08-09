@@ -8,7 +8,7 @@
     <link rel="canonical" href="https://unpivottool.com/excel-tools/unmerge-fill">
     
     <!-- SEO Meta Tags -->
-    <title>Free Auto Unmerge & Fill for Excel</title>
+    <title>Unmerge & Fill, Automatically</title>
     <meta name="description" content="Paste or upload Excel with merged cells and it's done. We auto unmerge and fill in your browser. 100% local, no steps, Excel & CSV supported.">
     <meta name="keywords" content="auto unmerge cells, fill blanks, excel unmerge tool, split merged cells, excel filler, unmerge and fill excel, merged cells converter">
     
@@ -176,7 +176,9 @@
                             <!-- Data grid will be populated by JavaScript -->
                         </table>
                     </div>
-                    <div style="margin-top: 1rem; display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                    <div style="margin-top: 1rem; display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center;">
+                        <button id="check-results" class="btn btn-primary" style="display: none;">Check Results</button>
+                        <button id="regenerate-results" class="btn btn-info" style="display: none;">Regenerate</button>
                         <button id="clear-all" class="btn btn-secondary">Clear All</button>
                     </div>
                 </div>
@@ -216,6 +218,44 @@
             </section>
         </div>
     </main>
+
+    <!-- Floating Action Button for Full Editor -->
+    <button id="open-full-editor-fab" class="fab" style="display:none;">Open Full Editor</button>
+
+    <!-- Fullscreen Editor Modal -->
+    <div id="modal-editor" class="modal" style="display:none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Full Table Editor</h3>
+                <button class="modal-close" id="modal-editor-close">×</button>
+            </div>
+            <div class="modal-body">
+                <div id="large-grid-container" class="large-grid-container"></div>
+            </div>
+            <div class="modal-footer">
+                <button id="modal-editor-save" class="btn btn-primary">Save</button>
+                <button id="modal-editor-cancel" class="btn btn-secondary">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Fullscreen Results Modal -->
+    <div id="modal-results" class="modal" style="display:none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Processed Results</h3>
+                <button class="modal-close" id="modal-results-close">×</button>
+            </div>
+            <div class="modal-body">
+                <div id="results-large-container" class="large-grid-container"></div>
+            </div>
+            <div class="modal-footer">
+                <button id="results-copy" class="btn btn-primary">📋 Copy All</button>
+                <button id="results-download-excel" class="btn btn-success">📊 Download Excel</button>
+                <button id="results-download-csv" class="btn btn-secondary">📄 Download CSV</button>
+            </div>
+        </div>
+    </div>
 
     <!-- Benefits Section -->
     <section class="benefits-section">

@@ -13,33 +13,19 @@
     text-align: left;
 }
 
+/* 合并锚点格：极浅灰背景，无角标 */
 .merged-cell {
-    background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
-    font-weight: 600;
+    background: #f7f7f8 !important;
     color: #374151;
     position: relative;
 }
 
-.merged-cell::after {
-    content: "Merged";
-    position: absolute;
-    top: 2px;
-    right: 2px;
-    background: #3b82f6;
-    color: white;
-    font-size: 0.6rem;
-    padding: 0.125rem 0.25rem;
-    border-radius: 3px;
-    font-weight: 500;
-}
-
-/* Merged cell placeholder styling */
+/* 合并占位格：中性灰细虚线 + 浅灰水印（仅视觉） */
 .merged-cell-placeholder {
-    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%) !important;
-    border: 2px dashed #f59e0b !important;
+    background: #ffffff !important;
+    border: 1px dashed #d1d5db !important;
     position: relative;
-    color: #92400e !important;
-    font-style: italic;
+    color: #6b7280 !important;
     min-height: 40px;
 }
 
@@ -49,13 +35,18 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background: rgba(254, 243, 199, 0.9);
-    padding: 0.125rem 0.375rem;
-    border-radius: 4px;
-    font-size: 0.75rem;
+    color: #6b7280;
+    background: transparent;
+    padding: 0 4px;
+    border-radius: 0;
+    font-size: 0.72rem;
     font-weight: 500;
-    opacity: 0.8;
+    opacity: 0.25; /* 浅灰水印 */
     pointer-events: none;
+    white-space: nowrap;
+    max-width: 95%;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 /* Merged cell styling for editable grid */
@@ -67,19 +58,7 @@
     min-height: 40px;
 }
 
-#data-grid .merged-cell::after {
-    content: "Merged";
-    position: absolute;
-    top: 2px;
-    right: 2px;
-    background: #3b82f6;
-    color: white;
-    font-size: 0.6rem;
-    padding: 0.125rem 0.25rem;
-    border-radius: 3px;
-    font-weight: 500;
-    z-index: 10; /* 确保显示在最上层 */
-}
+/* 编辑区锚点格无角标 */
 
 /* Removed action selection styles for single-box UI */
 
@@ -225,6 +204,17 @@
     border-radius: 8px;
     overflow: hidden;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+/* Check Results 按钮新结果徽标（通过 data-new 控制） */
+#check-results[data-new="1"]::after {
+    content: 'New';
+    margin-left: 8px;
+    background: #22c55e;
+    color: #fff;
+    font-size: 0.7rem;
+    padding: 2px 6px;
+    border-radius: 9999px;
 }
 
 .results-table table {

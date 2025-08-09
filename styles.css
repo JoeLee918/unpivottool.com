@@ -1146,6 +1146,27 @@ body {
     pointer-events: none;
 }
 
+/* 浮动操作按钮：打开全屏编辑器 */
+.fab {
+    position: fixed;
+    right: 24px;
+    bottom: 24px;
+    z-index: 1100;
+    display: none;
+    background: #13385b;
+    color: #ffffff;
+    padding: 0.75rem 1rem;
+    border-radius: 9999px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.fab:hover {
+    background: #02336b;
+}
+
 /* 数据预处理模态框样式 */
 .merge-option {
     margin-bottom: 1.5rem;

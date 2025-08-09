@@ -30,6 +30,14 @@ Visit [unpivottool.com](https://unpivottool.com) and start converting your Excel
 
 ## Recent Updates
 
+### 2025-08-09
+- feat(unpivot): Add floating action button (FAB) "Open Full Editor"; show only when cells > 2000
+- feat(unpivot): Full editor now renders complete dataset from `fullData`; Step1 preview limited to 15 rows
+- fix(unpivot): Modal content scrolls within viewport; default field names changed to "Column A" / "Column B" (user editable)
+- feat(unmerge): Add FAB for full editor; maintain full dataset in `fullData`, preview limited to 15 rows
+- feat(unmerge): Threshold check uses full dataset; full editor modal renders complete table
+- docs: Keep all public-facing copy in English per site requirement
+
 ### Unmerge & Fill (Single-box, auto processing)
 - UI: Single-box workflow — paste or upload, results appear automatically below.
 - Behavior: Always performs Unmerge & Fill automatically; no action selection.
