@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>What Is Unpivot in Excel: Complete Guide (2025)</title>
+	<meta name="description" content="Clear definition, examples, and when to use unpivot. Learn how unpivot transforms wide tables into long format for better analysis.">
+	<link rel="canonical" href="https://unpivottool.com/resources/what-is-unpivot/">
+	<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+	<link rel="stylesheet" href="../../styles.css">
+	<script type="application/ld+json">
+	{
+	  "@context": "https://schema.org",
+	  "@type": "BreadcrumbList",
+	  "itemListElement": [
+	    {"@type": "ListItem", "position": 1, "name": "Home", "item": "https://unpivottool.com/"},
+	    {"@type": "ListItem", "position": 2, "name": "Resources", "item": "https://unpivottool.com/resources/"},
+	    {"@type": "ListItem", "position": 3, "name": "What Is Unpivot in Excel", "item": "https://unpivottool.com/resources/what-is-unpivot/"}
+	  ]
+	}
+	</script>
+	<script type="application/ld+json">
+	{
+	  "@context": "https://schema.org",
+	  "@type": "Article",
+	  "headline": "What Is Unpivot in Excel: Complete Guide (2025)",
+	  "author": {"@type": "Person", "name": "Joe Lee"},
+	  "dateModified": "2025-08-13",
+	  "datePublished": "2025-08-13",
+	  "publisher": {"@type": "Organization", "name": "Unpivot Tool"},
+	  "mainEntityOfPage": {"@type": "WebPage", "@id": "https://unpivottool.com/resources/what-is-unpivot/"}
+	}
+	</script>
+</head>
+<body>
+	<header class="header">
+		<div class="container">
+			<nav class="nav">
+				<div class="nav-brand">📚 Resources</div>
+				<div class="nav-info">
+					<span>✅ Helpful Content</span>
+					<span>✅ Actionable Guides</span>
+				</div>
+			</nav>
+		</div>
+	</header>
+
+	<div class="container" style="margin-top:1rem;">
+		<nav aria-label="breadcrumb" style="font-size:0.9rem;color:#64748b;">
+			<a href="/" style="color:#64748b;text-decoration:none;">Home</a>
+			<span style="margin:0 6px;">›</span>
+			<a href="/resources/" style="color:#64748b;text-decoration:none;">Resources</a>
+			<span style="margin:0 6px;">›</span>
+			<span>What Is Unpivot in Excel</span>
+		</nav>
+	</div>
+
+	<main class="main">
+		<div class="container">
+			<section class="tool-section">
+				<h1>What Is Unpivot in Excel?</h1>
+				<p style="color:#64748b;margin-bottom:1rem;">By Joe Lee — Data Analyst • Last updated: 2025-08-13</p>
+				<p>Unpivot converts a wide table (many measurement columns) into a long table with variable and value columns. This is the “columns to rows” transformation that makes your data analysis-ready for pivot tables, BI tools, and statistics.</p>
+
+				<h2 style="margin-top:1.5rem;">Definition (Simple)</h2>
+				<ul style="margin-left:1rem;">
+					<li>Wide format: each measurement is a separate column (Jan, Feb, Mar…).</li>
+					<li>Long format: measurements become rows under two columns (e.g., Month, Value).</li>
+					<li>Unpivot: the operation that reshapes wide → long without losing information.</li>
+				</ul>
+
+				<h2 style="margin-top:1.5rem;">Before vs After Example</h2>
+				<p>Before (wide): Name | Jan | Feb | Mar<br>After (long): Name | Month | Value</p>
+				<p>What changes: the number of rows increases (rows × unpivoted columns), but your fields become analyzable dimensions.</p>
+
+				<h2 style="margin-top:1.5rem;">Wide vs Long: When each format is right</h2>
+				<ul style="margin-left:1rem;">
+					<li>Wide: human‑readable, quick data entry, small tables.</li>
+					<li>Long: machine‑readable, filters/aggregations, charts, BI, time‑series, modeling.</li>
+					<li>Rule of thumb: If you need to filter, group, chart, or model by a header, it should be a row value, not a column.</li>
+				</ul>
+
+				<h2 style="margin-top:1.5rem;">When You Should Unpivot (Decision Checklist)</h2>
+				<ul style="margin-left:1rem;">
+					<li>Repeating period headers (Jan‑Dec, Q1‑Q4, 2023‑2025).</li>
+					<li>Formulas copied across many similar columns.</li>
+					<li>Dynamic charts or pivot tables by category/time.</li>
+					<li>Plan to load data into BI tools or databases.</li>
+					<li>Need growth rates, YoY, MoM, rankings across categories.</li>
+				</ul>
+
+				<h2 style="margin-top:1.5rem;">Common Mistakes and How to Avoid Them</h2>
+				<ul style="margin-left:1rem;">
+					<li>Mixed data types across value columns: standardize numeric formats before unpivot.</li>
+					<li>Merged or multi‑row headers: normalize headers (or pre‑merge them) first.</li>
+					<li>Empty or duplicate headers: fix names to avoid lost fields.</li>
+					<li>Wrong identifier columns: keep only stable keys as ID columns.</li>
+				</ul>
+
+				<h2 style="margin-top:1.5rem;">Excel vs Power Query vs Online Tools</h2>
+				<ul style="margin-left:1rem;">
+					<li><strong>Excel (Power Query):</strong> robust, repeatable; best for recurring transformations; requires several steps.</li>
+					<li><strong>Online Unpivot Tool:</strong> fastest for ad‑hoc tasks; no setup; instant preview.</li>
+					<li><strong>Python/R:</strong> reproducible pipelines; ideal for large data and automation.</li>
+				</ul>
+
+				<h2 style="margin-top:1.5rem;">FAQs</h2>
+				<p><strong>What does “unpivot” mean?</strong> Turn similar columns into stacked rows so tools can aggregate and analyze them.</p>
+				<p><strong>Will unpivot lose data?</strong> No. It changes shape, not content.</p>
+				<p><strong>Is unpivot the same as transpose?</strong> No. Transpose swaps rows and columns; unpivot stacks selected columns as rows.</p>
+
+				<div style="margin-top:1.5rem;">
+					<a class="btn btn-primary" href="/unpivot-tool/">Try Unpivot Tool</a>
+				</div>
+
+				<hr style="margin:2rem 0;">
+				<h3>Methodology: Who, How, Why</h3>
+				<p><strong>Who:</strong> Written by Joe Lee (Data Analyst).</p>
+				<p><strong>How:</strong> Examples use common spreadsheet patterns to illustrate repeatable steps.</p>
+				<p><strong>Why:</strong> Help readers decide when unpivot improves analysis, not to game rankings.</p>
+			</section>
+		</div>
+	</main>
+
+	<footer class="footer">
+		<div class="container">
+			<div class="footer-bottom">
+				<p>&copy; 2025 Unpivot Tool</p>
+			</div>
+		</div>
+	</footer>
+</body>
+</html>
+

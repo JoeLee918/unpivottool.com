@@ -1,0 +1,38 @@
+UnpivotTool — Complete Guide
+
+> UnpivotTool converts Excel tables with merged cells into tidy, analytics-ready rows. It preserves intentional blanks, expands merges safely, and lets you export clean CSV/XLSX.
+
+## Who Is This For
+Analysts, finance, operations, and anyone receiving Excel reports with merged headers or category bands.
+
+## Problems We Solve
+- Merged cells break copy/paste and formulas
+- Wide tables are hard to analyze or chart
+- Manual cleanup is slow and error-prone
+
+## Core Flow
+1) Paste or upload Excel/CSV
+2) We detect vertical/horizontal merges and expand them (only fill true merge gaps)
+3) Choose ID columns and Value columns
+4) Export results or edit inline
+
+## Key Behaviors
+- Keep-true-blank: real empty cells stay empty
+- Horizontal and vertical merge detection with safe heuristics
+- Works with large tables; preview shows the first rows to keep UI responsive
+
+## Pages
+- [Home](https://unpivottool.com/): Overview and examples
+- [Unmerge & Fill](https://unpivottool.com/excel-tools/unmerge-fill/): Main tool page
+
+## Example
+Input: merged months across columns
+Output: rows with fields like Name, Variable=Month, Value=Number
+
+## Best Practices
+- Put the essential context in the first 1000 characters
+- Use clear headers and short paragraphs for better LLM summarization
+
+## Updates
+- 2025-08-13: Initial LLM docs published
+

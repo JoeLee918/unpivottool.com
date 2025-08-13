@@ -30,6 +30,24 @@ Visit [unpivottool.com](https://unpivottool.com) and start converting your Excel
 
 ## Recent Updates
 
+### 2025-08-13
+- feat(unmerge): New canonical path `/excel-tools/unmerge-and-fill/` with breadcrumb + JSON-LD; `_redirects` adds 301 from `/excel-tools/unmerge-fill/`
+- feat(resources): Add `/resources/` hub and two articles:
+  - `/resources/what-is-unpivot/`
+  - `/resources/how-to-unpivot-data-in-excel/`
+- fix(css): Resource articles use relative `../../styles.css` to share global styling
+- seo(sitemap): Include new URLs and update priorities; unify trailing slashes
+- seo(robots): Open to major AI crawlers; add LLM-Content and LLM-Full-Content hints; block non-content paths like `/_next/`, `/static/`, error pages, and `*.json`.
+- seo(sitemap): Simplify XML and include the Unmerge & Fill tool page; update `lastmod` to 2025-08-13.
+- docs(llms): Add `llms.txt` (brief) and `llms-full.txt` (detailed) at site root in English.
+- ops(cf): Recommend Cloudflare rules to Skip WAF/SBFM for verified crawlers and for `robots.txt`/`sitemap.xml`/`llms*`.
+
+Verification
+- Open `https://unpivottool.com/sitemap.xml` and confirm it renders XML.
+- Windows PowerShell:
+  - `curl.exe -s -A "bingbot" https://unpivottool.com/sitemap.xml | Select-String "<loc>"`
+- Bing Webmaster Tools: resubmit the sitemap and recheck Discovered URLs after 5–15 minutes.
+
 ### 2025-08-09
 - feat(unpivot): Add floating action button (FAB) "Open Full Editor"; show only when cells > 2000
 - feat(unpivot): Full editor now renders complete dataset from `fullData`; Step1 preview limited to 15 rows

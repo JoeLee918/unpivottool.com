@@ -1,0 +1,42 @@
+/* Copied from excel-tools/unmerge-fill/tool-specific.css to keep identical visuals */
+/* Unmerge & Fill Tool - Specific Styles */
+
+.merged-cells-demo { border-collapse: collapse; width: 100%; }
+.merged-cells-demo th, .merged-cells-demo td { border: 1px solid #d1d5db; padding: 0.5rem; text-align: left; }
+.merged-cell { background: #f7f7f8 !important; color: #374151; position: relative; }
+.merged-cell-placeholder { background: #ffffff !important; border: 1px dashed #d1d5db !important; position: relative; color: #6b7280 !important; min-height: 40px; }
+.merged-cell-placeholder::before { content: attr(data-merged-value); position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #6b7280; background: transparent; padding: 0 4px; border-radius: 0; font-size: 0.72rem; font-weight: 500; opacity: 0.25; pointer-events: none; white-space: nowrap; max-width: 95%; overflow: hidden; text-overflow: ellipsis; }
+#data-grid .merged-cell { background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%) !important; font-weight: 600; color: #374151; position: relative; min-height: 40px; }
+.empty-cell { background: #fef2f2 !important; position: relative; border: 2px dashed #fca5a5 !important; }
+.empty-cell::after { content: "Empty"; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #dc2626; font-size: 0.75rem; font-weight: 500; opacity: 0.8; background: rgba(254, 242, 242, 0.9); padding: 0.125rem 0.375rem; border-radius: 4px; }
+.filled-cell { background: #f0fdf4 !important; animation: fillAnimation 0.6s ease-out; border: 2px solid #bbf7d0 !important; }
+@keyframes fillAnimation { 0% { background: #fef2f2 !important; transform: scale(0.95);} 50% { background: #dcfce7 !important; transform: scale(1.02);} 100% { background: #f0fdf4 !important; transform: scale(1);} }
+.split-cell { background: #eff6ff !important; animation: splitAnimation 0.6s ease-out; border: 2px solid #bfdbfe !important; }
+@keyframes splitAnimation { 0% { background: #fef2f2 !important; transform: scale(0.95);} 50% { background: #dbeafe !important; transform: scale(1.02);} 100% { background: #eff6ff !important; transform: scale(1);} }
+.process-button { background: linear-gradient(135deg, #059669 0%, #047857 100%); color: white; border: none; padding: 1.5rem 3rem; font-size: 1.25rem; font-weight: 700; border-radius: 12px; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(5, 150, 105, 0.3); position: relative; overflow: hidden; }
+.process-button::before { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent); transition: left 0.5s; }
+.process-button:hover::before { left: 100%; }
+.process-button:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(5, 150, 105, 0.4); }
+.process-button:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+#data-grid { table-layout: fixed; width: 100%; border-collapse: collapse; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05); }
+#data-grid td { min-height: 40px; height: 40px; overflow: hidden; word-wrap: break-word; transition: none; position: relative; }
+#data-grid td:hover { background-color: #f8fafc; }
+#data-grid td:focus { outline: 2px solid #3b82f6; outline-offset: -2px; background-color: #f8fafc; z-index: 1; }
+.results-table { border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05); }
+#check-results[data-new="1"]::after { content: 'New'; margin-left: 8px; background: #22c55e; color: #fff; font-size: 0.7rem; padding: 2px 6px; border-radius: 9999px; }
+.results-table table { border-radius: 8px; }
+.results-table th { background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%); font-weight: 600; color: #374151; position: sticky; top: 0; z-index: 10; }
+.alert { border-radius: 8px; font-weight: 500; position: relative; animation: slideIn 0.4s ease-out; border-left: 4px solid; }
+.alert-success { background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); color: #065f46; border-left-color: #059669; }
+.alert-error { background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%); color: #991b1b; border-left-color: #dc2626; }
+.alert-info { background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); color: #1e40af; border-left-color: #3b82f6; }
+@keyframes slideIn { from { opacity: 0; transform: translateY(-15px);} to { opacity: 1; transform: translateY(0);} }
+@media (max-width: 768px) { .process-button { padding: 1.25rem 2rem; font-size: 1.125rem; } }
+@media (max-width: 480px) { .process-button { padding: 1rem 1.5rem; font-size: 1rem; } }
+.loading { position: relative; pointer-events: none; }
+.loading::after { content: ''; position: absolute; top: 50%; left: 50%; width: 20px; height: 20px; margin: -10px 0 0 -10px; border: 2px solid #f3f4f6; border-top: 2px solid #3b82f6; border-radius: 50%; animation: spin 1s linear infinite; }
+@keyframes spin { 0% { transform: rotate(0deg);} 100% { transform: rotate(360deg);} }
+.success-animation { animation: successPulse 0.6s ease-out; }
+@keyframes successPulse { 0% { transform: scale(1);} 50% { transform: scale(1.05);} 100% { transform: scale(1);} }
+
+

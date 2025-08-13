@@ -1,0 +1,21 @@
+UnpivotTool — Free Online Excel Unmerge & Fill
+
+> Turn messy merged Excel tables into clean, analytics-ready rows in one click. Paste your data or upload a file; we auto-expand merged cells and unpivot your table.
+
+## Core Content
+- [Home](https://unpivottool.com/): What the tool does and when to use it.
+- [Unmerge & Fill](https://unpivottool.com/excel-tools/unmerge-fill/): Expand merged cells, keep true blanks, and convert wide tables to tidy rows.
+
+## How It Works (Brief)
+- Input: Excel/CSV paste or file with merged headers/cells.
+- Process: Detect row/column spans, expand merged cells, keep intentional blanks, then unpivot.
+- Output: Clean rows with customizable "Variable" and "Value" columns; download CSV/XLSX.
+
+## Helpful Links
+- [Privacy](https://unpivottool.com/)
+- [Terms](https://unpivottool.com/)
+- [Contact](https://unpivottool.com/)
+
+## Updated
+- 2025-08-13
+

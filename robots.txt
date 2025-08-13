@@ -1,34 +1,52 @@
 # robots.txt for unpivottool.com
-# 允许所有搜索引擎访问所有内容
 
+# Global rule: allow public content, block non-content paths
 User-agent: *
 Allow: /
+Disallow: /_next/
+Disallow: /static/
+Disallow: /404
+Disallow: /500
+Disallow: /*.json$
 
-# 指向sitemap位置
+# Sitemap and LLM hints
 Sitemap: https://unpivottool.com/sitemap.xml
+LLM-Content: https://unpivottool.com/llms.txt
+LLM-Full-Content: https://unpivottool.com/llms-full.txt
 
-# 爬取频率建议（仅建议，搜索引擎可能不遵守）
-# Crawl-delay: 1
-
-# 特别欢迎主要搜索引擎
-User-agent: Googlebot
+# Major AI and search crawlers — explicitly allowed
+User-agent: GPTBot
+Allow: /
+User-agent: OAI-SearchBot
+Allow: /
+User-agent: ChatGPT-User
+Allow: /
+User-agent: anthropic-ai
+Allow: /
+User-agent: ClaudeBot
+Allow: /
+User-agent: Claude-Web
+Allow: /
+User-agent: PerplexityBot
+Allow: /
+User-agent: Amazonbot
+Allow: /
+User-agent: Applebot
+Allow: /
+User-agent: GoogleOther
+Allow: /
+User-agent: Bytespider
+Allow: /
+User-agent: CCBot
 Allow: /
 
-User-agent: Bingbot
-Allow: /
-
-User-agent: Slurp
-Allow: /
-
-# 屏蔽常见的垃圾爬虫（可选）
+# Block some known aggressive crawlers
 User-agent: AhrefsBot
 Disallow: /
-
 User-agent: MJ12bot
 Disallow: /
-
 User-agent: DotBot
 Disallow: /
 
-# 最后修改时间: 2025-08-05
-# 网站: UnpivotTool - Free Online Excel Table Converter 
+# Last-Modified: 2025-08-13
+# Site: UnpivotTool - Free Online Excel Table Converter
