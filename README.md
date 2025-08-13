@@ -35,6 +35,8 @@ Visit [unpivottool.com](https://unpivottool.com) and start converting your Excel
 - feat(resources): Add `/resources/` hub and two articles:
   - `/resources/what-is-unpivot/`
   - `/resources/how-to-unpivot-data-in-excel/`
+- ux(nav): Add Resources link to homepage and Unmerge & Fill tool header; add Resources section on homepage with two cards
+- content(resources): Enrich articles with samples download links, methodology, FAQs, and next/previous links
 - fix(css): Resource articles use relative `../../styles.css` to share global styling
 - seo(sitemap): Include new URLs and update priorities; unify trailing slashes
 - seo(robots): Open to major AI crawlers; add LLM-Content and LLM-Full-Content hints; block non-content paths like `/_next/`, `/static/`, error pages, and `*.json`.
