@@ -4,7 +4,7 @@ UnpivotTool — Free Online Excel Unmerge & Fill
 
 ## Core Content
 - [Home](https://unpivottool.com/): What the tool does and when to use it.
-- [Unmerge & Fill](https://unpivottool.com/excel-tools/unmerge-fill/): Expand merged cells, keep true blanks, and convert wide tables to tidy rows.
+- [Unmerge & Fill](https://unpivottool.com/excel-tools/unmerge-and-fill/): Expand merged cells, keep true blanks, and convert wide tables to tidy rows.
 
 ## How It Works (Brief)
 - Input: Excel/CSV paste or file with merged headers/cells.

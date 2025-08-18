@@ -23,7 +23,7 @@ Analysts, finance, operations, and anyone receiving Excel reports with merged he
 
 ## Pages
 - [Home](https://unpivottool.com/): Overview and examples
-- [Unmerge & Fill](https://unpivottool.com/excel-tools/unmerge-fill/): Main tool page
+- [Unmerge & Fill](https://unpivottool.com/excel-tools/unmerge-and-fill/): Main tool page
 
 ## Example
 Input: merged months across columns
