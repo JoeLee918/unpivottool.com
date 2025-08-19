@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Excel Power Query Unpivot: Transform Your Data Fast</title>
+	<meta name="description" content="Master Excel Power Query unpivot feature. Learn advanced techniques to transform wide data into long format efficiently for better analysis.">
+	<link rel="canonical" href="https://unpivottool.com/resources/excel-power-query-unpivot/">
+	<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+	<link rel="stylesheet" href="../../styles.css">
+	<script type="application/ld+json">
+	{
+	  "@context": "https://schema.org",
+	  "@type": "BreadcrumbList",
+	  "itemListElement": [
+	    {"@type": "ListItem", "position": 1, "name": "Home", "item": "https://unpivottool.com/"},
+	    {"@type": "ListItem", "position": 2, "name": "Resources", "item": "https://unpivottool.com/resources/"},
+	    {"@type": "ListItem", "position": 3, "name": "Excel Power Query Unpivot", "item": "https://unpivottool.com/resources/excel-power-query-unpivot/"}
+	  ]
+	}
+	</script>
+	<script type="application/ld+json">
+	{
+	  "@context": "https://schema.org",
+	  "@type": "Article",
+	  "headline": "Excel Power Query Unpivot: Transform Your Data Fast",
+	  "author": {"@type": "Person", "name": "Joe Lee"},
+	  "dateModified": "2025-08-19",
+	  "datePublished": "2025-08-19",
+	  "publisher": {"@type": "Organization", "name": "Unpivot Tool"},
+	  "mainEntityOfPage": {"@type": "WebPage", "@id": "https://unpivottool.com/resources/excel-power-query-unpivot/"}
+	}
+	</script>
+</head>
+<body>
+	<header class="header">
+		<div class="container">
+			<nav class="nav">
+				<div class="nav-brand">📚 Resources</div>
+				<div class="nav-info">
+					<span>✅ Helpful Content</span>
+					<span>✅ Actionable Guides</span>
+				</div>
+			</nav>
+		</div>
+	</header>
+
+	<div class="container" style="margin-top:1rem;">
+		<nav aria-label="breadcrumb" style="font-size:0.9rem;color:#64748b;">
+			<a href="/" style="color:#64748b;text-decoration:none;">Home</a>
+			<span style="margin:0 6px;">›</span>
+			<a href="/resources/" style="color:#64748b;text-decoration:none;">Resources</a>
+			<span style="margin:0 6px;">›</span>
+			<span>Excel Power Query Unpivot</span>
+		</nav>
+	</div>
+
+	<main class="main">
+		<div class="container">
+			<section class="tool-section">
+				<h1>Excel Power Query Unpivot: Transform Your Data Fast</h1>
+				<p style="color:#64748b;margin-bottom:1rem;">By Joe Lee — Data Analyst • Last updated: 2025-08-19</p>
+				<p>Power Query's unpivot feature is Excel's most powerful data transformation tool. This guide covers advanced techniques, automation, and troubleshooting for professional data analysis workflows.</p>
+
+				<h2 style="margin-top:1.5rem;">Why Power Query Unpivot Beats Manual Methods</h2>
+				<ul style="margin-left:1rem;">
+					<li><strong>Repeatable:</strong> Save steps as queries that refresh automatically</li>
+					<li><strong>Scalable:</strong> Handle thousands of columns without performance issues</li>
+					<li><strong>Flexible:</strong> Advanced filtering and conditional unpivoting</li>
+					<li><strong>Integrated:</strong> Works seamlessly with Excel tables and external data sources</li>
+				</ul>
+
+				<h2 style="margin-top:1.5rem;">Power Query Unpivot: Complete Workflow</h2>
+				<h3>Step 1: Prepare Your Data</h3>
+				<ul style="margin-left:1rem;">
+					<li>Ensure clean headers (no merged cells or special characters)</li>
+					<li>Remove empty rows and columns</li>
+					<li>Convert to Excel Table (Ctrl+T) for dynamic range</li>
+				</ul>
+
+				<h3>Step 2: Launch Power Query Editor</h3>
+				<ul style="margin-left:1rem;">
+					<li>Select your table → Data tab → "From Table/Range"</li>
+					<li>Power Query Editor opens with your data preview</li>
+					<li>All transformations are recorded as steps</li>
+				</ul>
+
+				<h3>Step 3: Configure Unpivot Settings</h3>
+				<ul style="margin-left:1rem;">
+					<li><strong>Select ID columns:</strong> Hold Ctrl and click columns to keep as identifiers</li>
+					<li><strong>Choose unpivot method:</strong>
+						<ul style="margin-left:1rem;">
+							<li>"Unpivot Other Columns" - unpivots everything except selected</li>
+							<li>"Unpivot Only Selected Columns" - unpivots only what you select</li>
+						</ul>
+					</li>
+					<li><strong>Access via:</strong> Transform tab → Unpivot Columns dropdown</li>
+				</ul>
+
+				<h2 style="margin-top:1.5rem;">Advanced Power Query Unpivot Techniques</h2>
+				<h3>Conditional Unpivoting</h3>
+				<p>Unpivot only columns matching specific patterns:</p>
+				<ul style="margin-left:1rem;">
+					<li>Use "Remove Columns" → "Remove Other Columns" to isolate target columns</li>
+					<li>Apply filters before unpivoting to exclude unwanted data</li>
+					<li>Use "Select Columns" dialog for pattern-based selection</li>
+				</ul>
+
+				<h3>Multiple Unpivot Operations</h3>
+				<p>Handle complex datasets with multiple measurement types:</p>
+				<ul style="margin-left:1rem;">
+					<li>Unpivot first set of columns (e.g., sales data)</li>
+					<li>Add custom column to tag the measurement type</li>
+					<li>Repeat for additional column sets</li>
+					<li>Use "Append Queries" to combine results</li>
+				</ul>
+
+				<h3>Data Type Optimization</h3>
+				<ul style="margin-left:1rem;">
+					<li>Power Query auto-detects data types after unpivot</li>
+					<li>Manually set types: select Value column → Transform → Data Type</li>
+					<li>Use "Replace Values" for data cleaning before type conversion</li>
+				</ul>
+
+				<h2 style="margin-top:1.5rem;">Power Query vs Excel Formulas: Performance Comparison</h2>
+				<table style="border-collapse:collapse;width:100%;margin:1rem 0;">
+					<tr style="background:#f8fafc;">
+						<th style="border:1px solid #e2e8f0;padding:8px;">Method</th>
+						<th style="border:1px solid #e2e8f0;padding:8px;">Speed</th>
+						<th style="border:1px solid #e2e8f0;padding:8px;">Memory Usage</th>
+						<th style="border:1px solid #e2e8f0;padding:8px;">Repeatability</th>
+					</tr>
+					<tr>
+						<td style="border:1px solid #e2e8f0;padding:8px;">Power Query</td>
+						<td style="border:1px solid #e2e8f0;padding:8px;">Fast</td>
+						<td style="border:1px solid #e2e8f0;padding:8px;">Efficient</td>
+						<td style="border:1px solid #e2e8f0;padding:8px;">Excellent</td>
+					</tr>
+					<tr>
+						<td style="border:1px solid #e2e8f0;padding:8px;">Manual Copy-Paste</td>
+						<td style="border:1px solid #e2e8f0;padding:8px;">Slow</td>
+						<td style="border:1px solid #e2e8f0;padding:8px;">High</td>
+						<td style="border:1px solid #e2e8f0;padding:8px;">None</td>
+					</tr>
+					<tr>
+						<td style="border:1px solid #e2e8f0;padding:8px;">VBA Macros</td>
+						<td style="border:1px solid #e2e8f0;padding:8px;">Medium</td>
+						<td style="border:1px solid #e2e8f0;padding:8px;">Medium</td>
+						<td style="border:1px solid #e2e8f0;padding:8px;">Good</td>
+					</tr>
+				</table>
+
+				<h2 style="margin-top:1.5rem;">Troubleshooting Common Power Query Issues</h2>
+				<h3>Error: "Column doesn't exist"</h3>
+				<ul style="margin-left:1rem;">
+					<li><strong>Cause:</strong> Source data structure changed</li>
+					<li><strong>Solution:</strong> Update query steps or use dynamic column selection</li>
+				</ul>
+
+				<h3>Slow Performance</h3>
+				<ul style="margin-left:1rem;">
+					<li><strong>Cause:</strong> Large datasets or complex transformations</li>
+					<li><strong>Solution:</strong> Filter data early, avoid unnecessary steps</li>
+				</ul>
+
+				<h3>Memory Errors</h3>
+				<ul style="margin-left:1rem;">
+					<li><strong>Cause:</strong> Insufficient RAM for large unpivot operations</li>
+					<li><strong>Solution:</strong> Process data in chunks or use external tools</li>
+				</ul>
+
+				<h2 style="margin-top:1.5rem;">Automation and Refresh Strategies</h2>
+				<ul style="margin-left:1rem;">
+					<li><strong>Auto-refresh:</strong> Data → Connections → Properties → Refresh every X minutes</li>
+					<li><strong>Refresh on open:</strong> Enable "Refresh data when opening the file"</li>
+					<li><strong>Background refresh:</strong> Allow queries to run without blocking Excel</li>
+					<li><strong>Error handling:</strong> Set up notifications for failed refreshes</li>
+				</ul>
+
+				<h2 style="margin-top:1.5rem;">Integration with Other Excel Features</h2>
+				<h3>Pivot Tables</h3>
+				<p>Unpivoted data works perfectly with pivot tables:</p>
+				<ul style="margin-left:1rem;">
+					<li>Drag unpivoted categories to Rows/Columns</li>
+					<li>Use Value column for calculations</li>
+					<li>Create dynamic charts that update automatically</li>
+				</ul>
+
+				<h3>Power BI Integration</h3>
+				<ul style="margin-left:1rem;">
+					<li>Power Query steps transfer directly to Power BI</li>
+					<li>Maintain data model consistency across platforms</li>
+					<li>Use same transformation logic for different outputs</li>
+				</ul>
+
+				<h2 style="margin-top:1.5rem;">Real-World Use Cases</h2>
+				<h3>Financial Reporting</h3>
+				<p>Transform monthly P&L statements from wide format (Jan, Feb, Mar columns) to long format for trend analysis and forecasting.</p>
+
+				<h3>Sales Analytics</h3>
+				<p>Convert regional sales data from separate columns per region to a single Region/Sales structure for geographic analysis.</p>
+
+				<h3>Survey Data Processing</h3>
+				<p>Reshape Likert scale responses from individual question columns to Question/Response format for statistical analysis.</p>
+
+				<h2 style="margin-top:1.5rem;">FAQs</h2>
+				<p><strong>Can Power Query handle millions of rows?</strong> Yes, but performance depends on available memory. Consider filtering data first for large datasets.</p>
+				<p><strong>Do Power Query transformations affect the original data?</strong> No, Power Query creates a separate transformed copy. Your source data remains unchanged.</p>
+				<p><strong>Can I undo Power Query steps?</strong> Yes, delete steps in the Applied Steps panel or use the formula bar to modify individual transformations.</p>
+				<p><strong>Is Power Query available in all Excel versions?</strong> Power Query is built into Excel 2016 and later. Earlier versions need the Power Query add-in.</p>
+
+				<div style="margin-top:1.5rem;">
+					<a class="btn btn-primary" href="/unpivot-tool/">Try Online Unpivot Tool</a>
+				</div>
+
+				<hr style="margin:2rem 0;">
+				<h3>Methodology: Who, How, Why</h3>
+				<p><strong>Who:</strong> Written by Joe Lee (Data Analyst with 8+ years Excel experience).</p>
+				<p><strong>How:</strong> Techniques tested on real business datasets and validated against Microsoft documentation.</p>
+				<p><strong>Why:</strong> Help analysts master Power Query for efficient, repeatable data transformations.</p>
+				<div style="margin-top:1rem;color:#64748b;font-size:0.95rem;">About the author: Joe builds lightweight, private-by-design spreadsheet tools. Views are his own.</div>
+				<div style="margin-top:1rem;display:flex;gap:12px;flex-wrap:wrap;align-items:center;">
+					<a class="btn btn-secondary" href="/resources/">Back to Resources</a>
+					<a class="btn btn-primary" href="/resources/pivot-vs-unpivot/">Next: Pivot vs Unpivot</a>
+				</div>
+			</section>
+		</div>
+	</main>
+
+	<footer class="footer">
+		<div class="container">
+			<div class="footer-bottom">
+				<p>&copy; 2025 Unpivot Tool</p>
+			</div>
+		</div>
+	</footer>
+</body>
+</html>
