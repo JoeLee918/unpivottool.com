@@ -34,5 +34,5 @@ Output: rows with fields like Name, Variable=Month, Value=Number
 - Use clear headers and short paragraphs for better LLM summarization
 
 ## Updates
-- 2025-08-13: Initial LLM docs published
+- 2025-08-25: Updated content and new articles added
 

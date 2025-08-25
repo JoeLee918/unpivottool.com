@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Sheets Unpivot: 5 Methods to Transform Your Data | UnpivotTool</title>
+    <meta name="description" content="Learn 5 effective methods to unpivot data in Google Sheets. Step-by-step tutorials with formulas, scripts, and alternative solutions for data transformation.">
+    <meta name="keywords" content="unpivot google sheets, google sheets data transformation, reshape data google sheets, google sheets pivot table reverse, unpivot columns google sheets">
+    <link rel="canonical" href="https://unpivottool.com/resources/google-sheets-unpivot-methods/">
+    <link rel="stylesheet" href="../../styles.css">
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": "Google Sheets Unpivot: 5 Methods to Transform Your Data",
+        "description": "Learn 5 effective methods to unpivot data in Google Sheets with step-by-step tutorials",
+        "author": {
+            "@type": "Organization",
+            "name": "UnpivotTool"
+        },
+        "publisher": {
+            "@type": "Organization",
+            "name": "UnpivotTool",
+            "logo": {
+                "@type": "ImageObject",
+                "url": "https://unpivottool.com/logo.png"
+            }
+        },
+        "datePublished": "2025-08-25",
+        "dateModified": "2025-08-25"
+    }
+    </script>
+</head>
+<body>
+    <nav class="main-nav">
+        <div class="nav-container">
+            <a href="/" class="nav-brand">📊 UnpivotTool</a>
+            <div class="nav-links">
+                <a href="/resources">Resources</a>
+                <a href="/about">About</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="article-container">
+        <article class="article-content">
+            <header class="article-header">
+                <nav class="breadcrumb">
+                    <a href="/">Home</a> > <a href="/resources">Resources</a> > Google Sheets Unpivot Methods
+                </nav>
+                <h1>Google Sheets Unpivot: 5 Methods to Transform Your Data</h1>
+                <div class="article-meta">
+                    <span class="publish-date">Published: August 25, 2025</span>
+                    <span class="read-time">• 10 min read</span>
+                </div>
+            </header>
+
+            <div class="article-body">
+                <p class="lead">While Google Sheets doesn't have a built-in unpivot function like Excel's Power Query, there are several effective methods to transform your wide-format data into long format. This comprehensive guide covers 5 proven techniques, from simple formulas to advanced scripts.</p>
+
+                <div class="table-of-contents">
+                    <h3>Table of Contents</h3>
+                    <ul>
+                        <li><a href="#method1">Method 1: QUERY Function with UNPIVOT-like Logic</a></li>
+                        <li><a href="#method2">Method 2: Google Apps Script Automation</a></li>
+                        <li><a href="#method3">Method 3: Manual Restructuring with Formulas</a></li>
+                        <li><a href="#method4">Method 4: FLATTEN and TRANSPOSE Combination</a></li>
+                        <li><a href="#method5">Method 5: Online Tools Integration</a></li>
+                    </ul>
+                </div>
+
+                <h2>Understanding Unpivot in Google Sheets Context</h2>
+                
+                <p>Unpivoting transforms data from wide format (multiple columns) to long format (fewer columns, more rows). This is essential for data analysis, visualization, and integration with other tools.</p>
+
+                <div class="example-transformation">
+                    <h3>Example Transformation:</h3>
+                    <div class="before-after">
+                        <div class="before">
+                            <h4>Before (Wide Format):</h4>
+                            <table class="data-table">
+                                <tr><th>Product</th><th>Q1</th><th>Q2</th><th>Q3</th><th>Q4</th></tr>
+                                <tr><td>Laptop</td><td>100</td><td>120</td><td>110</td><td>130</td></tr>
+                                <tr><td>Phone</td><td>200</td><td>180</td><td>220</td><td>250</td></tr>
+                            </table>
+                        </div>
+                        <div class="after">
+                            <h4>After (Long Format):</h4>
+                            <table class="data-table">
+                                <tr><th>Product</th><th>Quarter</th><th>Sales</th></tr>
+                                <tr><td>Laptop</td><td>Q1</td><td>100</td></tr>
+                                <tr><td>Laptop</td><td>Q2</td><td>120</td></tr>
+                                <tr><td>Laptop</td><td>Q3</td><td>110</td></tr>
+                                <tr><td>Laptop</td><td>Q4</td><td>130</td></tr>
+                                <tr><td>Phone</td><td>Q1</td><td>200</td></tr>
+                                <tr><td>Phone</td><td>Q2</td><td>180</td></tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <h2 id="method1">Method 1: QUERY Function with UNPIVOT-like Logic</h2>
+
+                <p>The QUERY function is Google Sheets' most powerful tool for data manipulation. While it doesn't have a direct UNPIVOT clause, we can achieve similar results using UNION operations.</p>
+
+                <h3>Step-by-Step Implementation:</h3>
+
+                <div class="method-steps">
+                    <h4>Step 1: Set Up Your Data</h4>
+                    <p>Ensure your data is in a clean format with headers in row 1. For our example, we'll use sales data with quarters as columns.</p>
+
+                    <h4>Step 2: Create the QUERY Formula</h4>
+                    <div class="code-example">
+                        <pre><code>=QUERY({
+  QUERY(A2:E, "SELECT A, 'Q1', B WHERE B IS NOT NULL", 0);
+  QUERY(A2:E, "SELECT A, 'Q2', C WHERE C IS NOT NULL", 0);
+  QUERY(A2:E, "SELECT A, 'Q3', D WHERE D IS NOT NULL", 0);
+  QUERY(A2:E, "SELECT A, 'Q4', E WHERE E IS NOT NULL", 0)
+}, "SELECT * WHERE Col1 IS NOT NULL")</code></pre>
+                    </div>
+
+                    <h4>Step 3: Add Headers</h4>
+                    <p>Manually add headers above your formula result: Product, Quarter, Sales</p>
+
+                    <h4>Step 4: Handle Dynamic Ranges</h4>
+                    <p>For dynamic data ranges, use this enhanced formula:</p>
+                    <div class="code-example">
+                        <pre><code>=QUERY({
+  QUERY(A:E, "SELECT A, 'Q1', B WHERE A IS NOT NULL AND B IS NOT NULL", 0);
+  QUERY(A:E, "SELECT A, 'Q2', C WHERE A IS NOT NULL AND C IS NOT NULL", 0);
+  QUERY(A:E, "SELECT A, 'Q3', D WHERE A IS NOT NULL AND D IS NOT NULL", 0);
+  QUERY(A:E, "SELECT A, 'Q4', E WHERE A IS NOT NULL AND E IS NOT NULL", 0)
+}, "SELECT * WHERE Col1 != 'Product'")</code></pre>
+                    </div>
+                </div>
+
+                <div class="pros-cons">
+                    <div class="pros">
+                        <h4>✅ Pros:</h4>
+                        <ul>
+                            <li>No scripting required</li>
+                            <li>Updates automatically when source data changes</li>
+                            <li>Handles NULL values gracefully</li>
+                            <li>Works with large datasets</li>
+                        </ul>
+                    </div>
+                    <div class="cons">
+                        <h4>❌ Cons:</h4>
+                        <ul>
+                            <li>Complex formula for many columns</li>
+                            <li>Manual adjustment needed for different data structures</li>
+                            <li>Limited flexibility for varying column names</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h2 id="method2">Method 2: Google Apps Script Automation</h2>
+
+                <p>For maximum flexibility and automation, Google Apps Script provides a programmatic solution that can handle any data structure.</p>
+
+                <h3>Complete Script Solution:</h3>
+
+                <div class="code-example">
+                    <h4>Apps Script Code:</h4>
+                    <pre><code>function unpivotData() {
+  const sheet = SpreadsheetApp.getActiveSheet();
+  const data = sheet.getDataRange().getValues();
+  
+  if (data.length < 2) {
+    throw new Error("Need at least 2 rows of data (header + data)");
+  }
+  
+  const headers = data[0];
+  const keyColumn = headers[0]; // First column is the key
+  const valueColumns = headers.slice(1); // Rest are value columns
+  
+  const unpivotedData = [];
+  unpivotedData.push([keyColumn, "Attribute", "Value"]); // New headers
+  
+  // Process each data row
+  for (let i = 1; i < data.length; i++) {
+    const row = data[i];
+    const keyValue = row[0];
+    
+    // Create a row for each value column
+    for (let j = 1; j < row.length; j++) {
+      if (row[j] !== "" && row[j] !== null && row[j] !== undefined) {
+        unpivotedData.push([
+          keyValue,
+          headers[j],
+          row[j]
+        ]);
+      }
+    }
+  }
+  
+  // Create new sheet with results
+  const newSheet = SpreadsheetApp.getActiveSpreadsheet()
+    .insertSheet("Unpivoted_" + new Date().getTime());
+  
+  if (unpivotedData.length > 0) {
+    newSheet.getRange(1, 1, unpivotedData.length, 3)
+      .setValues(unpivotedData);
+    
+    // Format the header row
+    newSheet.getRange(1, 1, 1, 3)
+      .setFontWeight("bold")
+      .setBackground("#f0f0f0");
+  }
+  
+  return `Unpivoted ${data.length - 1} rows into ${unpivotedData.length - 1} rows`;
+}</code></pre>
+                </div>
+
+                <h3>How to Implement:</h3>
+                <ol>
+                    <li>Open Google Sheets and go to Extensions → Apps Script</li>
+                    <li>Replace the default code with the script above</li>
+                    <li>Save the project (Ctrl+S)</li>
+                    <li>Return to your sheet and run the function</li>
+                    <li>Authorize the script when prompted</li>
+                </ol>
+
+                <div class="tip-box">
+                    <h4>💡 Advanced Tip:</h4>
+                    <p>You can modify the script to handle specific column ranges, custom headers, or data validation. Add error handling for production use.</p>
+                </div>
+
+                <h2 id="method3">Method 3: Manual Restructuring with Formulas</h2>
+
+                <p>For smaller datasets or when you need full control over the process, manual restructuring using basic formulas is often the most transparent approach.</p>
+
+                <h3>Formula-Based Approach:</h3>
+
+                <div class="method-steps">
+                    <h4>Step 1: Create the Structure</h4>
+                    <p>Set up your target columns: Key, Attribute, Value</p>
+
+                    <h4>Step 2: Use INDEX and MOD Functions</h4>
+                    <p>For the Key column (assuming source data starts at A2):</p>
+                    <div class="code-example">
+                        <pre><code>=INDEX($A$2:$A$10, INT((ROW()-2)/4)+1)</code></pre>
+                    </div>
+
+                    <p>For the Attribute column:</p>
+                    <div class="code-example">
+                        <pre><code>=INDEX($B$1:$E$1, MOD(ROW()-2,4)+1)</code></pre>
+                    </div>
+
+                    <p>For the Value column:</p>
+                    <div class="code-example">
+                        <pre><code>=INDEX(INDIRECT("$B$2:$E$10"), INT((ROW()-2)/4)+1, MOD(ROW()-2,4)+1)</code></pre>
+                    </div>
+
+                    <h4>Step 3: Filter Out Empty Values</h4>
+                    <p>Wrap your formulas with IF statements to handle empty cells:</p>
+                    <div class="code-example">
+                        <pre><code>=IF(INDEX(INDIRECT("$B$2:$E$10"), INT((ROW()-2)/4)+1, MOD(ROW()-2,4)+1)="", "", 
+   INDEX(INDIRECT("$B$2:$E$10"), INT((ROW()-2)/4)+1, MOD(ROW()-2,4)+1))</code></pre>
+                    </div>
+                </div>
+
+                <h2 id="method4">Method 4: FLATTEN and TRANSPOSE Combination</h2>
+
+                <p>This method uses Google Sheets' array functions to create a quick unpivot for simple data structures.</p>
+
+                <h3>Implementation Steps:</h3>
+
+                <div class="method-steps">
+                    <h4>Step 1: Flatten the Values</h4>
+                    <div class="code-example">
+                        <pre><code>=FLATTEN(TRANSPOSE(B2:E10))</code></pre>
+                    </div>
+
+                    <h4>Step 2: Create Repeated Keys</h4>
+                    <div class="code-example">
+                        <pre><code>=FLATTEN(ARRAYFORMULA(REPT(A2:A10&"|", 4)))</code></pre>
+                    </div>
+
+                    <h4>Step 3: Create Attribute Labels</h4>
+                    <div class="code-example">
+                        <pre><code>=FLATTEN(ARRAYFORMULA(REPT(TRANSPOSE(B1:E1), ROWS(A2:A10))))</code></pre>
+                    </div>
+
+                    <h4>Step 4: Combine Results</h4>
+                    <p>Use SPLIT to separate the key from the delimiter and combine all arrays:</p>
+                    <div class="code-example">
+                        <pre><code>={SPLIT(FLATTEN(ARRAYFORMULA(REPT(A2:A10&"|", 4))), "|"), 
+   FLATTEN(ARRAYFORMULA(REPT(TRANSPOSE(B1:E1), ROWS(A2:A10)))), 
+   FLATTEN(TRANSPOSE(B2:E10))}</code></pre>
+                    </div>
+                </div>
+
+                <h2 id="method5">Method 5: Online Tools Integration</h2>
+
+                <p>Sometimes the fastest solution is to export your data, use a specialized tool, and import the results back.</p>
+
+                <h3>Workflow with UnpivotTool:</h3>
+
+                <ol>
+                    <li><strong>Export from Google Sheets:</strong> File → Download → CSV</li>
+                    <li><strong>Use UnpivotTool:</strong> Visit our <a href="/">online unpivot tool</a></li>
+                    <li><strong>Upload and Transform:</strong> Select columns and unpivot instantly</li>
+                    <li><strong>Import Back:</strong> File → Import → Upload CSV</li>
+                </ol>
+
+                <div class="comparison-table">
+                    <h3>Method Comparison Summary:</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Method</th>
+                                <th>Complexity</th>
+                                <th>Flexibility</th>
+                                <th>Performance</th>
+                                <th>Best For</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>QUERY Function</td>
+                                <td>Medium</td>
+                                <td>Medium</td>
+                                <td>High</td>
+                                <td>Fixed column structures</td>
+                            </tr>
+                            <tr>
+                                <td>Apps Script</td>
+                                <td>High</td>
+                                <td>Very High</td>
+                                <td>High</td>
+                                <td>Complex, recurring tasks</td>
+                            </tr>
+                            <tr>
+                                <td>Manual Formulas</td>
+                                <td>Medium</td>
+                                <td>Low</td>
+                                <td>Medium</td>
+                                <td>Small datasets, learning</td>
+                            </tr>
+                            <tr>
+                                <td>FLATTEN/TRANSPOSE</td>
+                                <td>Low</td>
+                                <td>Low</td>
+                                <td>High</td>
+                                <td>Simple, uniform data</td>
+                            </tr>
+                            <tr>
+                                <td>Online Tools</td>
+                                <td>Very Low</td>
+                                <td>Medium</td>
+                                <td>High</td>
+                                <td>One-time transformations</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h2>Advanced Tips and Troubleshooting</h2>
+
+                <h3>Common Issues and Solutions:</h3>
+
+                <div class="troubleshooting">
+                    <div class="issue">
+                        <h4>Issue: Formula returns #REF! error</h4>
+                        <p><strong>Solution:</strong> Check that your range references are correct and don't exceed the actual data range.</p>
+                    </div>
+
+                    <div class="issue">
+                        <h4>Issue: Empty cells create unwanted rows</h4>
+                        <p><strong>Solution:</strong> Add WHERE clauses in QUERY functions or IF statements in manual formulas to filter out empty values.</p>
+                    </div>
+
+                    <div class="issue">
+                        <h4>Issue: Performance is slow with large datasets</h4>
+                        <p><strong>Solution:</strong> Use Google Apps Script for datasets over 10,000 rows, or consider using our online tool for faster processing.</p>
+                    </div>
+
+                    <div class="issue">
+                        <h4>Issue: Column headers are not dynamic</h4>
+                        <p><strong>Solution:</strong> Use INDIRECT functions with cell references instead of hardcoded ranges.</p>
+                    </div>
+                </div>
+
+                <h3>Performance Optimization Tips:</h3>
+
+                <ul>
+                    <li><strong>Limit Ranges:</strong> Use specific ranges instead of entire columns (A:A) when possible</li>
+                    <li><strong>Avoid Volatile Functions:</strong> Minimize use of NOW(), RAND(), and similar functions</li>
+                    <li><strong>Use Array Formulas:</strong> ARRAYFORMULA can be more efficient than copying formulas down</li>
+                    <li><strong>Consider Caching:</strong> For static data, copy and paste values to remove formula overhead</li>
+                </ul>
+
+                <h2>Real-World Use Cases</h2>
+
+                <h3>Sales Data Analysis</h3>
+                <p>Transform monthly sales reports from wide format (one column per month) to long format for trend analysis and visualization in Google Data Studio.</p>
+
+                <h3>Survey Response Processing</h3>
+                <p>Convert survey data where each question is a column into a format suitable for statistical analysis with question-answer pairs.</p>
+
+                <h3>Financial Reporting</h3>
+                <p>Restructure budget data from departmental columns to a format that allows for easy filtering and pivot table creation.</p>
+
+                <h3>Inventory Management</h3>
+                <p>Transform product data with multiple attribute columns (size, color, material) into a normalized format for database import.</p>
+
+                <h2>Frequently Asked Questions</h2>
+
+                <div class="faq-section">
+                    <div class="faq-item">
+                        <h4>Q: Can Google Sheets handle large unpivot operations?</h4>
+                        <p>A: Google Sheets can handle up to 10 million cells total. For datasets over 100,000 rows, consider using Google Apps Script or external tools for better performance.</p>
+                    </div>
+
+                    <div class="faq-item">
+                        <h4>Q: How do I unpivot data with mixed data types?</h4>
+                        <p>A: Google Sheets automatically handles mixed data types. However, ensure your formulas account for different formats using TEXT() or VALUE() functions when necessary.</p>
+                    </div>
+
+                    <div class="faq-item">
+                        <h4>Q: Can I automate unpivot operations to run on schedule?</h4>
+                        <p>A: Yes, use Google Apps Script with time-driven triggers to automatically unpivot data at specified intervals.</p>
+                    </div>
+
+                    <div class="faq-item">
+                        <h4>Q: What's the difference between unpivot and transpose?</h4>
+                        <p>A: Transpose simply flips rows and columns. Unpivot transforms multiple columns into attribute-value pairs, creating a normalized data structure.</p>
+                    </div>
+
+                    <div class="faq-item">
+                        <h4>Q: How do I preserve data formatting during unpivot?</h4>
+                        <p>A: Use Google Apps Script to copy both values and formatting, or manually apply formatting to the unpivoted results using conditional formatting rules.</p>
+                    </div>
+                </div>
+
+                <h2>Conclusion</h2>
+
+                <p>While Google Sheets doesn't have Excel's built-in unpivot functionality, these five methods provide flexible solutions for any data transformation need. Choose the QUERY method for most scenarios, Apps Script for complex automation, or our online tool for quick one-time transformations.</p>
+
+                <p>The key is matching the method to your specific requirements: data size, complexity, automation needs, and technical expertise level.</p>
+
+                <div class="cta-section">
+                    <h3>Need a Quick Solution?</h3>
+                    <p>Skip the complex formulas and try our free online unpivot tool. Upload your CSV, select columns, and get results instantly.</p>
+                    <a href="/" class="cta-button">Try UnpivotTool Now →</a>
+                </div>
+
+                <div class="related-articles">
+                    <h3>Related Articles</h3>
+                    <ul>
+                        <li><a href="/resources/sql-unpivot-vs-excel-comparison/">SQL Unpivot vs Excel: Which is Better?</a></li>
+                        <li><a href="/resources/excel-power-query-unpivot/">Excel Power Query Unpivot: Transform Your Data Fast</a></li>
+                        <li><a href="/resources/what-is-unpivot/">What is Unpivot in Excel: Complete Guide 2025</a></li>
+                        <li><a href="/resources/wide-vs-long-data-format/">Wide vs Long Data Format: Which to Choose</a></li>
+                    </ul>
+                </div>
+            </div>
+        </article>
+    </main>
+
+    <footer class="main-footer">
+        <div class="footer-container">
+            <p>&copy; 2025 UnpivotTool. Transform your data with ease.</p>
+            <div class="footer-links">
+                <a href="/privacy">Privacy Policy</a>
+                <a href="/terms">Terms of Service</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../../app.js"></script>
+</body>
+</html>

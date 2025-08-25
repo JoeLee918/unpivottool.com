@@ -21,7 +21,7 @@ body {
 /* Header */
 .header {
     background: #fff;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     position: sticky;
     top: 0;
     z-index: 100;
@@ -200,15 +200,18 @@ body {
     font-size: 1.25rem;
     margin-bottom: 2rem;
     opacity: 0.9;
-    max-width: 900px; /* 增加宽度 */
+    max-width: 900px;
+    /* 增加宽度 */
     margin-left: auto;
     margin-right: auto;
-    line-height: 1.5; /* 增加行高 */
+    line-height: 1.5;
+    /* 增加行高 */
 
-      /* 更好的换行控制 */
+    /* 更好的换行控制 */
     word-wrap: break-word;
     hyphens: auto;
 }
+
 /* 响应式优化 */
 @media (max-width: 768px) {
     .hero-subtitle {
@@ -217,9 +220,11 @@ body {
         line-height: 1.6;
     }
 }
+
 .hero-features {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);  /* 2x2网格 */
+    grid-template-columns: repeat(2, 1fr);
+    /* 2x2网格 */
     gap: 16px;
     max-width: 600px;
     margin: 0 auto 2.5rem;
@@ -231,8 +236,10 @@ body {
     padding: 12px 20px;
     border-radius: 25px;
     font-weight: 500;
-    text-align: center;  /* 文字居中 */
-    min-height: 20px;    /* 统一高度 */
+    text-align: center;
+    /* 文字居中 */
+    min-height: 20px;
+    /* 统一高度 */
 }
 
 .hero-cta {
@@ -352,7 +359,7 @@ body {
     width: 100%;
     border-collapse: collapse;
     background: white;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
     overflow: hidden;
 }
@@ -415,7 +422,7 @@ body {
     border-radius: 12px;
     padding: 2rem;
     margin-bottom: 2rem;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
 }
 
 .tool-section h2,
@@ -733,7 +740,7 @@ body {
     padding: 2rem;
     border-radius: 12px;
     text-align: center;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
     transition: transform 0.2s;
 }
 
@@ -765,7 +772,7 @@ body {
 
 .use-cases-section h2 {
     text-align: center;
-        font-size: 2rem;
+    font-size: 2rem;
     margin-bottom: 3rem;
     color: #1f2937;
 }
@@ -784,7 +791,7 @@ body {
 }
 
 .use-case:hover {
-    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
 }
 
 .use-case-icon {
@@ -830,7 +837,7 @@ body {
     border-radius: 8px;
     margin-bottom: 1rem;
     overflow: hidden;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 .faq-question {
@@ -919,95 +926,96 @@ body {
         font-size: 2rem;
         line-height: 1.2;
     }
-    
+
     .hero-subtitle {
         font-size: 1rem;
         line-height: 1.5;
     }
-    
+
     .hero-features {
-        grid-template-columns: 1fr;  /* 手机端垂直排列 */
+        grid-template-columns: 1fr;
+        /* 手机端垂直排列 */
         gap: 12px;
         max-width: 100%;
     }
-    
+
     .hero-features span {
         font-size: 0.875rem;
         padding: 10px 16px;
     }
-    
+
     .demo-grid {
         grid-template-columns: 1fr;
         gap: 1.5rem;
     }
-    
+
     .arrow-desktop {
         display: none;
     }
-    
+
     .arrow-mobile {
         display: block;
     }
-    
+
     .config-panel {
         grid-template-columns: 1fr;
     }
-    
+
     .config-names {
         grid-template-columns: 1fr;
     }
-    
+
     .results-header {
         flex-direction: column;
         align-items: stretch;
     }
-    
+
     .results-actions {
         justify-content: center;
     }
-    
+
     .nav {
         flex-direction: column;
         gap: 1rem;
         text-align: center;
     }
-    
+
     .nav-info {
         justify-content: center;
     }
-    
+
     .nav-info span {
         font-size: 0.75rem;
         padding: 0.25rem 0.5rem;
     }
-    
+
     .method-tabs {
         flex-direction: column;
     }
-    
+
     .action-buttons {
         justify-content: center;
     }
-    
+
     /* Mobile dropdown */
     .nav-dropdown {
         width: 100%;
     }
-    
+
     .dropdown-btn {
         width: 100%;
         justify-content: center;
         font-size: 0.875rem;
         padding: 0.75rem 1rem;
     }
-    
+
     .dropdown-content {
         position: static;
         box-shadow: none;
         border: 1px solid #e5e7eb;
         margin-top: 0.5rem;
     }
-    
+
     .dropdown-content a {
         padding: 0.875rem 1rem;
         font-size: 0.875rem;
@@ -1018,17 +1026,17 @@ body {
     .container {
         padding: 0 15px;
     }
-    
+
     .tool-section,
     .config-section,
     .results-section {
         padding: 1.5rem;
     }
-    
+
     .hero {
         padding: 3rem 0;
     }
-    
+
     .demo-section,
     .benefits-section,
     .use-cases-section,
@@ -1157,7 +1165,7 @@ body {
     color: #ffffff;
     padding: 0.75rem 1rem;
     border-radius: 9999px;
-    box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
     border: none;
     font-weight: 600;
     cursor: pointer;
@@ -1215,7 +1223,7 @@ body {
     border-color: #3b82f6;
 }
 
-.merge-checkbox-label input:checked ~ .checkmark {
+.merge-checkbox-label input:checked~.checkmark {
     background-color: #3b82f6;
     border-color: #3b82f6;
 }
@@ -1233,7 +1241,7 @@ body {
     transform: rotate(45deg);
 }
 
-.merge-checkbox-label input:checked ~ .checkmark:after {
+.merge-checkbox-label input:checked~.checkmark:after {
     display: block;
 }
 
@@ -1292,7 +1300,7 @@ body {
 }
 
 .radio-label:has(input:checked)::before,
-.radio-label input:checked ~ .radio-label::before {
+.radio-label input:checked~.radio-label::before {
     border-color: #3b82f6;
 }
 
@@ -1310,7 +1318,7 @@ body {
 }
 
 .radio-label:has(input:checked)::after,
-.radio-label input:checked ~ .radio-label::after {
+.radio-label input:checked~.radio-label::after {
     opacity: 1;
 }
 
@@ -1370,26 +1378,26 @@ body {
     .modal {
         padding: 0.5rem;
     }
-    
+
     .modal-content {
         width: 95%;
     }
-    
+
     .modal-header,
     .modal-body,
     .modal-footer {
         padding: 1rem;
     }
-    
+
     .radio-group {
         flex-direction: column;
         gap: 0.5rem;
     }
-    
+
     .modal-footer {
         flex-direction: column;
     }
-    
+
     .faq-grid {
         grid-template-columns: 1fr;
         gap: 1rem;
@@ -1429,6 +1437,7 @@ body {
         opacity: 0;
         transform: translateY(-10px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -1461,14 +1470,14 @@ body {
     padding: 2rem;
     border-radius: 16px;
     text-align: center;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
     transition: all 0.3s ease;
     border: 2px solid transparent;
 }
 
 .tool-card:hover {
     transform: translateY(-4px);
-    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
     border-color: #3b82f6;
 }
 
@@ -1499,15 +1508,196 @@ body {
 
 /* ===== Editable grid: merged placeholder visuals (shared) ===== */
 /* 现阶段按需求不再在首页显示任何合并占位视觉，保留类但不渲染明显样式 */
-.merged-cell { outline: none; }
-.merged-cell-placeholder { outline: none; }
+.merged-cell {
+    outline: none;
+}
+
+.merged-cell-placeholder {
+    outline: none;
+}
 
 /* Grid stability for editable table */
-#data-grid { table-layout: fixed; width: 100%; border-collapse: collapse; }
-#data-grid td { min-height: 40px; height: 40px; overflow: hidden; word-wrap: break-word; transition: none; }
+#data-grid {
+    table-layout: fixed;
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#data-grid td {
+    min-height: 40px;
+    height: 40px;
+    overflow: hidden;
+    word-wrap: break-word;
+    transition: none;
+}
 
 /* 空单元格高亮（仅视觉，不修改数据） */
 .empty-cell {
-  background: #fffbea !important; /* Yellow-50 */
-  border: 2px dashed #facc15 !important; /* Amber-400 */
+    background: #fffbea !important;
+    /* Yellow-50 */
+    border: 2px dashed #facc15 !important;
+    /* Amber-400 */
+}
+
+/* ===== Week 2 Improvements: Button Loading States ===== */
+.btn.loading {
+    position: relative;
+    color: transparent !important;
+    pointer-events: none;
+    cursor: not-allowed;
+}
+
+.btn.loading::after {
+    content: "⏳ Processing...";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-weight: 600;
+}
+
+.btn-primary.loading::after {
+    color: white;
+}
+
+.btn-secondary.loading::after {
+    color: white;
+}
+
+.btn-success.loading::after {
+    color: white;
+}
+
+/* Loading animation for better visual feedback */
+@keyframes spin {
+    0% {
+        transform: translate(-50%, -50%) rotate(0deg);
+    }
+
+    100% {
+        transform: translate(-50%, -50%) rotate(360deg);
+    }
+}
+
+.btn.loading.spinning::after {
+    content: "⏳";
+    animation: spin 1s linear infinite;
+}
+
+/* ===== Week 2 Improvements: Better Mobile Experience ===== */
+/* Improved touch targets for mobile */
+@media (max-width: 768px) {
+    .btn {
+        min-height: 44px;
+        /* Apple's recommended minimum touch target */
+        padding: 0.875rem 1.25rem;
+        font-size: 1rem;
+    }
+
+    .btn-large {
+        min-height: 50px;
+        padding: 1.125rem 1.5rem;
+        font-size: 1.125rem;
+    }
+
+    /* Better spacing for action buttons */
+    .action-buttons {
+        gap: 0.75rem;
+        justify-content: stretch;
+    }
+
+    .action-buttons .btn {
+        flex: 1;
+        min-width: 0;
+    }
+
+    /* Improved results actions layout */
+    .results-actions {
+        gap: 0.5rem;
+        justify-content: stretch;
+    }
+
+    .results-actions .btn {
+        flex: 1;
+        min-width: 0;
+        font-size: 0.875rem;
+        padding: 0.75rem 0.5rem;
+    }
+
+    /* Better table scrolling on mobile */
+    .table-container {
+        -webkit-overflow-scrolling: touch;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .results-table {
+        -webkit-overflow-scrolling: touch;
+    }
+}
+
+/* ===== Week 2 Improvements: Enhanced Table Experience ===== */
+/* Better visual feedback for editable cells */
+#data-grid td:hover {
+    background-color: #f8fafc;
+    border-color: #3b82f6;
+    transition: all 0.2s ease;
+}
+
+#data-grid td:focus {
+    outline: 2px solid #3b82f6;
+    outline-offset: -2px;
+    background-color: #eff6ff;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* Improved upload zone visual feedback */
+.upload-zone {
+    transition: all 0.3s ease;
+}
+
+.upload-zone:hover {
+    border-color: #3b82f6;
+    background: #f8faff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+}
+
+.upload-zone.dragover {
+    border-color: #10b981;
+    background: #f0fdf4;
+    transform: scale(1.02);
+    box-shadow: 0 8px 25px rgba(16, 185, 129, 0.2);
+}
+
+/* Better visual hierarchy for sections */
+.tool-section,
+.config-section,
+.results-section {
+    transition: box-shadow 0.3s ease;
+}
+
+.tool-section:hover,
+.config-section:hover,
+.results-section:hover {
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+}
+
+/* Improved checkbox and radio button styling */
+.checkbox-item input[type="checkbox"]:focus {
+    outline: 2px solid #3b82f6;
+    outline-offset: 2px;
+}
+
+.checkbox-item label:hover {
+    color: #3b82f6;
+    cursor: pointer;
+}
+
+/* Better form input focus states */
+.name-input input:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    transform: translateY(-1px);
 }

@@ -48,5 +48,5 @@ Disallow: /
 User-agent: DotBot
 Disallow: /
 
-# Last-Modified: 2025-08-13
+# Last-Modified: 2025-08-25
 # Site: UnpivotTool - Free Online Excel Table Converter

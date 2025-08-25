@@ -17,5 +17,5 @@ UnpivotTool — Free Online Excel Unmerge & Fill
 - [Contact](https://unpivottool.com/)
 
 ## Updated
-- 2025-08-13
+- 2025-08-25
 

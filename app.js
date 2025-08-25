@@ -1399,58 +1399,80 @@ class UnpivotTool {
 
     // 执行Unpivot转换
     performUnpivot() {
-        if (this.currentData.length < 2) {
-            this.showAlert('Please add your data first. You need at least one header row and one data row.', 'error');
-            return;
-        }
+        // Week 2 Improvement: Add loading state
+        const convertBtn = document.getElementById('convert-btn');
+        const originalText = convertBtn.textContent;
+        const originalClass = convertBtn.className;
+        
+        // Show loading state
+        convertBtn.classList.add('loading');
+        convertBtn.disabled = true;
+        
+        // Use setTimeout to allow UI to update before processing
+        setTimeout(() => {
+            try {
+                if (this.currentData.length < 2) {
+                    this.showAlert('Please add your data first. You need at least one header row and one data row.', 'error');
+                    return;
+                }
 
-        // 获取选中的列
-        const idColumns = this.getSelectedColumns('id');
-        const valueColumns = this.getSelectedColumns('value');
+                // 获取选中的列
+                const idColumns = this.getSelectedColumns('id');
+                const valueColumns = this.getSelectedColumns('value');
 
-        if (idColumns.length === 0) {
-            this.showAlert('Please choose at least one column to keep as ID columns.', 'error');
-            return;
-        }
+                if (idColumns.length === 0) {
+                    this.showAlert('Please choose at least one column to keep as ID columns.', 'error');
+                    return;
+                }
 
-        if (valueColumns.length === 0) {
-            this.showAlert('Please choose at least one column to convert.', 'error');
-            return;
-        }
+                if (valueColumns.length === 0) {
+                    this.showAlert('Please choose at least one column to convert.', 'error');
+                    return;
+                }
 
-        // 获取列名设置
-        const variableName = document.getElementById('variable-name').value || 'Variable';
-        const valueName = document.getElementById('value-name').value || 'Value';
+                // 获取列名设置
+                const variableName = document.getElementById('variable-name').value || 'Variable';
+                const valueName = document.getElementById('value-name').value || 'Value';
 
-        // 选择用于转换的数据源：大表用 fullData，小表用 currentData（并同步编辑变更）
-        let sourceMatrix = Array.isArray(this.fullData) && this.fullData.length >= this.currentData.length
-            ? this.fullData
-            : this.currentData;
-        // 若两者等长，优先使用用户当前编辑后的 currentData
-        if (this.fullData && this.fullData.length === this.currentData.length) {
-            this.fullData = this.currentData.map(r => r.slice());
-            sourceMatrix = this.fullData;
-        }
-        // 每次转换前检测合并
-        this.merges = this.detectMergedGroups(sourceMatrix, { detectHorizontal: true });
+                // 选择用于转换的数据源：大表用 fullData，小表用 currentData（并同步编辑变更）
+                let sourceMatrix = Array.isArray(this.fullData) && this.fullData.length >= this.currentData.length
+                    ? this.fullData
+                    : this.currentData;
+                // 若两者等长，优先使用用户当前编辑后的 currentData
+                if (this.fullData && this.fullData.length === this.currentData.length) {
+                    this.fullData = this.currentData.map(r => r.slice());
+                    sourceMatrix = this.fullData;
+                }
+                // 每次转换前检测合并
+                this.merges = this.detectMergedGroups(sourceMatrix, { detectHorizontal: true });
 
-        // 转换前：基于合并分组统一展开并填充（仅合并产生的空白），不修改展示用的 currentData
-        const expandedMatrix = this.expandMergesForConvert({
-            matrix: sourceMatrix,
-            merges: this.merges || []
-        }, { keepTrueBlank: true });
+                // 转换前：基于合并分组统一展开并填充（仅合并产生的空白），不修改展示用的 currentData
+                const expandedMatrix = this.expandMergesForConvert({
+                    matrix: sourceMatrix,
+                    merges: this.merges || []
+                }, { keepTrueBlank: true });
 
-        // 执行转换（从展开后的矩阵计算列名与数据）
-        const expandedColumns = expandedMatrix[0] || [];
-        const expandedRows = expandedMatrix.slice(1);
+                // 执行转换（从展开后的矩阵计算列名与数据）
+                const expandedColumns = expandedMatrix[0] || [];
+                const expandedRows = expandedMatrix.slice(1);
 
-        // 重新构建 columns -> 仅用于 unpivot 的临时映射
-        const tempColumns = expandedColumns.map((name, idx) => ({ index: idx, name }));
-        const idCols = idColumns.map(c => ({ index: c.index, name: expandedColumns[c.index] }));
-        const valCols = valueColumns.map(c => ({ index: c.index, name: expandedColumns[c.index] }));
+                // 重新构建 columns -> 仅用于 unpivot 的临时映射
+                const tempColumns = expandedColumns.map((name, idx) => ({ index: idx, name }));
+                const idCols = idColumns.map(c => ({ index: c.index, name: expandedColumns[c.index] }));
+                const valCols = valueColumns.map(c => ({ index: c.index, name: expandedColumns[c.index] }));
 
-        this.resultData = this.unpivotDataFromMatrix(expandedRows, idCols, valCols, variableName, valueName);
-        this.displayResults();
+                this.resultData = this.unpivotDataFromMatrix(expandedRows, idCols, valCols, variableName, valueName);
+                this.displayResults();
+                
+            } catch (error) {
+                console.error('Unpivot processing error:', error);
+                this.showAlert('An error occurred during conversion. Please try again.', 'error');
+            } finally {
+                // Week 2 Improvement: Restore button state
+                convertBtn.classList.remove('loading');
+                convertBtn.disabled = false;
+            }
+        }, 100); // Small delay to show loading state
     }
 
     // 获取选中的列
@@ -1647,40 +1669,68 @@ class UnpivotTool {
     downloadExcel() {
         if (this.resultData.length === 0) return;
 
-        try {
-            const ws = XLSX.utils.json_to_sheet(this.resultData);
-            const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, 'Unpivoted Data');
-            
-            const filename = `unpivoted_data_${new Date().toISOString().slice(0, 10)}.xlsx`;
-            XLSX.writeFile(wb, filename);
-            
-            this.showAlert('Excel file downloaded successfully!', 'success');
-        } catch (error) {
-            console.error('Excel download failed:', error);
-            this.showAlert('Unable to download Excel file. Please try again.', 'error');
-        }
+        // Week 2 Improvement: Add loading state for download
+        const downloadBtn = document.getElementById('download-excel');
+        const originalText = downloadBtn.textContent;
+        const originalClass = downloadBtn.className;
+        
+        downloadBtn.classList.add('loading');
+        downloadBtn.disabled = true;
+
+        setTimeout(() => {
+            try {
+                const ws = XLSX.utils.json_to_sheet(this.resultData);
+                const wb = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(wb, ws, 'Unpivoted Data');
+                
+                const filename = `unpivoted_data_${new Date().toISOString().slice(0, 10)}.xlsx`;
+                XLSX.writeFile(wb, filename);
+                
+                this.showAlert('Excel file downloaded successfully!', 'success');
+            } catch (error) {
+                console.error('Excel download failed:', error);
+                this.showAlert('Unable to download Excel file. Please try again.', 'error');
+            } finally {
+                // Restore button state
+                downloadBtn.classList.remove('loading');
+                downloadBtn.disabled = false;
+            }
+        }, 100);
     }
 
     // 下载CSV文件
     downloadCSV() {
         if (this.resultData.length === 0) return;
 
-        try {
-            const csv = Papa.unparse(this.resultData);
-            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-            const link = document.createElement('a');
-            
-            const filename = `unpivoted_data_${new Date().toISOString().slice(0, 10)}.csv`;
-            link.href = URL.createObjectURL(blob);
-            link.download = filename;
-            link.click();
-            
-            this.showAlert('CSV file downloaded successfully!', 'success');
-        } catch (error) {
-            console.error('CSV download failed:', error);
-            this.showAlert('Unable to download CSV file. Please try again.', 'error');
-        }
+        // Week 2 Improvement: Add loading state for CSV download
+        const downloadBtn = document.getElementById('download-csv');
+        const originalText = downloadBtn.textContent;
+        const originalClass = downloadBtn.className;
+        
+        downloadBtn.classList.add('loading');
+        downloadBtn.disabled = true;
+
+        setTimeout(() => {
+            try {
+                const csv = Papa.unparse(this.resultData);
+                const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+                const link = document.createElement('a');
+                
+                const filename = `unpivoted_data_${new Date().toISOString().slice(0, 10)}.csv`;
+                link.href = URL.createObjectURL(blob);
+                link.download = filename;
+                link.click();
+                
+                this.showAlert('CSV file downloaded successfully!', 'success');
+            } catch (error) {
+                console.error('CSV download failed:', error);
+                this.showAlert('Unable to download CSV file. Please try again.', 'error');
+            } finally {
+                // Restore button state
+                downloadBtn.classList.remove('loading');
+                downloadBtn.disabled = false;
+            }
+        }, 100);
     }
 
     // 显示提示消息
